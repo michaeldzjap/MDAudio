@@ -8,12 +8,12 @@
 
 namespace md_audio {
 
-    template <typename Allocator, std::size_t taps>
-    class TapDelayInterp : public TapDelay<Allocator, taps> {
+    template <std::size_t taps>
+    class TapDelayInterp : public TapDelay<taps> {
     public:
-        explicit TapDelayInterp(Allocator&, MdFloat);
+        explicit TapDelayInterp(memory::Allocatable<MdFloat*>&, MdFloat);
 
-        using TapDelay<Allocator, taps>::set_delay;
+        using TapDelay<taps>::set_delay;
 
         inline void set_delay(std::size_t, MdFloat) noexcept override final;
 
@@ -23,13 +23,13 @@ namespace md_audio {
         std::array<MdFloat, taps> m_frac;
     };
 
-    template <typename Allocator, std::size_t taps>
-    TapDelayInterp<Allocator, taps>::TapDelayInterp(Allocator& allocator, MdFloat max_delay) :
-        TapDelay<Allocator, taps>(allocator, max_delay)
+    template <std::size_t taps>
+    TapDelayInterp<taps>::TapDelayInterp(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay) :
+        TapDelay<taps>(allocator, max_delay)
     {}
 
-    template <typename Allocator, std::size_t taps>
-    void TapDelayInterp<Allocator, taps>::set_delay(std::size_t i, MdFloat delay) noexcept {
+    template <std::size_t taps>
+    void TapDelayInterp<taps>::set_delay(std::size_t i, MdFloat delay) noexcept {
         delay = utility::clip(delay, static_cast<MdFloat>(1), this->get_max_delay());
 
         this->m_delay[i] = static_cast<std::uint32_t>(delay);
@@ -37,8 +37,8 @@ namespace md_audio {
         m_frac[i] = delay - static_cast<MdFloat>(this->m_delay[i]);
     }
 
-    template <typename Allocator, std::size_t taps>
-    TapDelayInterp<Allocator, taps>::~TapDelayInterp() {}
+    template <std::size_t taps>
+    TapDelayInterp<taps>::~TapDelayInterp() {}
 
 }
 

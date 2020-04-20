@@ -7,16 +7,18 @@
 
 namespace md_audio {
 
-    template <typename Allocator, std::size_t taps = 1>
-    class TapDelay : public Processable<std::array<MdFloat, taps>, MdFloat>, public Writer<Allocator> {
+    template <std::size_t taps = 1>
+    class TapDelay : public Processable<std::array<MdFloat, taps>, MdFloat>, public Writer {
     public:
-        explicit TapDelay(Allocator&, MdFloat);
+        explicit TapDelay(memory::Allocatable<MdFloat*>&, MdFloat);
 
         virtual void set_delay(const std::array<MdFloat, taps>&) noexcept;
 
         virtual void set_delay(std::size_t, MdFloat) noexcept = 0;
 
         virtual MdFloat get_max_delay() noexcept = 0;
+
+        virtual constexpr std::size_t get_taps() const noexcept;
 
         virtual std::array<MdFloat, taps> read() noexcept;
 
@@ -29,20 +31,25 @@ namespace md_audio {
         MdFloat m_max_delay;
     };
 
-    template <typename Allocator, std::size_t taps>
-    TapDelay<Allocator, taps>::TapDelay(Allocator& allocator, MdFloat max_delay) :
-        Writer<Allocator>(allocator, static_cast<std::uint32_t>(max_delay)),
+    template <std::size_t taps>
+    TapDelay<taps>::TapDelay(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay) :
+        Writer(allocator, static_cast<std::uint32_t>(max_delay)),
         m_max_delay(max_delay)
     {}
 
-    template <typename Allocator, std::size_t taps>
-    void TapDelay<Allocator, taps>::set_delay(const std::array<MdFloat, taps>& delays) noexcept {
+    template <std::size_t taps>
+    void TapDelay<taps>::set_delay(const std::array<MdFloat, taps>& delays) noexcept {
         for (auto i = 0; i < taps; i++)
             set_delay(i, delays[i]);
     }
 
-    template <typename Allocator, std::size_t taps>
-    std::array<MdFloat, taps> TapDelay<Allocator, taps>::read() noexcept {
+    template <std::size_t taps>
+    constexpr std::size_t TapDelay<taps>::get_taps() const noexcept {
+        return taps;
+    }
+
+    template <std::size_t taps>
+    std::array<MdFloat, taps> TapDelay<taps>::read() noexcept {
         std::array<MdFloat, taps> z{};
 
         for (auto i = 0; i < taps; i++)
@@ -51,8 +58,8 @@ namespace md_audio {
         return z;
     }
 
-    template <typename Allocator, std::size_t taps>
-    std::array<MdFloat, taps> TapDelay<Allocator, taps>::perform(MdFloat in) noexcept {
+    template <std::size_t taps>
+    std::array<MdFloat, taps> TapDelay<taps>::perform(MdFloat in) noexcept {
         this->write(in);
 
         auto z = read();

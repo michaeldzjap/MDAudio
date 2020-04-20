@@ -5,12 +5,11 @@
 
 namespace md_audio {
 
-    template <typename Allocator>
-    class Allpass : public Writer<Allocator> {
+    class Allpass : public Writer {
     public:
-        explicit Allpass(Allocator&, MdFloat);
+        explicit Allpass(memory::Allocatable<MdFloat*>&, MdFloat);
 
-        explicit Allpass(Allocator&, MdFloat, MdFloat);
+        explicit Allpass(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat);
 
         virtual void set_delay(MdFloat) noexcept = 0;
 
@@ -23,20 +22,6 @@ namespace md_audio {
         MdFloat m_max_delay;
         MdFloat m_gain = 0.;
     };
-
-    template <typename Allocator>
-    Allpass<Allocator>::Allpass(Allocator& allocator, MdFloat max_delay) :
-        Writer<Allocator>(allocator, static_cast<std::uint32_t>(max_delay)),
-        m_max_delay(max_delay)
-    {}
-
-    template <typename Allocator>
-    Allpass<Allocator>::Allpass(Allocator& allocator, MdFloat max_delay, MdFloat gain) :
-        Writer<Allocator>(allocator, static_cast<std::uint32_t>(max_delay)),
-        m_max_delay(max_delay)
-    {
-        set_gain(gain);
-    }
 
 }
 

@@ -1,7 +1,7 @@
 #ifndef MD_AUDIO_ALLOCATABLE_HPP
 #define MD_AUDIO_ALLOCATABLE_HPP
 
-#include <cstdint>
+#include <cstddef>
 
 namespace md_audio::memory {
 

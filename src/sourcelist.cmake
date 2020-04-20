@@ -1,4 +1,14 @@
 set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
+    Allpass.cpp
+    AllpassCubic.cpp
+    AllpassLinear.cpp
+    AllpassSimple.cpp
+    Buffer.cpp
+    Delay.cpp
+    DelayCubic.cpp
+    DelayInterp.cpp
+    DelayLinear.cpp
+    DelaySimple.cpp
     HannOscillator.cpp
     Highpass.cpp
     Highshelf.cpp
@@ -14,5 +24,6 @@ set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
     SineShaper.cpp
     Taus88.cpp
     WhiteNoise.cpp
+    Writer.cpp
     Zdf.cpp
 )

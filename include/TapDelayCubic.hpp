@@ -5,38 +5,38 @@
 
 namespace md_audio {
 
-    template <typename Allocator, std::size_t taps>
-    class TapDelayCubic : public TapDelayInterp<Allocator, taps> {
+    template <std::size_t taps>
+    class TapDelayCubic : public TapDelayInterp<taps> {
     public:
-        explicit TapDelayCubic(Allocator&, MdFloat);
+        explicit TapDelayCubic(memory::Allocatable<MdFloat*>&, MdFloat);
 
-        explicit TapDelayCubic(Allocator&, MdFloat, const std::array<MdFloat, taps>&);
+        explicit TapDelayCubic(memory::Allocatable<MdFloat*>&, MdFloat, const std::array<MdFloat, taps>&);
 
         inline MdFloat get_max_delay() noexcept override final;
 
         MdFloat read(std::size_t) noexcept override final;
     };
 
-    template <typename Allocator, std::size_t taps>
-    TapDelayCubic<Allocator, taps>::TapDelayCubic(Allocator& allocator, MdFloat max_delay) :
-        TapDelayInterp<Allocator, taps>(allocator, max_delay)
+    template <std::size_t taps>
+    TapDelayCubic<taps>::TapDelayCubic(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay) :
+        TapDelayInterp<taps>(allocator, max_delay)
     {}
 
-    template <typename Allocator, std::size_t taps>
-    TapDelayCubic<Allocator, taps>::TapDelayCubic(Allocator& allocator, MdFloat max_delay,
+    template <std::size_t taps>
+    TapDelayCubic<taps>::TapDelayCubic(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay,
         const std::array<MdFloat, taps>& delay) :
-        TapDelayInterp<Allocator, taps>(allocator, max_delay)
+        TapDelayInterp<taps>(allocator, max_delay)
     {
         this->set_delay(delay);
     }
 
-    template <typename Allocator, std::size_t taps>
-    MdFloat TapDelayCubic<Allocator, taps>::get_max_delay() noexcept {
+    template <std::size_t taps>
+    MdFloat TapDelayCubic<taps>::get_max_delay() noexcept {
         return this->m_max_delay - 2;
     }
 
-    template <typename Allocator, std::size_t taps>
-    MdFloat TapDelayCubic<Allocator, taps>::read(std::size_t index) noexcept {
+    template <std::size_t taps>
+    MdFloat TapDelayCubic<taps>::read(std::size_t index) noexcept {
         auto phase_1 = utility::wrap(this->m_write_index - this->m_delay[index], 0, this->m_upper_bound_1);
         auto phase_2 = utility::wrap(phase_1 - 1, 0, this->m_upper_bound_1);
         auto phase_3 = utility::wrap(phase_1 - 2, 0, this->m_upper_bound_1);

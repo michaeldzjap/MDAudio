@@ -1,15 +1,15 @@
 #ifndef MD_AUDIO_DELAY_HPP
 #define MD_AUDIO_DELAY_HPP
 
+#include "Allocatable.hpp"
 #include "Processable.hpp"
 #include "Writer.hpp"
 
 namespace md_audio {
 
-    template <typename Allocator>
-    class Delay : public Processable<MdFloat, MdFloat>, public Writer<Allocator> {
+    class Delay : public Processable<MdFloat, MdFloat>, public Writer {
     public:
-        explicit Delay(Allocator&, MdFloat);
+        explicit Delay(memory::Allocatable<MdFloat*>&, MdFloat);
 
         virtual void set_delay(MdFloat) noexcept = 0;
 
@@ -23,23 +23,6 @@ namespace md_audio {
         std::uint32_t m_delay;
         MdFloat m_max_delay;
     };
-
-    template <typename Allocator>
-    Delay<Allocator>::Delay(Allocator& allocator, MdFloat max_delay) :
-        Writer<Allocator>(allocator, static_cast<std::uint32_t>(max_delay)),
-        m_max_delay(max_delay)
-    {}
-
-    template <typename Allocator>
-    MdFloat Delay<Allocator>::perform(MdFloat in) noexcept {
-        this->write(in);
-
-        auto z = read();
-
-        this->increment(); // Increment the write pointer
-
-        return z;
-    }
 
 }
 

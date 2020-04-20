@@ -10,20 +10,16 @@
 
 namespace md_audio {
 
-    template <
-        typename Allocator,
-        std::size_t overlap = 2,
-        typename Delay = TapDelayCubic<Allocator, 3> // One extra tap for "forward" mode
-    >
+    template <std::size_t overlap = 2, typename Delay = TapDelayCubic<overlap + 1>> // One extra tap for "forward" mode
     class ReversibleDelay : public Processable<MdFloat, MdFloat> {
     public:
         static_assert(overlap > 1, "Overlap factor must be at least 2!");
 
-        explicit ReversibleDelay(Allocator&, MdFloat);
+        explicit ReversibleDelay(memory::Allocatable<MdFloat*>&, MdFloat);
 
-        explicit ReversibleDelay(Allocator&, MdFloat, MdFloat);
+        explicit ReversibleDelay(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat);
 
-        explicit ReversibleDelay(Allocator&, MdFloat, MdFloat, bool);
+        explicit ReversibleDelay(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat, bool);
 
         void initialise();
 
@@ -53,8 +49,8 @@ namespace md_audio {
         static constexpr MdFloat compute_frequency(MdFloat) noexcept;
     };
 
-    template <typename Allocator, std::size_t overlap, typename Delay>
-    ReversibleDelay<Allocator, overlap, Delay>::ReversibleDelay(Allocator& allocator,
+    template <std::size_t overlap, typename Delay>
+    ReversibleDelay<overlap, Delay>::ReversibleDelay(memory::Allocatable<MdFloat*>& allocator,
         MdFloat max_delay) :
         m_delay(allocator, max_delay),
         m_reverse(false)
@@ -62,8 +58,8 @@ namespace md_audio {
         initialise(static_cast<MdFloat>(0.));
     }
 
-    template <typename Allocator, std::size_t overlap, typename Delay>
-    ReversibleDelay<Allocator, overlap, Delay>::ReversibleDelay(Allocator& allocator,
+    template <std::size_t overlap, typename Delay>
+    ReversibleDelay<overlap, Delay>::ReversibleDelay(memory::Allocatable<MdFloat*>& allocator,
         MdFloat max_delay, MdFloat size) :
         m_delay(allocator, max_delay),
         m_reverse(false)
@@ -71,8 +67,8 @@ namespace md_audio {
         initialise(size);
     }
 
-    template <typename Allocator, std::size_t overlap, typename Delay>
-    ReversibleDelay<Allocator, overlap, Delay>::ReversibleDelay(Allocator& allocator,
+    template <std::size_t overlap, typename Delay>
+    ReversibleDelay<overlap, Delay>::ReversibleDelay(memory::Allocatable<MdFloat*>& allocator,
         MdFloat max_delay, MdFloat size, bool reverse) :
         m_delay(allocator, max_delay),
         m_reverse(reverse)
@@ -80,13 +76,13 @@ namespace md_audio {
         initialise(size);
     }
 
-    template <typename Allocator, std::size_t overlap, typename Delay>
-    void ReversibleDelay<Allocator, overlap, Delay>::initialise() {
+    template <std::size_t overlap, typename Delay>
+    void ReversibleDelay<overlap, Delay>::initialise() {
         m_delay.initialise();
     }
 
-    template <typename Allocator, std::size_t overlap, typename Delay>
-    void ReversibleDelay<Allocator, overlap, Delay>::initialise(MdFloat size) noexcept {
+    template <std::size_t overlap, typename Delay>
+    void ReversibleDelay<overlap, Delay>::initialise(MdFloat size) noexcept {
         set_forward_delay(size);
         set_backward_delay(size);
 
@@ -94,8 +90,8 @@ namespace md_audio {
             m_phasor[i].set_phase(static_cast<MdFloat>(i) / static_cast<MdFloat>(overlap));
     }
 
-    template <typename Allocator, std::size_t overlap, typename Delay>
-    inline void ReversibleDelay<Allocator, overlap, Delay>::set_backward_delay(MdFloat size) noexcept {
+    template <std::size_t overlap, typename Delay>
+    inline void ReversibleDelay<overlap, Delay>::set_backward_delay(MdFloat size) noexcept {
         m_size = utility::clip(size, static_cast<MdFloat>(5), m_delay.get_max_delay());
         m_frequency = compute_frequency(m_size);
 
@@ -103,28 +99,28 @@ namespace md_audio {
             p.set_frequency(m_frequency);
     }
 
-    template <typename Allocator, std::size_t overlap, typename Delay>
-    void ReversibleDelay<Allocator, overlap, Delay>::set_forward_delay(MdFloat delay) noexcept {
+    template <std::size_t overlap, typename Delay>
+    void ReversibleDelay<overlap, Delay>::set_forward_delay(MdFloat delay) noexcept {
         m_delay.set_delay(overlap, delay);
     }
 
-    template <typename Allocator, std::size_t overlap, typename Delay>
-    void ReversibleDelay<Allocator, overlap, Delay>::set_reverse(bool reverse) noexcept {
+    template <std::size_t overlap, typename Delay>
+    void ReversibleDelay<overlap, Delay>::set_reverse(bool reverse) noexcept {
         m_reverse = reverse;
     }
 
-    template <typename Allocator, std::size_t overlap, typename Delay>
-    void ReversibleDelay<Allocator, overlap, Delay>::toggle_reverse() noexcept {
+    template <std::size_t overlap, typename Delay>
+    void ReversibleDelay<overlap, Delay>::toggle_reverse() noexcept {
         m_reverse = !m_reverse;
     }
 
-    template <typename Allocator, std::size_t overlap, typename Delay>
-    bool ReversibleDelay<Allocator, overlap, Delay>::is_reversed() const noexcept {
+    template <std::size_t overlap, typename Delay>
+    bool ReversibleDelay<overlap, Delay>::is_reversed() const noexcept {
         return m_reverse;
     }
 
-    template <typename Allocator, std::size_t overlap, typename Delay>
-    MdFloat ReversibleDelay<Allocator, overlap, Delay>::perform(MdFloat in) noexcept {
+    template <std::size_t overlap, typename Delay>
+    MdFloat ReversibleDelay<overlap, Delay>::perform(MdFloat in) noexcept {
         auto z = static_cast<MdFloat>(0);
 
         m_delay.write(in); // Write the next sample to the delay buffer
@@ -151,8 +147,8 @@ namespace md_audio {
         return z;
     }
 
-    template <typename Allocator, std::size_t overlap, typename Delay>
-    inline constexpr MdFloat ReversibleDelay<Allocator, overlap, Delay>::compute_frequency(MdFloat size) noexcept {
+    template <std::size_t overlap, typename Delay>
+    inline constexpr MdFloat ReversibleDelay<overlap, Delay>::compute_frequency(MdFloat size) noexcept {
         return static_cast<MdFloat>(2) * static_cast<MdFloat>(sample_rate) / size;
     }
 

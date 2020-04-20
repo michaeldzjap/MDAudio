@@ -8,10 +8,9 @@
 
 namespace md_audio {
 
-    template <typename Allocator>
-    class DelayInterp : public Delay<Allocator> {
+    class DelayInterp : public Delay {
     public:
-        explicit DelayInterp(Allocator&, MdFloat);
+        explicit DelayInterp(memory::Allocatable<MdFloat*>&, MdFloat);
 
         void set_delay(MdFloat) noexcept override final;
 
@@ -20,23 +19,6 @@ namespace md_audio {
     protected:
         MdFloat m_frac;
     };
-
-    template <typename Allocator>
-    DelayInterp<Allocator>::DelayInterp(Allocator& allocator, MdFloat max_delay) :
-        Delay<Allocator>(allocator, max_delay)
-    {}
-
-    template <typename Allocator>
-    void DelayInterp<Allocator>::set_delay(MdFloat delay) noexcept {
-        delay = utility::clip(delay, static_cast<MdFloat>(1), this->get_max_delay());
-
-        this->m_delay = static_cast<std::uint32_t>(delay);
-
-        m_frac = delay - static_cast<MdFloat>(this->m_delay);
-    }
-
-    template <typename Allocator>
-    DelayInterp<Allocator>::~DelayInterp() {}
 
 }
 
