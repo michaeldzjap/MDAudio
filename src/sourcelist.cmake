@@ -2,7 +2,6 @@ set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
     Allpass.cpp
     AllpassCubic.cpp
     AllpassLinear.cpp
-    AllpassSimple.cpp
     Buffer.cpp
     Delay.cpp
     DelayCubic.cpp
@@ -17,6 +16,9 @@ set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
     OnePole.cpp
     Oscillator.cpp
     Phasor.cpp
+    Reader.cpp
+    ReaderCubic.cpp
+    ReaderLinear.cpp
     Shelving.cpp
     SineOscillator.cpp
     SineShaper.cpp

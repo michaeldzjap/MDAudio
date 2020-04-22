@@ -3,7 +3,7 @@
 
 #include "Buffer.hpp"
 #include "Processable.hpp"
-#include "Reader.hpp"
+#include "ReaderCubic.hpp"
 #include "Writer.hpp"
 
 namespace md_audio {
@@ -22,7 +22,7 @@ namespace md_audio {
 
     private:
         Buffer m_buffer;
-        Reader m_reader;
+        ReaderCubic m_reader;
         Writer m_writer;
         MdFloat m_max_delay;
         std::uint32_t m_delay;

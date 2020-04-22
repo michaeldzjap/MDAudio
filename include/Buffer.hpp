@@ -3,11 +3,7 @@
 
 #include "Allocatable.hpp"
 #include "types.hpp"
-#include "utility.hpp"
-#include <cassert>
 #include <cstdint>
-#include <cstring>
-#include <new>
 
 namespace md_audio {
 
@@ -23,12 +19,10 @@ namespace md_audio {
 
         ~Buffer();
 
-    protected:
-        MdFloat* m_memory = nullptr;
-        const std::uint32_t m_size;
-
     private:
         memory::Allocatable<MdFloat*>& m_allocator;
+        MdFloat* m_memory = nullptr;
+        const std::uint32_t m_size;
     };
 
 }

@@ -1,4 +1,5 @@
 #include "DelayCubic.hpp"
+#include "utility.hpp"
 
 using md_audio::DelayCubic;
 using md_audio::MdFloat;

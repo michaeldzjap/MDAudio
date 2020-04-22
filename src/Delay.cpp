@@ -1,4 +1,5 @@
 #include "Delay.hpp"
+#include "utility.hpp"
 
 using md_audio::Delay;
 using md_audio::MdFloat;

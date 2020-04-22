@@ -1,41 +1,58 @@
 #include "AllpassLinear.hpp"
+#include "utility.hpp"
 
 using md_audio::AllpassLinear;
 using md_audio::MdFloat;
 
+AllpassLinear::AllpassLinear(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay) :
+    m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
+    m_reader(m_buffer),
+    m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
+    m_max_delay(max_delay - static_cast<MdFloat>(1))
+{
+    set_delay(static_cast<MdFloat>(1));
+}
+
 AllpassLinear::AllpassLinear(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay, MdFloat delay) :
-    Allpass(allocator, max_delay)
+    m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
+    m_reader(m_buffer),
+    m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
+    m_max_delay(max_delay - static_cast<MdFloat>(1))
 {
     set_delay(delay);
 }
 
-AllpassLinear::AllpassLinear(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay,
-    MdFloat delay, MdFloat gain) :
-    Allpass(allocator, max_delay, gain)
+AllpassLinear::AllpassLinear(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay, MdFloat delay, MdFloat gain) :
+    m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
+    m_reader(m_buffer),
+    m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
+    m_max_delay(max_delay - static_cast<MdFloat>(1))
 {
     set_delay(delay);
+    set_gain(gain);
+}
+
+void AllpassLinear::initialise() {
+    m_buffer.initialise();
 }
 
 void AllpassLinear::set_delay(MdFloat delay) noexcept {
-    delay = utility::clip(delay, static_cast<MdFloat>(1), this->m_max_delay - 1);
+    delay = utility::clip(delay, static_cast<MdFloat>(1), m_max_delay);
 
-    this->m_delay = static_cast<std::uint32_t>(delay);
+    m_delay = static_cast<std::uint32_t>(delay);
+    m_frac = delay - static_cast<MdFloat>(m_delay);
+}
 
-    m_frac = delay - static_cast<MdFloat>(this->m_delay);
+void AllpassLinear::set_gain(MdFloat gain) noexcept {
+    m_gain = utility::clip(gain, static_cast<MdFloat>(0), static_cast<MdFloat>(1));
 }
 
 MdFloat AllpassLinear::perform(MdFloat in) noexcept {
-    auto phase_a = utility::wrap(this->m_write_index - this->m_delay, 0, this->m_upper_bound_1);
-    auto phase_b = utility::wrap(phase_a - 1, 0, this->m_upper_bound_1);
+    auto sd = m_reader.read(m_writer, m_delay, m_frac);
+    auto s = in + m_gain * sd;
 
-    auto d1 = this->m_buffer[phase_a];
-    auto d2 = this->m_buffer[phase_b];
+    m_writer.write(s);
+    m_writer.increment();
 
-    auto sd = utility::linear_interp(this->m_frac, d1, d2);
-    auto s = in + this->m_gain * sd;
-
-    this->write(s);
-    this->increment();
-
-    return sd - this->m_gain * s;
+    return sd - m_gain * s;
 }

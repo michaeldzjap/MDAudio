@@ -1,45 +1,58 @@
 #include "AllpassCubic.hpp"
+#include "utility.hpp"
 
 using md_audio::AllpassCubic;
 using md_audio::MdFloat;
 
+AllpassCubic::AllpassCubic(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay) :
+    m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
+    m_reader(m_buffer),
+    m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
+    m_max_delay(max_delay - static_cast<MdFloat>(2))
+{
+    set_delay(static_cast<MdFloat>(1));
+}
+
 AllpassCubic::AllpassCubic(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay, MdFloat delay) :
-    Allpass(allocator, max_delay)
+    m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
+    m_reader(m_buffer),
+    m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
+    m_max_delay(max_delay - static_cast<MdFloat>(1))
 {
     set_delay(delay);
 }
 
-AllpassCubic::AllpassCubic(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay,
-    MdFloat delay, MdFloat gain) :
-    Allpass(allocator, max_delay, gain)
+AllpassCubic::AllpassCubic(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay, MdFloat delay, MdFloat gain) :
+    m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
+    m_reader(m_buffer),
+    m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
+    m_max_delay(max_delay - static_cast<MdFloat>(1))
 {
     set_delay(delay);
+    set_gain(gain);
+}
+
+void AllpassCubic::initialise() {
+    m_buffer.initialise();
 }
 
 void AllpassCubic::set_delay(MdFloat delay) noexcept {
-    delay = utility::clip(delay, static_cast<MdFloat>(1), this->m_max_delay - 2);
+    delay = utility::clip(delay, static_cast<MdFloat>(1), m_max_delay);
 
-    this->m_delay = static_cast<std::uint32_t>(delay);
+    m_delay = static_cast<std::uint32_t>(delay);
+    m_frac = delay - static_cast<MdFloat>(m_delay);
+}
 
-    m_frac = delay - static_cast<MdFloat>(this->m_delay);
+void AllpassCubic::set_gain(MdFloat gain) noexcept {
+    m_gain = utility::clip(gain, static_cast<MdFloat>(0), static_cast<MdFloat>(1));
 }
 
 MdFloat AllpassCubic::perform(MdFloat in) noexcept {
-    auto phase_1 = utility::wrap(this->m_write_index - this->m_delay, 0, this->m_upper_bound_1);
-    auto phase_2 = utility::wrap(phase_1 - 1, 0, this->m_upper_bound_1);
-    auto phase_3 = utility::wrap(phase_1 - 2, 0, this->m_upper_bound_1);
-    auto phase_0 = utility::wrap(phase_1 + 1, 0, this->m_upper_bound_1);
+    auto sd = m_reader.read(m_writer, m_delay, m_frac);
+    auto s = in + m_gain * sd;
 
-    auto d0 = this->m_buffer[phase_0];
-    auto d1 = this->m_buffer[phase_1];
-    auto d2 = this->m_buffer[phase_2];
-    auto d3 = this->m_buffer[phase_3];
+    m_writer.write(s);
+    m_writer.increment();
 
-    auto sd = utility::cubic_interp(this->m_frac, d0, d1, d2, d3);
-    auto s = in + this->m_gain * sd;
-
-    this->write(s);
-    this->increment();
-
-    return sd - this->m_gain * s;
+    return sd - m_gain * s;
 }
