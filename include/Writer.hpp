@@ -2,25 +2,36 @@
 #define MD_AUDIO_WRITER_HPP
 
 #include "Buffer.hpp"
+#include "types.hpp"
+#include <cstdint>
 
 namespace md_audio {
 
+    class Reader;
+
+    class ReaderCubic;
+
+    class ReaderLinear;
+
     class Writer {
     public:
-        explicit Writer(memory::Allocatable<MdFloat*>&, std::uint32_t);
+        explicit Writer(Buffer&, std::uint32_t);
 
-        virtual void initialise();
+        explicit Writer(Buffer&, std::uint32_t, std::uint32_t);
 
-        virtual void write(MdFloat) noexcept final;
+        void write(MdFloat) noexcept;
 
-        virtual void increment(void) noexcept final;
+        void increment(void) noexcept;
 
-        virtual ~Writer() = 0;
-
-    protected:
-        Buffer m_buffer;
-        std::uint32_t m_upper_bound_1;
+    private:
+        Buffer& m_buffer;
+        std::uint32_t m_lower_bound = 0;
+        std::uint32_t m_upper_bound;
         std::uint32_t m_write_index = 0;
+
+        friend class Reader;
+        friend class ReaderCubic;
+        friend class ReaderLinear;
     };
 
 }

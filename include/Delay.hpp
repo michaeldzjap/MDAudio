@@ -1,27 +1,31 @@
 #ifndef MD_AUDIO_DELAY_HPP
 #define MD_AUDIO_DELAY_HPP
 
-#include "Allocatable.hpp"
+#include "Buffer.hpp"
 #include "Processable.hpp"
+#include "Reader.hpp"
 #include "Writer.hpp"
 
 namespace md_audio {
 
-    class Delay : public Processable<MdFloat, MdFloat>, public Writer {
+    class Delay : public Processable<MdFloat, MdFloat> {
     public:
         explicit Delay(memory::Allocatable<MdFloat*>&, MdFloat);
 
-        virtual void set_delay(MdFloat) noexcept = 0;
+        explicit Delay(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat);
 
-        virtual MdFloat get_max_delay() noexcept = 0;
+        void initialise();
+
+        inline void set_delay(MdFloat) noexcept;
 
         MdFloat perform(MdFloat) noexcept override final;
 
-        virtual MdFloat read(void) noexcept = 0;
-
-    protected:
-        std::uint32_t m_delay;
+    private:
+        Buffer m_buffer;
+        Reader m_reader;
+        Writer m_writer;
         MdFloat m_max_delay;
+        std::uint32_t m_delay;
     };
 
 }

@@ -34,7 +34,7 @@
 #include <typeinfo>
 
 template <std::size_t Size>
-using Pool = md_audio::memory::StaticPool<Size * sizeof(std::uint32_t)>;
+using Pool = md_audio::memory::StaticPool<Size * sizeof(md_audio::MdFloat)>;
 
 template <typename Pool>
 using Allocator = md_audio::memory::StaticAllocator<md_audio::MdFloat, Pool>;

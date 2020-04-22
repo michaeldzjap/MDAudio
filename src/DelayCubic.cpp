@@ -3,27 +3,41 @@
 using md_audio::DelayCubic;
 using md_audio::MdFloat;
 
-DelayCubic::DelayCubic(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay, MdFloat delay) :
-    DelayInterp(allocator, max_delay)
+DelayCubic::DelayCubic(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay) :
+    m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
+    m_reader(m_buffer),
+    m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
+    m_max_delay(max_delay - static_cast<MdFloat>(2))
 {
-    this->set_delay(delay);
+    set_delay(static_cast<MdFloat>(1));
 }
 
-MdFloat DelayCubic::get_max_delay() noexcept {
-    return this->m_max_delay - 2;
+DelayCubic::DelayCubic(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay, MdFloat delay) :
+    m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
+    m_reader(m_buffer),
+    m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
+    m_max_delay(max_delay - static_cast<MdFloat>(2))
+{
+    set_delay(delay);
 }
 
-MdFloat DelayCubic::read() noexcept {
-    // Get the correct read positions into the buffer
-    auto phase_1 = utility::wrap(this->m_write_index - this->m_delay, 0, this->m_upper_bound_1);
-    auto phase_2 = utility::wrap(phase_1 - 1, 0, this->m_upper_bound_1);
-    auto phase_3 = utility::wrap(phase_1 - 2, 0, this->m_upper_bound_1);
-    auto phase_0 = utility::wrap(phase_1 + 1, 0, this->m_upper_bound_1);
+void DelayCubic::initialise() {
+    m_buffer.initialise();
+}
 
-    auto d0 = this->m_buffer[phase_0];
-    auto d1 = this->m_buffer[phase_1];
-    auto d2 = this->m_buffer[phase_2];
-    auto d3 = this->m_buffer[phase_3];
+void DelayCubic::set_delay(MdFloat delay) noexcept {
+    delay = utility::clip(delay, static_cast<MdFloat>(1), m_max_delay);
 
-    return utility::cubic_interp(this->m_frac, d0, d1, d2, d3);
+    m_delay = static_cast<std::uint32_t>(delay);
+    m_frac = delay - static_cast<MdFloat>(m_delay);
+}
+
+MdFloat DelayCubic::perform(MdFloat in) noexcept {
+    m_writer.write(in);
+
+    auto z = m_reader.read(m_writer, m_delay, m_frac);
+
+    m_writer.increment();
+
+    return z;
 }

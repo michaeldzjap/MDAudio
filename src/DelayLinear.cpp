@@ -3,23 +3,41 @@
 using md_audio::DelayLinear;
 using md_audio::MdFloat;
 
-DelayLinear::DelayLinear(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay, MdFloat delay) :
-    DelayInterp(allocator, max_delay)
+DelayLinear::DelayLinear(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay) :
+    m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
+    m_reader(m_buffer),
+    m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
+    m_max_delay(max_delay - static_cast<MdFloat>(1))
 {
-    this->set_delay(delay);
+    set_delay(static_cast<MdFloat>(1));
 }
 
-MdFloat DelayLinear::get_max_delay() noexcept {
-    return this->m_max_delay - 1;
+DelayLinear::DelayLinear(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay, MdFloat delay) :
+    m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
+    m_reader(m_buffer),
+    m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
+    m_max_delay(max_delay - static_cast<MdFloat>(1))
+{
+    set_delay(delay);
 }
 
-MdFloat DelayLinear::read() noexcept {
-    // Get the correct read positions into the buffer
-    auto phase_a = utility::wrap(this->m_write_index - this->m_delay, 0, this->m_upper_bound_1);
-    auto phase_b = utility::wrap(phase_a - 1, 0, this->m_upper_bound_1);
+void DelayLinear::initialise() {
+    m_buffer.initialise();
+}
 
-    auto d1 = this->m_buffer[phase_a];
-    auto d2 = this->m_buffer[phase_b];
+void DelayLinear::set_delay(MdFloat delay) noexcept {
+    delay = utility::clip(delay, static_cast<MdFloat>(1), m_max_delay);
 
-    return utility::linear_interp(this->m_frac, d1, d2);
+    m_delay = static_cast<std::uint32_t>(delay);
+    m_frac = delay - static_cast<MdFloat>(m_delay);
+}
+
+MdFloat DelayLinear::perform(MdFloat in) noexcept {
+    m_writer.write(in);
+
+    auto z = m_reader.read(m_writer, m_delay, m_frac);
+
+    m_writer.increment();
+
+    return z;
 }

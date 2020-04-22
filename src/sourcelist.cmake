@@ -6,9 +6,7 @@ set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
     Buffer.cpp
     Delay.cpp
     DelayCubic.cpp
-    DelayInterp.cpp
     DelayLinear.cpp
-    DelaySimple.cpp
     HannOscillator.cpp
     Highpass.cpp
     Highshelf.cpp

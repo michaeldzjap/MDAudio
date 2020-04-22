@@ -17,9 +17,9 @@ namespace md_audio {
 
         void initialise();
 
-        MdFloat& operator[] (std::size_t) noexcept;
+        MdFloat& operator[] (std::uint32_t) noexcept;
 
-        const MdFloat& operator[] (std::size_t) const noexcept;
+        const MdFloat& operator[] (std::uint32_t) const noexcept;
 
         ~Buffer();
 
