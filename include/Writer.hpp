@@ -2,51 +2,37 @@
 #define MD_AUDIO_WRITER_HPP
 
 #include "Buffer.hpp"
+#include "types.hpp"
+#include <cstdint>
 
 namespace md_audio {
 
-    template <typename Allocator>
+    class Reader;
+
+    class ReaderCubic;
+
+    class ReaderLinear;
+
     class Writer {
     public:
-        explicit Writer(Allocator&, std::uint32_t);
+        explicit Writer(Buffer&, std::uint32_t);
 
-        virtual void initialise();
+        explicit Writer(Buffer&, std::uint32_t, std::uint32_t);
 
-        virtual void write(MdFloat) noexcept final;
+        void write(MdFloat) noexcept;
 
-        virtual void increment(void) noexcept final;
+        void increment(void) noexcept;
 
-        virtual ~Writer() = 0;
-
-    protected:
+    private:
+        Buffer& m_buffer;
+        std::uint32_t m_lower_bound = 0;
+        std::uint32_t m_upper_bound;
         std::uint32_t m_write_index = 0;
-        std::uint32_t m_upper_bound_1;
-        Buffer<Allocator> m_buffer;
+
+        friend class Reader;
+        friend class ReaderCubic;
+        friend class ReaderLinear;
     };
-
-    template <typename Allocator>
-    Writer<Allocator>::Writer(Allocator& allocator, std::uint32_t upper_bound) :
-        m_buffer(allocator, upper_bound),
-        m_upper_bound_1(upper_bound - 1)
-    {}
-
-    template <typename Allocator>
-    void Writer<Allocator>::initialise() {
-        m_buffer.initialise();
-    }
-
-    template <typename Allocator>
-    void Writer<Allocator>::write(MdFloat in) noexcept {
-        m_buffer[m_write_index] = in;
-    }
-
-    template <typename Allocator>
-    void Writer<Allocator>::increment() noexcept {
-        m_write_index = utility::wrap(m_write_index + 1, 0, m_upper_bound_1);
-    }
-
-    template <typename Allocator>
-    Writer<Allocator>::~Writer() {}
 
 }
 

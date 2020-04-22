@@ -1,13 +1,14 @@
 #ifndef MD_AUDIO_STATIC_ALLOCATOR_HPP
 #define MD_AUDIO_STATIC_ALLOCATOR_HPP
 
+#include "Allocatable.hpp"
 #include "StaticPool.hpp"
 #include <type_traits>
 
 namespace md_audio::memory {
 
     template <typename T, typename Pool>
-    class StaticAllocator {
+    class StaticAllocator : public Allocatable<T*> {
     public:
         template <typename U, typename P>
         friend class StaticAllocator;
@@ -24,11 +25,11 @@ namespace md_audio::memory {
         template <typename U, typename P>
         StaticAllocator(StaticAllocator<U, P> const& that) : m_pool(that.m_pool) {}
 
-        [[nodiscard]] pointer allocate(std::size_t n) {
+        [[nodiscard]] pointer allocate(std::size_t n) override final {
             return static_cast<pointer>(m_pool->allocate(n * sizeof(T)));
         }
 
-        void deallocate(pointer ptr, std::size_t n [[maybe_unused]]) {
+        void deallocate(pointer ptr, std::size_t n [[maybe_unused]]) override final {
             m_pool->deallocate(ptr);
         }
 

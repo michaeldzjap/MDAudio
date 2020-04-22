@@ -12,18 +12,14 @@
 
 namespace md_audio {
 
-    template <
-        typename Allocator,
-        std::size_t overlap = 2,
-        typename Delay = TapDelayCubic<Allocator, overlap>
-    >
+    template <std::size_t overlap = 2, typename Delay = TapDelayCubic<overlap>>
     class PitchShifter : public Processable<MdFloat, MdFloat> {
     public:
         static_assert(overlap > 1, "Overlap factor must be at least 2!");
 
-        explicit PitchShifter(Allocator&, MdFloat, MdFloat);
+        explicit PitchShifter(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat);
 
-        explicit PitchShifter(Allocator&, MdFloat, MdFloat, MdFloat);
+        explicit PitchShifter(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat, MdFloat);
 
         void initialise();
 
@@ -52,29 +48,29 @@ namespace md_audio {
         static constexpr MdFloat compute_frequency(MdFloat, MdFloat) noexcept;
     };
 
-    template <typename Allocator, std::size_t overlap, typename Delay>
-    PitchShifter<Allocator, overlap, Delay>::PitchShifter(Allocator& allocator, MdFloat max_delay,
-        MdFloat size) :
+    template <std::size_t overlap, typename Delay>
+    PitchShifter<overlap, Delay>::PitchShifter(memory::Allocatable<MdFloat*>& allocator,
+        MdFloat max_delay, MdFloat size) :
         m_delay(allocator, max_delay)
     {
         initialise(size, static_cast<MdFloat>(1));
     }
 
-    template <typename Allocator, std::size_t overlap, typename Delay>
-    PitchShifter<Allocator, overlap, Delay>::PitchShifter(Allocator& allocator, MdFloat max_delay,
-        MdFloat size, MdFloat transposition) :
+    template <std::size_t overlap, typename Delay>
+    PitchShifter<overlap, Delay>::PitchShifter(memory::Allocatable<MdFloat*>& allocator,
+        MdFloat max_delay, MdFloat size, MdFloat transposition) :
         m_delay(allocator, max_delay)
     {
         initialise(size, transposition);
     }
 
-    template <typename Allocator, std::size_t overlap, typename Delay>
-    void PitchShifter<Allocator, overlap, Delay>::initialise() {
+    template <std::size_t overlap, typename Delay>
+    void PitchShifter<overlap, Delay>::initialise() {
         m_delay.initialise();
     }
 
-    template <typename Allocator, std::size_t overlap, typename Delay>
-    void PitchShifter<Allocator, overlap, Delay>::initialise(MdFloat size, MdFloat transposition) {
+    template <std::size_t overlap, typename Delay>
+    void PitchShifter<overlap, Delay>::initialise(MdFloat size, MdFloat transposition) {
         m_size = check_size(size);
         m_transposition = check_transposition(transposition);
 
@@ -86,42 +82,42 @@ namespace md_audio {
             );
     }
 
-    template <typename A, std::size_t overlap, typename Delay>
-    inline void PitchShifter<A, overlap, Delay>::set_transposition(MdFloat transposition) noexcept {
+    template <std::size_t overlap, typename Delay>
+    inline void PitchShifter<overlap, Delay>::set_transposition(MdFloat transposition) noexcept {
         m_transposition = check_transposition(transposition);
 
         set_frequency();
     }
 
-    template <typename A, std::size_t overlap, typename Delay>
-    inline void PitchShifter<A, overlap, Delay>::set_size(MdFloat size) noexcept {
+    template <std::size_t overlap, typename Delay>
+    inline void PitchShifter<overlap, Delay>::set_size(MdFloat size) noexcept {
         m_size = check_size(size);
 
         set_frequency();
     }
 
-    template <typename A, std::size_t overlap, typename Delay>
-    inline void PitchShifter<A, overlap, Delay>::set_frequency() noexcept {
+    template <std::size_t overlap, typename Delay>
+    inline void PitchShifter<overlap, Delay>::set_frequency() noexcept {
         auto frequency = compute_frequency(m_transposition, m_size);
 
         for (auto& p : m_phasor)
             p.set_frequency(frequency);
     }
 
-    template <typename A, std::size_t overlap, typename Delay>
-    inline MdFloat PitchShifter<A, overlap, Delay>::check_transposition(MdFloat transposition) noexcept {
+    template <std::size_t overlap, typename Delay>
+    inline MdFloat PitchShifter<overlap, Delay>::check_transposition(MdFloat transposition) noexcept {
         return utility::clip(
             transposition, static_cast<MdFloat>(-24), static_cast<MdFloat>(24)
         );
     }
 
-    template <typename A, std::size_t overlap, typename Delay>
-    inline MdFloat PitchShifter<A, overlap, Delay>::check_size(MdFloat _size) noexcept {
+    template <std::size_t overlap, typename Delay>
+    inline MdFloat PitchShifter<overlap, Delay>::check_size(MdFloat _size) noexcept {
         return utility::clip(_size, static_cast<MdFloat>(5), m_delay.get_max_delay());
     }
 
-    template <typename A, std::size_t overlap, typename Delay>
-    MdFloat PitchShifter<A, overlap, Delay>::perform(MdFloat in) noexcept {
+    template <std::size_t overlap, typename Delay>
+    MdFloat PitchShifter<overlap, Delay>::perform(MdFloat in) noexcept {
         auto z = static_cast<MdFloat>(0);
 
         m_delay.write(in); // Write the next sample to the delay buffer
@@ -143,8 +139,8 @@ namespace md_audio {
         return z * norm;
     }
 
-    template <typename A, std::size_t overlap, typename Delay>
-    inline constexpr MdFloat PitchShifter<A, overlap, Delay>::compute_frequency(MdFloat transposition, MdFloat size) noexcept {
+    template <std::size_t overlap, typename Delay>
+    inline constexpr MdFloat PitchShifter<overlap, Delay>::compute_frequency(MdFloat transposition, MdFloat size) noexcept {
         return -(utility::midi_ratio(transposition) - static_cast<MdFloat>(1))
             * static_cast<MdFloat>(sample_rate) / size;
     }
