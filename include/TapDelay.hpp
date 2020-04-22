@@ -2,69 +2,83 @@
 #define MD_AUDIO_TAP_DELAY_HPP
 
 #include "Processable.hpp"
+#include "Reader.hpp"
 #include "Writer.hpp"
+#include "utility.hpp"
 #include <array>
 
 namespace md_audio {
 
-    template <std::size_t taps = 1>
-    class TapDelay : public Processable<std::array<MdFloat, taps>, MdFloat>, public Writer {
+    template <std::uint16_t TAPS>
+    class TapDelay : public Processable<std::array<MdFloat, TAPS>, MdFloat> {
     public:
         explicit TapDelay(memory::Allocatable<MdFloat*>&, MdFloat);
 
-        virtual void set_delay(const std::array<MdFloat, taps>&) noexcept;
+        explicit TapDelay(memory::Allocatable<MdFloat*>&, MdFloat, const std::array<MdFloat, TAPS>&);
 
-        virtual void set_delay(std::size_t, MdFloat) noexcept = 0;
+        void initialise();
 
-        virtual MdFloat get_max_delay() noexcept = 0;
+        void set_delay(const std::array<MdFloat, TAPS>&) noexcept;
 
-        virtual constexpr std::size_t get_taps() const noexcept;
+        inline void set_delay(std::uint16_t, MdFloat) noexcept;
 
-        virtual std::array<MdFloat, taps> read() noexcept;
+        std::array<MdFloat, TAPS> perform(MdFloat) noexcept override final;
 
-        virtual MdFloat read(std::size_t) noexcept = 0;
-
-        virtual std::array<MdFloat, taps> perform(MdFloat) noexcept override final;
-
-    protected:
-        std::array<std::uint32_t, taps> m_delay;
+    private:
+        Buffer m_buffer;
+        Reader m_reader;
+        Writer m_writer;
         MdFloat m_max_delay;
+        std::array<std::uint16_t, TAPS> m_delay;
     };
 
-    template <std::size_t taps>
-    TapDelay<taps>::TapDelay(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay) :
-        Writer(allocator, static_cast<std::uint32_t>(max_delay)),
+    template <std::uint16_t TAPS>
+    TapDelay<TAPS>::TapDelay(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay) :
+        m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
+        m_reader(m_buffer),
+        m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
         m_max_delay(max_delay)
     {}
 
-    template <std::size_t taps>
-    void TapDelay<taps>::set_delay(const std::array<MdFloat, taps>& delays) noexcept {
-        for (auto i = 0; i < taps; i++)
+    template <std::uint16_t TAPS>
+    TapDelay<TAPS>::TapDelay(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay,
+        const std::array<MdFloat, TAPS>& delay) :
+        m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
+        m_reader(m_buffer),
+        m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
+        m_max_delay(max_delay)
+    {
+        set_delay(delay);
+    }
+
+    template <std::uint16_t TAPS>
+    void TapDelay<TAPS>::initialise() {
+        m_buffer.initialise();
+    }
+
+    template <std::uint16_t TAPS>
+    void TapDelay<TAPS>::set_delay(const std::array<MdFloat, TAPS>& delays) noexcept {
+        for (auto i = 0; i < TAPS; i++)
             set_delay(i, delays[i]);
     }
 
-    template <std::size_t taps>
-    constexpr std::size_t TapDelay<taps>::get_taps() const noexcept {
-        return taps;
+    template <std::uint16_t TAPS>
+    void TapDelay<TAPS>::set_delay(std::uint16_t index, MdFloat delay) noexcept {
+        delay = utility::clip(delay, static_cast<MdFloat>(1), m_max_delay);
+
+        m_delay[index] = static_cast<std::uint32_t>(delay);
     }
 
-    template <std::size_t taps>
-    std::array<MdFloat, taps> TapDelay<taps>::read() noexcept {
-        std::array<MdFloat, taps> z{};
+    template <std::uint16_t TAPS>
+    std::array<MdFloat, TAPS> TapDelay<TAPS>::perform(MdFloat in) noexcept {
+        m_writer.write(in);
 
-        for (auto i = 0; i < taps; i++)
-            z[i] = read(i);
+        std::array<MdFloat, TAPS> z{};
 
-        return z;
-    }
+        for (auto i = 0; i < TAPS; i++)
+            z[i] = m_reader.read(m_writer, m_delay[i]);
 
-    template <std::size_t taps>
-    std::array<MdFloat, taps> TapDelay<taps>::perform(MdFloat in) noexcept {
-        this->write(in);
-
-        auto z = read();
-
-        this->increment(); // Increment the write pointer
+        m_writer.increment();
 
         return z;
     }
