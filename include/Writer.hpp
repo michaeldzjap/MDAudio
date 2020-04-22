@@ -1,7 +1,6 @@
 #ifndef MD_AUDIO_WRITER_HPP
 #define MD_AUDIO_WRITER_HPP
 
-#include "Allocatable.hpp"
 #include "Buffer.hpp"
 
 namespace md_audio {
