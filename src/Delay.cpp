@@ -1,5 +1,4 @@
 #include "Delay.hpp"
-#include "utility.hpp"
 
 using md_audio::Delay;
 using md_audio::MdFloat;
@@ -24,12 +23,6 @@ Delay::Delay(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay, MdFloa
 
 void Delay::initialise() {
     m_buffer.initialise();
-}
-
-void Delay::set_delay(MdFloat delay) noexcept {
-    delay = utility::clip(delay, static_cast<MdFloat>(1), m_max_delay);
-
-    m_delay = static_cast<std::uint32_t>(delay);
 }
 
 MdFloat Delay::perform(MdFloat in) noexcept {

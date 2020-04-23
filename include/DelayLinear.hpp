@@ -5,6 +5,7 @@
 #include "Processable.hpp"
 #include "ReaderLinear.hpp"
 #include "Writer.hpp"
+#include "utility.hpp"
 
 namespace md_audio {
 
@@ -28,6 +29,13 @@ namespace md_audio {
         std::uint32_t m_delay;
         MdFloat m_frac;
     };
+
+    void DelayLinear::set_delay(MdFloat delay) noexcept {
+        delay = utility::clip(delay, static_cast<MdFloat>(1), m_max_delay);
+
+        m_delay = static_cast<std::uint32_t>(delay);
+        m_frac = delay - static_cast<MdFloat>(m_delay);
+    }
 
 }
 

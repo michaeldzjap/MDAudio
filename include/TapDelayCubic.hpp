@@ -24,6 +24,10 @@ namespace md_audio {
 
         std::array<MdFloat, TAPS> perform(MdFloat) noexcept override final;
 
+        void write(MdFloat) noexcept;
+
+        MdFloat read(std::uint32_t) noexcept;
+
     private:
         Buffer m_buffer;
         ReaderCubic m_reader;
@@ -38,7 +42,7 @@ namespace md_audio {
         m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
         m_reader(m_buffer),
         m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
-        m_max_delay(max_delay)
+        m_max_delay(max_delay - static_cast<MdFloat>(2))
     {}
 
     template <std::uint16_t TAPS>
@@ -47,7 +51,7 @@ namespace md_audio {
         m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
         m_reader(m_buffer),
         m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
-        m_max_delay(max_delay)
+        m_max_delay(max_delay - static_cast<MdFloat>(2))
     {
         set_delay(delay);
     }
@@ -83,6 +87,18 @@ namespace md_audio {
         m_writer.increment();
 
         return z;
+    }
+
+    template <std::uint16_t TAPS>
+    void TapDelayCubic<TAPS>::write(MdFloat in) noexcept {
+        m_writer.write(in);
+
+        m_writer.increment();
+    }
+
+    template <std::uint16_t TAPS>
+    MdFloat TapDelayCubic<TAPS>::read(std::uint32_t index) noexcept {
+        return m_reader.read(m_writer, m_delay[index], m_frac[index]);
     }
 
 }

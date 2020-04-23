@@ -10,10 +10,10 @@
 
 namespace md_audio {
 
-    template <std::size_t overlap = 2, typename Delay = TapDelayCubic<overlap>>
+    template <std::uint16_t OVERLAP = 2, typename Delay = TapDelayCubic<OVERLAP>>
     class ReverseDelay : public Processable<MdFloat, MdFloat> {
     public:
-        static_assert(overlap > 1, "Overlap factor must be at least 2!");
+        static_assert(OVERLAP > 1, "Overlap factor must be at least 2!");
 
         ReverseDelay(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat);
 
@@ -25,46 +25,47 @@ namespace md_audio {
 
     private:
         Delay m_delay;
-        std::array<Phasor, overlap> m_phasor;
-        std::array<HannOscillator, overlap> m_osc;
+        std::array<Phasor, OVERLAP> m_phasor;
+        std::array<HannOscillator, OVERLAP> m_osc;
         MdFloat m_size;
-        const MdFloat m_norm = static_cast<MdFloat>(2) / overlap;
+        const MdFloat m_norm = static_cast<MdFloat>(2) / OVERLAP;
 
-        static constexpr MdFloat compute_frequency(MdFloat) noexcept;
+        inline static constexpr MdFloat compute_frequency(MdFloat) noexcept;
     };
 
-    template <std::size_t overlap, typename Delay>
-    ReverseDelay<overlap, Delay>::ReverseDelay(memory::Allocatable<MdFloat*>& allocator,
+    template <std::uint16_t OVERLAP, typename Delay>
+    ReverseDelay<OVERLAP, Delay>::ReverseDelay(memory::Allocatable<MdFloat*>& allocator,
         MdFloat max_delay, MdFloat size) :
         m_delay(allocator, max_delay)
     {
         set_size(size);
 
-        for (auto i = 0; i < overlap; i++)
-            m_phasor[i].set_phase(static_cast<MdFloat>(i) / static_cast<MdFloat>(overlap));
+        for (auto i = 0; i < OVERLAP; i++)
+            m_phasor[i].set_phase(static_cast<MdFloat>(i) / static_cast<MdFloat>(OVERLAP));
     }
 
-    template <std::size_t overlap, typename Delay>
-    void ReverseDelay<overlap, Delay>::initialise() {
+    template <std::uint16_t OVERLAP, typename Delay>
+    void ReverseDelay<OVERLAP, Delay>::initialise() {
         m_delay.initialise();
     }
 
-    template <std::size_t overlap, typename Delay>
-    inline void ReverseDelay<overlap, Delay>::set_size(MdFloat size) noexcept {
-        m_size = utility::clip(size, static_cast<MdFloat>(5), m_delay.get_max_delay());
+    template <std::uint16_t OVERLAP, typename Delay>
+    void ReverseDelay<OVERLAP, Delay>::set_size(MdFloat size) noexcept {
+        // Upper bound will be handled by Delay#set_delay
+        auto lower_bound = static_cast<MdFloat>(5);
+        m_size = size >= lower_bound ? size : lower_bound;
+
         auto frequency = compute_frequency(m_size);
 
         for (auto& p : m_phasor)
             p.set_frequency(frequency);
     }
 
-    template <std::size_t overlap, typename Delay>
-    MdFloat ReverseDelay<overlap, Delay>::perform(MdFloat in) noexcept {
+    template <std::uint16_t OVERLAP, typename Delay>
+    MdFloat ReverseDelay<OVERLAP, Delay>::perform(MdFloat in) noexcept {
         auto z = static_cast<MdFloat>(0);
 
-        m_delay.write(in); // Write the next sample to the delay buffer
-
-        for (auto i = 0; i < overlap; i++) {
+        for (auto i = 0; i < OVERLAP; i++) {
             auto phase = m_phasor[i].perform();
 
             m_osc[i].set_phase(static_cast<MdFloat>(phase * two_pi));
@@ -76,13 +77,13 @@ namespace md_audio {
             z += m_delay.read(i) * window;
         }
 
-        m_delay.increment(); // Increment the write pointer
+        m_delay.write(in); // Write the next sample to the delay buffer
 
         return z * m_norm;
     }
 
-    template <std::size_t overlap, typename Delay>
-    inline constexpr MdFloat ReverseDelay<overlap, Delay>::compute_frequency(MdFloat size) noexcept {
+    template <std::uint16_t OVERLAP, typename Delay>
+    constexpr MdFloat ReverseDelay<OVERLAP, Delay>::compute_frequency(MdFloat size) noexcept {
         return static_cast<MdFloat>(2) * static_cast<MdFloat>(sample_rate) / size;
     }
 

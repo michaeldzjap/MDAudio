@@ -1,5 +1,4 @@
 #include "DelayCubic.hpp"
-#include "utility.hpp"
 
 using md_audio::DelayCubic;
 using md_audio::MdFloat;
@@ -24,13 +23,6 @@ DelayCubic::DelayCubic(memory::Allocatable<MdFloat*>& allocator, MdFloat max_del
 
 void DelayCubic::initialise() {
     m_buffer.initialise();
-}
-
-void DelayCubic::set_delay(MdFloat delay) noexcept {
-    delay = utility::clip(delay, static_cast<MdFloat>(1), m_max_delay);
-
-    m_delay = static_cast<std::uint32_t>(delay);
-    m_frac = delay - static_cast<MdFloat>(m_delay);
 }
 
 MdFloat DelayCubic::perform(MdFloat in) noexcept {

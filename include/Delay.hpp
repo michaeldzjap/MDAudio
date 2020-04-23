@@ -5,6 +5,7 @@
 #include "Processable.hpp"
 #include "Reader.hpp"
 #include "Writer.hpp"
+#include "utility.hpp"
 
 namespace md_audio {
 
@@ -27,6 +28,12 @@ namespace md_audio {
         MdFloat m_max_delay;
         std::uint32_t m_delay;
     };
+
+    void Delay::set_delay(MdFloat delay) noexcept {
+        delay = utility::clip(delay, static_cast<MdFloat>(1), m_max_delay);
+
+        m_delay = static_cast<std::uint32_t>(delay);
+    }
 
 }
 

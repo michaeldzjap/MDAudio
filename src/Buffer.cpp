@@ -7,7 +7,7 @@
 using md_audio::Buffer;
 using md_audio::MdFloat;
 
-Buffer::Buffer(memory::Allocatable<MdFloat*>& allocator, std::uint32_t size) :
+Buffer::Buffer(memory::Allocatable<MdFloat*>& allocator, std::size_t size) :
     m_allocator(allocator),
     m_size(size)
 {}
@@ -21,13 +21,13 @@ void Buffer::initialise() {
     std::memset(m_memory, 0, m_size * sizeof(MdFloat));
 }
 
-MdFloat& Buffer::operator[] (std::uint32_t index) noexcept {
+MdFloat& Buffer::operator[] (std::size_t index) noexcept {
     assert(index >= 0 && index < m_size);
 
     return m_memory[index];
 }
 
-const MdFloat& Buffer::operator[] (std::uint32_t index) const noexcept {
+const MdFloat& Buffer::operator[] (std::size_t index) const noexcept {
     assert(index >= 0 && index < m_size);
 
     return m_memory[index];
