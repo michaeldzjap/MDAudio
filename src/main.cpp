@@ -66,10 +66,10 @@ int main() {
     constexpr auto TAPS = 4;
     constexpr std::array<md_audio::MdFloat, TAPS> delay_times{99.725535f, 50.f, 5.123f, 25.56256f};
 
-    // md_audio::TapDelaySimple<TAPS> delay(allocator, 100.f, delay_times);
-    // md_audio::TapDelaySimple<TAPS> delay(allocator, 100.f);
-    // md_audio::TapDelayLinear<TAPS> delay(allocator, 101.f);
-    md_audio::TapDelayCubic<TAPS> delay(allocator, 102.f);
+    // md_audio::TapDelay<TAPS> delay(allocator, 102.f, delay_times);
+    md_audio::TapDelay<TAPS> delay(allocator, 102.f);
+    // md_audio::TapDelayLinear<TAPS> delay(allocator, 102.f);
+    // md_audio::TapDelayCubic<TAPS> delay(allocator, 102.f);
     delay.initialise();
     delay.set_delay(delay_times);
     // constexpr auto length = static_cast<std::uint32_t>(md_audio::utility::seconds_to_samples(.5f)) + 1;
@@ -95,18 +95,18 @@ int main() {
 
     for (std::size_t i = 0; i < 441; i++) {
         // const auto z = shaper.perform(osc.perform() * 2.);
-        const auto z = delay.perform(1.f);
         // const auto z = filter.perform(osc.perform());
         // const auto z = allpass.perform(osc.perform());
-        // const auto y = noise.perform();
+        const auto y = noise.perform();
         // const auto y = phasor.perform();
         // const auto z = latch.perform(noise.perform(), y);
         // const auto z = reverser.perform(noise.perform());
         // const auto z = shifter.perform(osc.perform());
         // const auto z = reverb.perform(y);
+        // const auto z = delay.perform(y);
 
         // std::cout << i << "\t" << y << "\t" << z << std::endl;
-        std::cout << i << "\t" << z[0] << std::endl;
+        // std::cout << i << "\t" << z[0] << std::endl;
         // std::cout << i << "\t" << z[0] << ", " << z[1] << std::endl;
 
         // std::cout << i << "\t";
@@ -115,6 +115,18 @@ int main() {
         //     std::cout << z[i] << ", ";
         //
         // std::cout << std::endl;
+
+        std::cout << i << "\t";
+
+        for (auto i = 0; i < TAPS; i++) {
+            auto z = delay.read(i);
+
+            std::cout << z << ", ";
+        }
+
+        std::cout << std::endl;
+
+        delay.write(y);
     }
 
     return 0;
