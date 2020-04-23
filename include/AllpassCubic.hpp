@@ -5,6 +5,7 @@
 #include "Processable.hpp"
 #include "ReaderCubic.hpp"
 #include "Writer.hpp"
+#include "utility.hpp"
 
 namespace md_audio {
 
@@ -33,6 +34,17 @@ namespace md_audio {
         MdFloat m_gain = 0.;
         MdFloat m_frac;
     };
+
+    void AllpassCubic::set_delay(MdFloat delay) noexcept {
+        delay = utility::clip(delay, static_cast<MdFloat>(1), m_max_delay);
+
+        m_delay = static_cast<std::uint32_t>(delay);
+        m_frac = delay - static_cast<MdFloat>(m_delay);
+    }
+
+    void AllpassCubic::set_gain(MdFloat gain) noexcept {
+        m_gain = utility::clip(gain, static_cast<MdFloat>(0), static_cast<MdFloat>(1));
+    }
 
 }
 

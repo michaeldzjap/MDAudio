@@ -26,13 +26,6 @@ void DelayLinear::initialise() {
     m_buffer.initialise();
 }
 
-void DelayLinear::set_delay(MdFloat delay) noexcept {
-    delay = utility::clip(delay, static_cast<MdFloat>(1), m_max_delay);
-
-    m_delay = static_cast<std::uint32_t>(delay);
-    m_frac = delay - static_cast<MdFloat>(m_delay);
-}
-
 MdFloat DelayLinear::perform(MdFloat in) noexcept {
     m_writer.write(in);
 

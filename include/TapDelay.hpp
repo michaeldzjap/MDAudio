@@ -24,6 +24,10 @@ namespace md_audio {
 
         std::array<MdFloat, TAPS> perform(MdFloat) noexcept override final;
 
+        void write(MdFloat) noexcept;
+
+        MdFloat read(std::uint32_t) noexcept;
+
     private:
         Buffer m_buffer;
         Reader m_reader;
@@ -81,6 +85,18 @@ namespace md_audio {
         m_writer.increment();
 
         return z;
+    }
+
+    template <std::uint16_t TAPS>
+    void TapDelay<TAPS>::write(MdFloat in) noexcept {
+        m_writer.write(in);
+
+        m_writer.increment();
+    }
+
+    template <std::uint16_t TAPS>
+    MdFloat TapDelay<TAPS>::read(std::uint32_t index) noexcept {
+        return m_reader.read(m_writer, m_delay[index]);
     }
 
 }

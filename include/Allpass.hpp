@@ -5,6 +5,7 @@
 #include "Processable.hpp"
 #include "Reader.hpp"
 #include "Writer.hpp"
+#include "utility.hpp"
 
 namespace md_audio {
 
@@ -32,6 +33,16 @@ namespace md_audio {
         std::uint32_t m_delay;
         MdFloat m_gain = 0.;
     };
+
+    void Allpass::set_delay(MdFloat delay) noexcept {
+        delay = utility::clip(delay, static_cast<MdFloat>(1), m_max_delay);
+
+        m_delay = static_cast<std::uint32_t>(delay);
+    }
+
+    void Allpass::set_gain(MdFloat gain) noexcept {
+        m_gain = utility::clip(gain, static_cast<MdFloat>(0), static_cast<MdFloat>(1));
+    }
 
 }
 

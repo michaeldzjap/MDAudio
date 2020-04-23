@@ -2,7 +2,6 @@
 #define MD_AUDIO_STATIC_ALLOCATOR_HPP
 
 #include "Allocatable.hpp"
-#include "StaticPool.hpp"
 #include <type_traits>
 
 namespace md_audio::memory {
