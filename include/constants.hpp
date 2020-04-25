@@ -11,6 +11,8 @@ namespace md_audio {
     constexpr double two_pi = 6.2831853071795862;
     constexpr double half_pi = 1.5707963267948966;
 
+    constexpr double pi_over_sample_rate = pi * sample_duration;
+
 }
 
 #endif /* MD_AUDIO_CONSTANTS_HPP */
