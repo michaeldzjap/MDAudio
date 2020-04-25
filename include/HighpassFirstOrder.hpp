@@ -2,7 +2,6 @@
 #define MD_AUDIO_HIGHPASS_FIRST_ORDER_HPP
 
 #include "Processable.hpp"
-#include "types.hpp"
 #include "zdf.hpp"
 
 namespace md_audio {

@@ -20,7 +20,6 @@ AllpassSecondOrder::AllpassSecondOrder(MdFloat frequency, MdFloat r) {
 
 MdFloat AllpassSecondOrder::perform(MdFloat in) noexcept {
     auto x = static_cast<double>(in);
-
     auto bp = (m_g * (m_r2 * x - m_s2) + m_s1) * d(m_r2, m_g);
 
     // First integrator

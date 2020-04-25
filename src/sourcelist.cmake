@@ -10,6 +10,7 @@ set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
     DelayStatic.cpp
     HannOscillator.cpp
     HighpassFirstOrder.cpp
+    HighpassSecondOrder.cpp
     HighshelfFirstOrder.cpp
     Impulse.cpp
     Latch.cpp
