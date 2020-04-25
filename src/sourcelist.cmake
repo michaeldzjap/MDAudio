@@ -16,7 +16,9 @@ set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
     Impulse.cpp
     Latch.cpp
     LowpassFirstOrder.cpp
+    LowpassSecondOrder.cpp
     LowshelfFirstOrder.cpp
+    LowshelfSecondOrder.cpp
     Oscillator.cpp
     Phasor.cpp
     Reader.cpp
