@@ -27,6 +27,7 @@ set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
     Reader.cpp
     ReaderCubic.cpp
     ReaderLinear.cpp
+    Reverb.cpp
     SineOscillator.cpp
     SineShaper.cpp
     Svf.cpp
