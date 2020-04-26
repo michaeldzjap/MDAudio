@@ -1,5 +1,5 @@
-#ifndef MD_AUDIO_ALLPASS_HPP
-#define MD_AUDIO_ALLPASS_HPP
+#ifndef MD_AUDIO_ALLPASS_STATIC_HPP
+#define MD_AUDIO_ALLPASS_STATIC_HPP
 
 #include "Buffer.hpp"
 #include "Processable.hpp"
@@ -9,13 +9,13 @@
 
 namespace md_audio {
 
-    class Allpass : public Processable<MdFloat, MdFloat> {
+    class AllpassStatic : public Processable<MdFloat, MdFloat> {
     public:
-        explicit Allpass(memory::Allocatable<MdFloat*>&, MdFloat);
+        explicit AllpassStatic(memory::Allocatable<MdFloat*>&, MdFloat);
 
-        explicit Allpass(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat);
+        explicit AllpassStatic(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat);
 
-        explicit Allpass(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat, MdFloat);
+        explicit AllpassStatic(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat, MdFloat);
 
         void initialise();
 
@@ -34,16 +34,16 @@ namespace md_audio {
         MdFloat m_gain = 0.;
     };
 
-    void Allpass::set_delay(MdFloat delay) noexcept {
+    void AllpassStatic::set_delay(MdFloat delay) noexcept {
         delay = utility::clip(delay, static_cast<MdFloat>(1), m_max_delay);
 
         m_delay = static_cast<std::uint32_t>(delay);
     }
 
-    void Allpass::set_gain(MdFloat gain) noexcept {
+    void AllpassStatic::set_gain(MdFloat gain) noexcept {
         m_gain = utility::clip(gain, static_cast<MdFloat>(0), static_cast<MdFloat>(1));
     }
 
 }
 
-#endif /* MD_AUDIO_ALLPASS_HPP */
+#endif /* MD_AUDIO_ALLPASS_STATIC_HPP */

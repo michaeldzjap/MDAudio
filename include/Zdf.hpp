@@ -2,32 +2,28 @@
 #define MD_AUDIO_ZDF_HPP
 
 #include "constants.hpp"
-#include "types.hpp"
 #include "utility.hpp"
 #include <cmath>
 
 namespace md_audio {
 
-    class Zdf {
-    public:
-        inline virtual void set_frequency(MdFloat frequency) noexcept {
-            m_g = compute_g(static_cast<double>(frequency));
-        }
+    inline auto g(const double frequency) noexcept {
+        return std::tan(utility::clip(frequency, 0., half_sample_rate) * pi_over_sample_rate);
+    }
 
-        virtual ~Zdf() = 0;
+    inline auto m2(double gain) noexcept {
+        return std::pow(10., gain / 20.);
+    }
 
-    protected:
-        double m_g;
+    inline auto r2(double r) noexcept {
+        r = utility::max(r, 0.);
 
-    private:
-        static constexpr double pi_over_sample_rate = pi * sample_duration;
+        return r + r;
+    }
 
-        inline static double compute_g(double frequency) noexcept {
-            return std::tan(
-                utility::clip(frequency, 0., half_sample_rate) * pi_over_sample_rate
-            );
-        }
-    };
+    inline auto d(double r2, double g) noexcept {
+        return 1. / (1. + r2 * g + g * g);
+    }
 
 }
 

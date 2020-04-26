@@ -1,29 +1,38 @@
 set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
-    Allpass.cpp
     AllpassCubic.cpp
+    AllpassFirstOrder.cpp
     AllpassLinear.cpp
+    AllpassSecondOrder.cpp
+    AllpassStatic.cpp
+    Bandpass.cpp
+    Bandshelf.cpp
+    Bandstop.cpp
     Buffer.cpp
-    Delay.cpp
     DelayCubic.cpp
     DelayLinear.cpp
+    DelayStatic.cpp
     HannOscillator.cpp
-    Highpass.cpp
-    Highshelf.cpp
+    HighpassFirstOrder.cpp
+    HighpassSecondOrder.cpp
+    HighshelfFirstOrder.cpp
+    HighShelfSecondOrder.cpp
     Impulse.cpp
     Latch.cpp
-    Lowpass.cpp
-    Lowshelf.cpp
-    OnePole.cpp
+    LowpassFirstOrder.cpp
+    LowpassSecondOrder.cpp
+    LowshelfFirstOrder.cpp
+    LowshelfSecondOrder.cpp
     Oscillator.cpp
     Phasor.cpp
     Reader.cpp
     ReaderCubic.cpp
     ReaderLinear.cpp
-    Shelving.cpp
     SineOscillator.cpp
     SineShaper.cpp
+    Svf.cpp
     Taus88.cpp
+    TiltFirstOrder.cpp
+    TiltSecondOrder.cpp
     WhiteNoise.cpp
     Writer.cpp
-    Zdf.cpp
 )
