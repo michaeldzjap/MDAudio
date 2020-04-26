@@ -1,5 +1,5 @@
-#ifndef MD_AUDIO_TAP_DELAY_HPP
-#define MD_AUDIO_TAP_DELAY_HPP
+#ifndef MD_AUDIO_TAP_DELAY_STATIC_HPP
+#define MD_AUDIO_TAP_DELAY_STATIC_HPP
 
 #include "Processable.hpp"
 #include "Reader.hpp"
@@ -10,11 +10,11 @@
 namespace md_audio {
 
     template <std::uint16_t TAPS>
-    class TapDelay : public Processable<std::array<MdFloat, TAPS>, MdFloat> {
+    class TapDelayStatic : public Processable<std::array<MdFloat, TAPS>, MdFloat> {
     public:
-        explicit TapDelay(memory::Allocatable<MdFloat*>&, MdFloat);
+        explicit TapDelayStatic(memory::Allocatable<MdFloat*>&, MdFloat);
 
-        explicit TapDelay(memory::Allocatable<MdFloat*>&, MdFloat, const std::array<MdFloat, TAPS>&);
+        explicit TapDelayStatic(memory::Allocatable<MdFloat*>&, MdFloat, const std::array<MdFloat, TAPS>&);
 
         void initialise();
 
@@ -37,7 +37,7 @@ namespace md_audio {
     };
 
     template <std::uint16_t TAPS>
-    TapDelay<TAPS>::TapDelay(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay) :
+    TapDelayStatic<TAPS>::TapDelayStatic(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay) :
         m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
         m_reader(m_buffer),
         m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
@@ -45,7 +45,7 @@ namespace md_audio {
     {}
 
     template <std::uint16_t TAPS>
-    TapDelay<TAPS>::TapDelay(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay,
+    TapDelayStatic<TAPS>::TapDelayStatic(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay,
         const std::array<MdFloat, TAPS>& delay) :
         m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
         m_reader(m_buffer),
@@ -56,25 +56,25 @@ namespace md_audio {
     }
 
     template <std::uint16_t TAPS>
-    void TapDelay<TAPS>::initialise() {
+    void TapDelayStatic<TAPS>::initialise() {
         m_buffer.initialise();
     }
 
     template <std::uint16_t TAPS>
-    void TapDelay<TAPS>::set_delay(const std::array<MdFloat, TAPS>& delays) noexcept {
+    void TapDelayStatic<TAPS>::set_delay(const std::array<MdFloat, TAPS>& delays) noexcept {
         for (auto i = 0; i < TAPS; i++)
             set_delay(i, delays[i]);
     }
 
     template <std::uint16_t TAPS>
-    void TapDelay<TAPS>::set_delay(std::uint16_t index, MdFloat delay) noexcept {
+    void TapDelayStatic<TAPS>::set_delay(std::uint16_t index, MdFloat delay) noexcept {
         delay = utility::clip(delay, static_cast<MdFloat>(1), m_max_delay);
 
         m_delay[index] = static_cast<std::uint32_t>(delay);
     }
 
     template <std::uint16_t TAPS>
-    std::array<MdFloat, TAPS> TapDelay<TAPS>::perform(MdFloat in) noexcept {
+    std::array<MdFloat, TAPS> TapDelayStatic<TAPS>::perform(MdFloat in) noexcept {
         m_writer.write(in);
 
         std::array<MdFloat, TAPS> z{};
@@ -88,17 +88,17 @@ namespace md_audio {
     }
 
     template <std::uint16_t TAPS>
-    void TapDelay<TAPS>::write(MdFloat in) noexcept {
+    void TapDelayStatic<TAPS>::write(MdFloat in) noexcept {
         m_writer.write(in);
 
         m_writer.increment();
     }
 
     template <std::uint16_t TAPS>
-    MdFloat TapDelay<TAPS>::read(std::uint32_t index) noexcept {
+    MdFloat TapDelayStatic<TAPS>::read(std::uint32_t index) noexcept {
         return m_reader.read(m_writer, m_delay[index]);
     }
 
 }
 
-#endif /* MD_AUDIO_TAP_DELAY_HPP */
+#endif /* MD_AUDIO_TAP_DELAY_STATIC_HPP */

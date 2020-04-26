@@ -7,7 +7,7 @@
 #include "HighshelfFirstOrder.hpp"
 #include "Latch.hpp"
 #include "LowpassFirstOrder.hpp"
-#include "TapDelay.hpp"
+#include "TapDelayStatic.hpp"
 #include "TapDelayCubic.hpp"
 #include "TapDelayLinear.hpp"
 #include "Phasor.hpp"
@@ -67,7 +67,7 @@ int main() {
     constexpr std::array<md_audio::MdFloat, TAPS> delay_times{99.725535f, 50.f, 5.123f, 25.56256f};
 
     // md_audio::TapDelay<TAPS> delay(allocator, 102.f, delay_times);
-    md_audio::TapDelay<TAPS> delay(allocator, 102.f);
+    md_audio::TapDelayStatic<TAPS> delay(allocator, 102.f);
     // md_audio::TapDelayLinear<TAPS> delay(allocator, 102.f);
     // md_audio::TapDelayCubic<TAPS> delay(allocator, 102.f);
     delay.initialise();
