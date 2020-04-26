@@ -47,15 +47,15 @@ int main() {
     // for (std::size_t i = 0; i < md_audio::table_size + 1; i++)
     //     std::cout << i << "\t" << md_audio::sine_table[i] << ", " << typeid(md_audio::sine_table[i]).name() << std::endl;
 
-    constexpr auto size = 102;
+    // constexpr auto size = 102;
     // constexpr auto size = md_audio::ReverbConfig::total_size;
-    // constexpr auto size = md_audio::ReverbConfig::total_size + 102;
+    constexpr auto size = md_audio::ReverbConfig::total_size + 102;
 
     Pool<size> pool;
     Allocator<Pool<size>> allocator(&pool);
 
-    // md_audio::Reverb<Allocator<Pool<size>>> reverb(allocator);
-    // reverb.initialise();
+    md_audio::Reverb reverb(allocator);
+    reverb.initialise();
     // reverb.set_size(1.f);
     // reverb.set_pre_delay(.5f);
     // reverb.set_mix(1.f);
