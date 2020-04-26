@@ -17,6 +17,16 @@ namespace md_audio::utility {
     using IsFloatOrInt = std::enable_if_t<std::is_floating_point<T>::value || std::is_integral<T>::value, T>;
 
     template <typename T>
+    inline constexpr IsFloatOrInt<T> max(const T a, const T b) noexcept {
+        return a > b ? a : b;
+    }
+
+    template <typename T>
+    inline constexpr IsFloatOrInt<T> min(const T a, const T b) noexcept {
+        return a < b ? a : b;
+    }
+
+    template <typename T>
     inline constexpr IsFloatOrInt<T> clip(const T value, const T min, const T max) noexcept {
         // Clip value when it is outside of the allowed range
         if (value < min) return min;

@@ -1,12 +1,12 @@
-#include "Allpass.hpp"
+#include "AllpassStatic.hpp"
 #include "Buffer.hpp"
-#include "Delay.hpp"
+#include "DelayStatic.hpp"
 #include "DelayCubic.hpp"
 #include "DelayLinear.hpp"
-#include "Highpass.hpp"
-#include "Highshelf.hpp"
+#include "HighpassFirstOrder.hpp"
+#include "HighshelfFirstOrder.hpp"
 #include "Latch.hpp"
-#include "Lowpass.hpp"
+#include "LowpassFirstOrder.hpp"
 #include "TapDelay.hpp"
 #include "TapDelayCubic.hpp"
 #include "TapDelayLinear.hpp"
@@ -59,17 +59,17 @@ int main() {
     // reverb.set_size(1.f);
     // reverb.set_pre_delay(.5f);
     // reverb.set_mix(1.f);
-    // md_audio::AllpassSimple<100> allpass(50.354261f, .1f);
-    // md_audio::DelaySimple delay(allocator, 100.f, 50.354261f);
+    // md_audio::AllpassStatic<100> allpass(50.354261f, .1f);
+    // md_audio::DelayStatic delay(allocator, 100.f, 50.354261f);
     // md_audio::DelayLinear delay(allocator, 101.f, 50.354261f);
     // md_audio::DelayCubic delay(allocator, 102.f, 50.354261f);
     constexpr auto TAPS = 4;
     constexpr std::array<md_audio::MdFloat, TAPS> delay_times{99.725535f, 50.f, 5.123f, 25.56256f};
 
-    // md_audio::TapDelaySimple<TAPS> delay(allocator, 100.f, delay_times);
-    // md_audio::TapDelaySimple<TAPS> delay(allocator, 100.f);
-    // md_audio::TapDelayLinear<TAPS> delay(allocator, 101.f);
-    md_audio::TapDelayCubic<TAPS> delay(allocator, 102.f);
+    // md_audio::TapDelay<TAPS> delay(allocator, 102.f, delay_times);
+    md_audio::TapDelay<TAPS> delay(allocator, 102.f);
+    // md_audio::TapDelayLinear<TAPS> delay(allocator, 102.f);
+    // md_audio::TapDelayCubic<TAPS> delay(allocator, 102.f);
     delay.initialise();
     delay.set_delay(delay_times);
     // constexpr auto length = static_cast<std::uint32_t>(md_audio::utility::seconds_to_samples(.5f)) + 1;
@@ -79,7 +79,7 @@ int main() {
     // reverser.toggle_reverse();
     // constexpr auto length = static_cast<std::uint32_t>(md_audio::utility::seconds_to_samples(.12f)) + 1;
     // md_audio::PitchShifter<length, 2> shifter(12.f, md_audio::utility::seconds_to_samples(.12f));
-    // md_audio::Highshelf filter(8000., 6.);
+    // md_audio::HighshelfFirstOrder filter(8000., 6.);
     // md_audio::Lowpass filter(100.);
     // md_audio::SineOscillator osc(44100.f / 512.f);
     // md_audio::SineShaper shaper;
@@ -95,18 +95,18 @@ int main() {
 
     for (std::size_t i = 0; i < 441; i++) {
         // const auto z = shaper.perform(osc.perform() * 2.);
-        const auto z = delay.perform(1.f);
         // const auto z = filter.perform(osc.perform());
         // const auto z = allpass.perform(osc.perform());
-        // const auto y = noise.perform();
+        const auto y = noise.perform();
         // const auto y = phasor.perform();
         // const auto z = latch.perform(noise.perform(), y);
         // const auto z = reverser.perform(noise.perform());
         // const auto z = shifter.perform(osc.perform());
         // const auto z = reverb.perform(y);
+        // const auto z = delay.perform(y);
 
         // std::cout << i << "\t" << y << "\t" << z << std::endl;
-        std::cout << i << "\t" << z[0] << std::endl;
+        // std::cout << i << "\t" << z[0] << std::endl;
         // std::cout << i << "\t" << z[0] << ", " << z[1] << std::endl;
 
         // std::cout << i << "\t";
@@ -115,6 +115,18 @@ int main() {
         //     std::cout << z[i] << ", ";
         //
         // std::cout << std::endl;
+
+        std::cout << i << "\t";
+
+        for (auto i = 0; i < TAPS; i++) {
+            auto z = delay.read(i);
+
+            std::cout << z << ", ";
+        }
+
+        std::cout << std::endl;
+
+        delay.write(y);
     }
 
     return 0;

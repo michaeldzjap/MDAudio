@@ -1,5 +1,5 @@
-#ifndef MD_AUDIO_DELAY_HPP
-#define MD_AUDIO_DELAY_HPP
+#ifndef MD_AUDIO_DELAY_STATIC_HPP
+#define MD_AUDIO_DELAY_STATIC_HPP
 
 #include "Buffer.hpp"
 #include "Processable.hpp"
@@ -9,11 +9,11 @@
 
 namespace md_audio {
 
-    class Delay : public Processable<MdFloat, MdFloat> {
+    class DelayStatic : public Processable<MdFloat, MdFloat> {
     public:
-        explicit Delay(memory::Allocatable<MdFloat*>&, MdFloat);
+        explicit DelayStatic(memory::Allocatable<MdFloat*>&, MdFloat);
 
-        explicit Delay(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat);
+        explicit DelayStatic(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat);
 
         void initialise();
 
@@ -29,7 +29,7 @@ namespace md_audio {
         std::uint32_t m_delay;
     };
 
-    void Delay::set_delay(MdFloat delay) noexcept {
+    void DelayStatic::set_delay(MdFloat delay) noexcept {
         delay = utility::clip(delay, static_cast<MdFloat>(1), m_max_delay);
 
         m_delay = static_cast<std::uint32_t>(delay);
@@ -37,4 +37,4 @@ namespace md_audio {
 
 }
 
-#endif /* MD_AUDIO_DELAY_HPP */
+#endif /* MD_AUDIO_DELAY_STATIC_HPP */
