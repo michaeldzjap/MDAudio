@@ -14,9 +14,9 @@ namespace md_audio {
 
         explicit AllpassSecondOrder(MdFloat, MdFloat);
 
-        inline void set_frequency(MdFloat frequency) noexcept;
+        inline void set_frequency(MdFloat) noexcept;
 
-        inline void set_r(MdFloat r) noexcept;
+        inline void set_r(MdFloat) noexcept;
 
         MdFloat perform(MdFloat) noexcept override final;
 

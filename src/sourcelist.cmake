@@ -4,6 +4,9 @@ set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
     AllpassLinear.cpp
     AllpassSecondOrder.cpp
     AllpassStatic.cpp
+    Bandpass.cpp
+    Bandshelf.cpp
+    Bandstop.cpp
     Buffer.cpp
     DelayCubic.cpp
     DelayLinear.cpp
@@ -26,7 +29,10 @@ set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
     ReaderLinear.cpp
     SineOscillator.cpp
     SineShaper.cpp
+    Svf.cpp
     Taus88.cpp
+    TiltFirstOrder.cpp
+    TiltSecondOrder.cpp
     WhiteNoise.cpp
     Writer.cpp
 )
