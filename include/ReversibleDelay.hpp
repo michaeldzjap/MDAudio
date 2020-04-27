@@ -92,9 +92,7 @@ namespace md_audio {
 
     template <std::uint16_t OVERLAP, typename Delay>
     void ReversibleDelay<OVERLAP, Delay>::set_backward_delay(MdFloat size) noexcept {
-        // Upper bound will be handled by Delay#set_delay
-        auto lower_bound = static_cast<MdFloat>(5);
-        m_size = size >= lower_bound ? size : lower_bound;
+        m_size = utility::clip(size, static_cast<MdFloat>(5), m_delay.get_max_delay());
 
         m_frequency = compute_frequency(m_size);
 

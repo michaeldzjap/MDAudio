@@ -22,6 +22,8 @@ namespace md_audio {
 
         inline void set_delay(std::uint16_t, MdFloat) noexcept;
 
+        inline constexpr MdFloat get_max_delay() noexcept;
+
         std::array<MdFloat, TAPS> perform(MdFloat) noexcept override final;
 
         void write(MdFloat) noexcept;
@@ -71,6 +73,11 @@ namespace md_audio {
         delay = utility::clip(delay, static_cast<MdFloat>(1), m_max_delay);
 
         m_delay[index] = static_cast<std::uint32_t>(delay);
+    }
+
+    template <std::uint16_t TAPS>
+    constexpr MdFloat TapDelayStatic<TAPS>::get_max_delay() noexcept {
+        return m_max_delay;
     }
 
     template <std::uint16_t TAPS>

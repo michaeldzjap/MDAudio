@@ -113,10 +113,7 @@ namespace md_audio {
 
     template <std::uint16_t OVERLAP, typename Delay>
     MdFloat PitchShifter<OVERLAP, Delay>::check_size(MdFloat size) noexcept {
-        // Upper bound will be handled by Delay#set_delay
-        auto lower_bound = static_cast<MdFloat>(5);
-
-        return size >= lower_bound ? size : lower_bound;
+        return utility::clip(size, static_cast<MdFloat>(5), m_delay.get_max_delay());
     }
 
     template <std::uint16_t OVERLAP, typename Delay>
