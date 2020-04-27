@@ -11,7 +11,6 @@
 #include "Processable.hpp"
 #include "ReverbConfig.hpp"
 #include "ReversibleDelay.hpp"
-#include "SineOscillator.hpp"
 #include "SineShaper.hpp"
 #include "TapDelayCubic.hpp"
 #include "types.hpp"
@@ -34,10 +33,6 @@ namespace md_audio {
 
         void set_reverse(bool) noexcept;
 
-        void set_modulation_rate(MdFloat) noexcept;
-
-        void set_modulation_depth(MdFloat) noexcept;
-
         void set_shimmer(MdFloat) noexcept;
 
         void set_tilt(MdFloat) noexcept;
@@ -51,7 +46,6 @@ namespace md_audio {
         std::array<AllpassStatic, ReverbConfig::number_of_delays> m_allpass;
         std::array<TapDelayCubic<ReverbConfig::number_of_taps>, ReverbConfig::number_of_delays> m_delay;
         std::array<std::array<MdFloat, ReverbConfig::number_of_taps>, ReverbConfig::number_of_delays> m_delay_times;
-        std::array<std::array<SineOscillator, ReverbConfig::serial_periodic>, ReverbConfig::number_of_delays> m_periodic;
         std::array<LowpassFirstOrder, ReverbConfig::number_of_delays> m_lowpass;
         std::array<LowpassFirstOrder, ReverbConfig::number_of_outputs> m_lowpass_shifter;
         std::array<HighpassFirstOrder, ReverbConfig::number_of_delays> m_highpass;
