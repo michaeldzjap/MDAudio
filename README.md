@@ -27,6 +27,7 @@ A(nother) C++ audio signal processing library
     - ReverseDelay
     - ReversibleDelay
     - PitchShifter
+    - VariableDelay
 
 - TPT Filters
     - LowpassFirstOrder
