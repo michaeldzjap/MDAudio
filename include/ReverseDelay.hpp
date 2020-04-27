@@ -15,7 +15,9 @@ namespace md_audio {
     public:
         static_assert(OVERLAP > 1, "Overlap factor must be at least 2!");
 
-        ReverseDelay(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat);
+        explicit ReverseDelay(memory::Allocatable<MdFloat*>&, MdFloat);
+
+        explicit ReverseDelay(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat);
 
         void initialise();
 
@@ -30,18 +32,25 @@ namespace md_audio {
         MdFloat m_size;
         const MdFloat m_norm = static_cast<MdFloat>(2) / OVERLAP;
 
+        void initialise(MdFloat) noexcept;
+
         inline static constexpr MdFloat compute_frequency(MdFloat) noexcept;
     };
+
+    template <std::uint16_t OVERLAP, typename Delay>
+    ReverseDelay<OVERLAP, Delay>::ReverseDelay(memory::Allocatable<MdFloat*>& allocator,
+        MdFloat max_delay) :
+        m_delay(allocator, max_delay)
+    {
+        initialise(static_cast<MdFloat>(1));
+    }
 
     template <std::uint16_t OVERLAP, typename Delay>
     ReverseDelay<OVERLAP, Delay>::ReverseDelay(memory::Allocatable<MdFloat*>& allocator,
         MdFloat max_delay, MdFloat size) :
         m_delay(allocator, max_delay)
     {
-        set_size(size);
-
-        for (auto i = 0; i < OVERLAP; i++)
-            m_phasor[i].set_phase(static_cast<MdFloat>(i) / static_cast<MdFloat>(OVERLAP));
+        initialise(size);
     }
 
     template <std::uint16_t OVERLAP, typename Delay>
@@ -50,10 +59,16 @@ namespace md_audio {
     }
 
     template <std::uint16_t OVERLAP, typename Delay>
+    void ReverseDelay<OVERLAP, Delay>::initialise(MdFloat size) noexcept {
+        set_size(size);
+
+        for (auto i = 0; i < OVERLAP; i++)
+            m_phasor[i].set_phase(static_cast<MdFloat>(i) / static_cast<MdFloat>(OVERLAP));
+    }
+
+    template <std::uint16_t OVERLAP, typename Delay>
     void ReverseDelay<OVERLAP, Delay>::set_size(MdFloat size) noexcept {
-        // Upper bound will be handled by Delay#set_delay
-        auto lower_bound = static_cast<MdFloat>(5);
-        m_size = size >= lower_bound ? size : lower_bound;
+        m_size = utility::clip(size, static_cast<MdFloat>(5), m_delay.get_max_delay());
 
         auto frequency = compute_frequency(m_size);
 
