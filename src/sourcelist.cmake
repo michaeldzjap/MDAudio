@@ -8,6 +8,7 @@ set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
     Bandshelf.cpp
     Bandstop.cpp
     Buffer.cpp
+    Delay.cpp
     DelayCubic.cpp
     DelayLinear.cpp
     DelayStatic.cpp
@@ -31,6 +32,10 @@ set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
     SineOscillator.cpp
     SineShaper.cpp
     Svf.cpp
+    TapDelay.cpp
+    TapDelayCubic.cpp
+    TapDelayLinear.cpp
+    TapDelayStatic.cpp
     Taus88.cpp
     TiltFirstOrder.cpp
     TiltSecondOrder.cpp

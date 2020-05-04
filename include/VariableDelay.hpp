@@ -29,7 +29,7 @@ namespace md_audio {
         MdFloat perform(MdFloat) noexcept override final;
 
     private:
-        TapDelayStatic<OVERLAP> m_delay;
+        TapDelayStatic m_delay;
         std::array<Phasor, OVERLAP> m_phasor;
         std::array<HannOscillator, OVERLAP> m_osc;
         std::array<Latch, OVERLAP> m_latch;
@@ -44,7 +44,7 @@ namespace md_audio {
     template <std::uint16_t OVERLAP>
     VariableDelay<OVERLAP>::VariableDelay(memory::Allocatable<MdFloat*>& allocator,
         MdFloat max_delay) :
-        m_delay(allocator, max_delay)
+        m_delay(allocator, max_delay, OVERLAP)
     {
         initialise(static_cast<MdFloat>(1), static_cast<MdFloat>(1));
     }
@@ -52,7 +52,7 @@ namespace md_audio {
     template <std::uint16_t OVERLAP>
     VariableDelay<OVERLAP>::VariableDelay(memory::Allocatable<MdFloat*>& allocator,
         MdFloat max_delay, MdFloat delay) :
-        m_delay(allocator, max_delay)
+        m_delay(allocator, max_delay, OVERLAP)
     {
         initialise(delay, static_cast<MdFloat>(1));
     }
@@ -60,7 +60,7 @@ namespace md_audio {
     template <std::uint16_t OVERLAP>
     VariableDelay<OVERLAP>::VariableDelay(memory::Allocatable<MdFloat*>& allocator,
         MdFloat max_delay, MdFloat delay, MdFloat size) :
-        m_delay(allocator, max_delay)
+        m_delay(allocator, max_delay, OVERLAP)
     {
         initialise(delay, size);
     }

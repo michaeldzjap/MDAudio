@@ -10,7 +10,7 @@
 
 namespace md_audio {
 
-    template <std::uint16_t OVERLAP = 2, typename Delay = TapDelayCubic<OVERLAP + 1>> // One extra tap for "forward" mode
+    template <std::uint16_t OVERLAP = 2, typename Delay = TapDelayCubic> // One extra tap for "forward" mode
     class ReversibleDelay : public Processable<MdFloat, MdFloat> {
     public:
         static_assert(OVERLAP > 1, "Overlap factor must be at least 2!");
@@ -52,7 +52,7 @@ namespace md_audio {
     template <std::uint16_t OVERLAP, typename Delay>
     ReversibleDelay<OVERLAP, Delay>::ReversibleDelay(memory::Allocatable<MdFloat*>& allocator,
         MdFloat max_delay) :
-        m_delay(allocator, max_delay),
+        m_delay(allocator, max_delay, OVERLAP + 1),
         m_reverse(false)
     {
         initialise(static_cast<MdFloat>(0.));
@@ -61,7 +61,7 @@ namespace md_audio {
     template <std::uint16_t OVERLAP, typename Delay>
     ReversibleDelay<OVERLAP, Delay>::ReversibleDelay(memory::Allocatable<MdFloat*>& allocator,
         MdFloat max_delay, MdFloat size) :
-        m_delay(allocator, max_delay),
+        m_delay(allocator, max_delay, OVERLAP + 1),
         m_reverse(false)
     {
         initialise(size);
@@ -70,7 +70,7 @@ namespace md_audio {
     template <std::uint16_t OVERLAP, typename Delay>
     ReversibleDelay<OVERLAP, Delay>::ReversibleDelay(memory::Allocatable<MdFloat*>& allocator,
         MdFloat max_delay, MdFloat size, bool reverse) :
-        m_delay(allocator, max_delay),
+        m_delay(allocator, max_delay, OVERLAP + 1),
         m_reverse(reverse)
     {
         initialise(size);

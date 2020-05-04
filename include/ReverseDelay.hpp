@@ -10,7 +10,7 @@
 
 namespace md_audio {
 
-    template <std::uint16_t OVERLAP = 2, typename Delay = TapDelayCubic<OVERLAP>>
+    template <std::uint16_t OVERLAP = 2, typename Delay = TapDelayCubic>
     class ReverseDelay : public Processable<MdFloat, MdFloat> {
     public:
         static_assert(OVERLAP > 1, "Overlap factor must be at least 2!");
@@ -40,7 +40,7 @@ namespace md_audio {
     template <std::uint16_t OVERLAP, typename Delay>
     ReverseDelay<OVERLAP, Delay>::ReverseDelay(memory::Allocatable<MdFloat*>& allocator,
         MdFloat max_delay) :
-        m_delay(allocator, max_delay)
+        m_delay(allocator, max_delay, OVERLAP)
     {
         initialise(static_cast<MdFloat>(1));
     }
@@ -48,7 +48,7 @@ namespace md_audio {
     template <std::uint16_t OVERLAP, typename Delay>
     ReverseDelay<OVERLAP, Delay>::ReverseDelay(memory::Allocatable<MdFloat*>& allocator,
         MdFloat max_delay, MdFloat size) :
-        m_delay(allocator, max_delay)
+        m_delay(allocator, max_delay, OVERLAP)
     {
         initialise(size);
     }

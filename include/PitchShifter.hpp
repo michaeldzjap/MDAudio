@@ -4,6 +4,7 @@
 #include "HannOscillator.hpp"
 #include "Phasor.hpp"
 #include "Processable.hpp"
+#include "TapDelayable.hpp"
 #include "TapDelayCubic.hpp"
 #include "types.hpp"
 #include "utility.hpp"
@@ -12,14 +13,12 @@
 
 namespace md_audio {
 
-    template <std::uint16_t OVERLAP = 2, typename Delay = TapDelayCubic<OVERLAP>>
+    template <std::uint16_t OVERLAP = 2, typename Delay = TapDelayCubic>
     class PitchShifter : public Processable<MdFloat, MdFloat> {
     public:
-        static_assert(OVERLAP > 1, "Overlap factor must be at least 2!");
+        explicit PitchShifter(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat, std::size_t);
 
-        explicit PitchShifter(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat);
-
-        explicit PitchShifter(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat, MdFloat);
+        explicit PitchShifter(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat, MdFloat, std::size_t);
 
         void initialise();
 
@@ -35,7 +34,8 @@ namespace md_audio {
         std::array<HannOscillator, OVERLAP> m_osc;
         MdFloat m_transposition = 0;
         MdFloat m_size;
-        const MdFloat norm = static_cast<MdFloat>(2) / OVERLAP;
+        std::size_t m_overlap;
+        const MdFloat m_norm;
 
         void initialise(MdFloat, MdFloat);
 
@@ -50,16 +50,20 @@ namespace md_audio {
 
     template <std::uint16_t OVERLAP, typename Delay>
     PitchShifter<OVERLAP, Delay>::PitchShifter(memory::Allocatable<MdFloat*>& allocator,
-        MdFloat max_delay, MdFloat size) :
-        m_delay(allocator, max_delay)
+        MdFloat max_delay, MdFloat size, std::size_t overlap) :
+        m_delay(allocator, max_delay, overlap),
+        m_overlap(overlap),
+        m_norm(static_cast<MdFloat>(2) / m_overlap)
     {
         initialise(size, static_cast<MdFloat>(1));
     }
 
     template <std::uint16_t OVERLAP, typename Delay>
     PitchShifter<OVERLAP, Delay>::PitchShifter(memory::Allocatable<MdFloat*>& allocator,
-        MdFloat max_delay, MdFloat size, MdFloat transposition) :
-        m_delay(allocator, max_delay)
+        MdFloat max_delay, MdFloat size, MdFloat transposition, std::size_t overlap) :
+        m_delay(allocator, max_delay, overlap),
+        m_overlap(overlap),
+        m_norm(static_cast<MdFloat>(2) / m_overlap)
     {
         initialise(size, transposition);
     }
@@ -135,7 +139,7 @@ namespace md_audio {
 
         m_delay.write(in); // Write the next sample to the delay buffer
 
-        return z * norm;
+        return z * m_norm;
     }
 
     template <std::uint16_t OVERLAP, typename Delay>
