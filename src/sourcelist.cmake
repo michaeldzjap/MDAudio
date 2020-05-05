@@ -42,6 +42,7 @@ set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
     Taus88.cpp
     TiltFirstOrder.cpp
     TiltSecondOrder.cpp
+    VariableDelay.cpp
     WhiteNoise.cpp
     Writer.cpp
 )

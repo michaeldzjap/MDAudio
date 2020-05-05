@@ -71,21 +71,21 @@ int main() {
     // md_audio::DelayCubic delay(allocator, 102.f, 50.354261f);
     constexpr auto TAPS = 4;
     // constexpr std::array<md_audio::MdFloat, TAPS> delay_times{99.725535f, 50.f, 5.123f, 25.56256f};
-    constexpr md_audio::MdFloat delay_times[TAPS] = {99.725535, 50., 5.123, 25.56256};
+    // constexpr md_audio::MdFloat delay_times[TAPS] = {99.725535, 50., 5.123, 25.56256};
 
-    md_audio::TapDelay delay(allocator, 102.f, delay_times, TAPS);
+    // md_audio::TapDelay delay(allocator, 102.f, delay_times, TAPS);
     // md_audio::TapDelayStatic delay(allocator, 102.f, delay_times, TAPS);
     // md_audio::TapDelayStatic delay(allocator, 102.f, TAPS);
     // md_audio::TapDelayLinear delay(allocator, 102.f, TAPS);
     // md_audio::TapDelayCubic delay(allocator, 102.f, TAPS);
-    // md_audio::VariableDelay<TAPS> delay(allocator, 102.f);
+    md_audio::VariableDelay delay(allocator, 102.f, TAPS);
     delay.initialise();
-    // delay.set_delay(49.1234f);
+    delay.set_delay(49.1234f);
     // delay.set_delay(delay_times);
     // constexpr auto length = static_cast<std::uint32_t>(md_audio::utility::seconds_to_samples(.5f)) + 1;
     // md_audio::ReverseDelay reverser(allocator, 102.f, 80.123f, 2);
-    md_audio::ReversibleDelay reverser(allocator, 102.f, 80.123f, 2);
-    reverser.initialise();
+    // md_audio::ReversibleDelay reverser(allocator, 102.f, 80.123f, 2);
+    // reverser.initialise();
     // reverser.toggle_reverse();
     // constexpr auto length = static_cast<std::uint32_t>(md_audio::utility::seconds_to_samples(.12f)) + 1;
     // md_audio::PitchShifter shifter(allocator, length, md_audio::utility::seconds_to_samples(.12f), 2);
@@ -110,12 +110,12 @@ int main() {
         const auto y = noise.perform();
         // const auto y = phasor.perform();
         // const auto z = latch.perform(noise.perform(), y);
-        const auto z = reverser.perform(y);
+        // const auto z = reverser.perform(y);
         // const auto z = shifter.perform(y);
         // const auto z = reverb.perform(y);
         // md_audio::MdFloat z[TAPS];
         // delay.perform(y, z, TAPS);
-        // const auto z = delay.perform(y);
+        const auto z = delay.perform(y);
 
         std::cout << i << "\t" << y << "\t" << z << std::endl;
         // std::cout << i << "\t" << z[0] << std::endl;
