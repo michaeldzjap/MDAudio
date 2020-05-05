@@ -52,7 +52,7 @@ namespace md_audio {
         std::array<MdFloat, ReverbConfig::number_of_outputs> perform(MdFloat) noexcept override final;
 
     private:
-        ReversibleDelay<2, TapDelayLinear> m_pre_delay;
+        ReversibleDelay m_pre_delay;
         std::array<AllpassStatic, ReverbConfig::number_of_delays> m_allpass;
         std::array<Buffer, ReverbConfig::number_of_delays> m_buffer;
         std::array<Writer, ReverbConfig::number_of_delays> m_writer;

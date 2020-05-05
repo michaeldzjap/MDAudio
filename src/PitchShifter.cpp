@@ -1,4 +1,5 @@
 #include "PitchShifter.hpp"
+#include <cassert>
 
 using md_audio::MdFloat;
 using md_audio::PitchShifter;
@@ -7,10 +8,12 @@ PitchShifter::PitchShifter(memory::Allocatable<MdFloat*>& allocator,
     MdFloat max_delay, MdFloat size, std::size_t overlap, InterpolationType interpolation_type) :
     m_delay(allocator, max_delay, overlap, interpolation_type),
     m_overlap(overlap),
-    m_norm(static_cast<MdFloat>(2) / m_overlap),
+    m_norm(static_cast<MdFloat>(2) / overlap),
     m_phasor(new Phasor[overlap]),
     m_osc(new HannOscillator[overlap])
 {
+    assert(m_overlap > 1);
+
     initialise(size, static_cast<MdFloat>(1));
 }
 
@@ -23,6 +26,8 @@ PitchShifter::PitchShifter(memory::Allocatable<MdFloat*>& allocator,
     m_phasor(new Phasor[overlap]),
     m_osc(new HannOscillator[overlap])
 {
+    assert(m_overlap > 1);
+
     initialise(size, transposition);
 }
 

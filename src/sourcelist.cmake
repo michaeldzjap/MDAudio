@@ -30,6 +30,8 @@ set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
     ReaderCubic.cpp
     ReaderLinear.cpp
     Reverb.cpp
+    ReverseDelay.cpp
+    ReversibleDelay.cpp
     SineOscillator.cpp
     SineShaper.cpp
     Svf.cpp
