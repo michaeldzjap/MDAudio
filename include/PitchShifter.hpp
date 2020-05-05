@@ -2,23 +2,19 @@
 #define MD_AUDIO_PITCH_SHIFTER_HPP
 
 #include "HannOscillator.hpp"
+#include "InterpolationType.hpp"
 #include "Phasor.hpp"
 #include "Processable.hpp"
-#include "TapDelayable.hpp"
-#include "TapDelayCubic.hpp"
+#include "TapDelay.hpp"
 #include "types.hpp"
-#include "utility.hpp"
-#include <array>
-#include <cstdint>
 
 namespace md_audio {
 
-    template <std::uint16_t OVERLAP = 2, typename Delay = TapDelayCubic>
     class PitchShifter : public Processable<MdFloat, MdFloat> {
     public:
-        explicit PitchShifter(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat, std::size_t);
+        explicit PitchShifter(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat, std::size_t, InterpolationType = InterpolationType::linear);
 
-        explicit PitchShifter(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat, MdFloat, std::size_t);
+        explicit PitchShifter(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat, MdFloat, std::size_t, InterpolationType = InterpolationType::linear);
 
         void initialise();
 
@@ -28,16 +24,18 @@ namespace md_audio {
 
         MdFloat perform(MdFloat) noexcept override final;
 
+        ~PitchShifter();
+
     private:
-        Delay m_delay;
-        std::array<Phasor, OVERLAP> m_phasor;
-        std::array<HannOscillator, OVERLAP> m_osc;
+        TapDelay m_delay;
+        Phasor* m_phasor;
+        HannOscillator* m_osc;
         MdFloat m_transposition = 0;
         MdFloat m_size;
         std::size_t m_overlap;
         const MdFloat m_norm;
 
-        void initialise(MdFloat, MdFloat);
+        void initialise(MdFloat, MdFloat) noexcept;
 
         void set_frequency() noexcept;
 
@@ -48,102 +46,23 @@ namespace md_audio {
         inline static constexpr MdFloat compute_frequency(MdFloat, MdFloat) noexcept;
     };
 
-    template <std::uint16_t OVERLAP, typename Delay>
-    PitchShifter<OVERLAP, Delay>::PitchShifter(memory::Allocatable<MdFloat*>& allocator,
-        MdFloat max_delay, MdFloat size, std::size_t overlap) :
-        m_delay(allocator, max_delay, overlap),
-        m_overlap(overlap),
-        m_norm(static_cast<MdFloat>(2) / m_overlap)
-    {
-        initialise(size, static_cast<MdFloat>(1));
-    }
-
-    template <std::uint16_t OVERLAP, typename Delay>
-    PitchShifter<OVERLAP, Delay>::PitchShifter(memory::Allocatable<MdFloat*>& allocator,
-        MdFloat max_delay, MdFloat size, MdFloat transposition, std::size_t overlap) :
-        m_delay(allocator, max_delay, overlap),
-        m_overlap(overlap),
-        m_norm(static_cast<MdFloat>(2) / m_overlap)
-    {
-        initialise(size, transposition);
-    }
-
-    template <std::uint16_t OVERLAP, typename Delay>
-    void PitchShifter<OVERLAP, Delay>::initialise() {
-        m_delay.initialise();
-    }
-
-    template <std::uint16_t OVERLAP, typename Delay>
-    void PitchShifter<OVERLAP, Delay>::initialise(MdFloat size, MdFloat transposition) {
-        m_size = check_size(size);
-        m_transposition = check_transposition(transposition);
-
-        set_frequency();
-
-        for (auto i = 0; i < OVERLAP; i++)
-            m_phasor[i].set_phase(
-                static_cast<MdFloat>(1) - static_cast<MdFloat>(i) / static_cast<MdFloat>(OVERLAP)
-            );
-    }
-
-    template <std::uint16_t OVERLAP, typename Delay>
-    void PitchShifter<OVERLAP, Delay>::set_transposition(MdFloat transposition) noexcept {
+    void PitchShifter::set_transposition(MdFloat transposition) noexcept {
         m_transposition = check_transposition(transposition);
 
         set_frequency();
     }
 
-    template <std::uint16_t OVERLAP, typename Delay>
-    void PitchShifter<OVERLAP, Delay>::set_size(MdFloat size) noexcept {
-        m_size = check_size(size);
-
-        set_frequency();
-    }
-
-    template <std::uint16_t OVERLAP, typename Delay>
-    void PitchShifter<OVERLAP, Delay>::set_frequency() noexcept {
-        auto frequency = compute_frequency(m_transposition, m_size);
-
-        for (auto& p : m_phasor)
-            p.set_frequency(frequency);
-    }
-
-    template <std::uint16_t OVERLAP, typename Delay>
-    MdFloat PitchShifter<OVERLAP, Delay>::check_transposition(MdFloat transposition) noexcept {
+    MdFloat PitchShifter::check_transposition(MdFloat transposition) noexcept {
         return utility::clip(
             transposition, static_cast<MdFloat>(-24), static_cast<MdFloat>(24)
         );
     }
 
-    template <std::uint16_t OVERLAP, typename Delay>
-    MdFloat PitchShifter<OVERLAP, Delay>::check_size(MdFloat size) noexcept {
+    MdFloat PitchShifter::check_size(MdFloat size) noexcept {
         return utility::clip(size, static_cast<MdFloat>(5), m_delay.get_max_delay());
     }
 
-    template <std::uint16_t OVERLAP, typename Delay>
-    MdFloat PitchShifter<OVERLAP, Delay>::perform(MdFloat in) noexcept {
-        auto z = static_cast<MdFloat>(0);
-        auto window = std::array<MdFloat, OVERLAP>{};
-
-        for (auto i = 0; i < OVERLAP; i++) {
-            auto phase = m_phasor[i].perform();
-
-            m_osc[i].set_phase(static_cast<MdFloat>(phase * two_pi));
-
-            auto window = m_osc[i].perform();
-
-            m_delay.set_delay(i, phase * m_size);
-
-            z += m_delay.read(i) * window;
-        }
-
-        m_delay.write(in); // Write the next sample to the delay buffer
-
-        return z * m_norm;
-    }
-
-    template <std::uint16_t OVERLAP, typename Delay>
-    constexpr MdFloat PitchShifter<OVERLAP, Delay>::compute_frequency(MdFloat transposition, MdFloat size) noexcept {
+    constexpr MdFloat PitchShifter::compute_frequency(MdFloat transposition, MdFloat size) noexcept {
         return -(utility::midi_ratio(transposition) - static_cast<MdFloat>(1))
             * static_cast<MdFloat>(sample_rate) / size;
     }

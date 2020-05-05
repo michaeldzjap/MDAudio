@@ -51,7 +51,8 @@ int main() {
     // for (std::size_t i = 0; i < md_audio::table_size + 1; i++)
     //     std::cout << i << "\t" << md_audio::sine_table[i] << ", " << typeid(md_audio::sine_table[i]).name() << std::endl;
 
-    constexpr auto size = 102;
+    constexpr auto length = static_cast<std::uint32_t>(md_audio::utility::seconds_to_samples(.12f)) + 1;
+    constexpr auto size = 102 + length;
     // constexpr auto size = md_audio::ReverbConfig::total_size;
     // constexpr auto size = md_audio::ReverbConfig::total_size + 102;
 
@@ -87,7 +88,8 @@ int main() {
     // reverser.initialise();
     // reverser.toggle_reverse();
     // constexpr auto length = static_cast<std::uint32_t>(md_audio::utility::seconds_to_samples(.12f)) + 1;
-    // md_audio::PitchShifter<length, 2> shifter(12.f, md_audio::utility::seconds_to_samples(.12f));
+    md_audio::PitchShifter shifter(allocator, length, md_audio::utility::seconds_to_samples(.12f), 2);
+    shifter.initialise();
     // md_audio::HighshelfFirstOrder filter(8000., 6.);
     // md_audio::Lowpass filter(100.);
     // md_audio::SineOscillator osc(44100.f / 512.f);
@@ -109,22 +111,22 @@ int main() {
         // const auto y = phasor.perform();
         // const auto z = latch.perform(noise.perform(), y);
         // const auto z = reverser.perform(noise.perform());
-        // const auto z = shifter.perform(osc.perform());
+        const auto z = shifter.perform(y);
         // const auto z = reverb.perform(y);
-        md_audio::MdFloat z[TAPS];
-        delay.perform(y, z, TAPS);
+        // md_audio::MdFloat z[TAPS];
+        // delay.perform(y, z, TAPS);
         // const auto z = delay.perform(y);
 
-        // std::cout << i << "\t" << y << "\t" << z << std::endl;
+        std::cout << i << "\t" << y << "\t" << z << std::endl;
         // std::cout << i << "\t" << z[0] << std::endl;
         // std::cout << i << "\t" << z[0] << ", " << z[1] << std::endl;
 
-        std::cout << i << "\t";
-
-        for (auto i = 0; i < TAPS; i++)
-            std::cout << z[i] << ", ";
-
-        std::cout << std::endl;
+        // std::cout << i << "\t";
+        //
+        // for (auto i = 0; i < TAPS; i++)
+        //     std::cout << z[i] << ", ";
+        //
+        // std::cout << std::endl;
 
         // std::cout << i << "\t";
         //

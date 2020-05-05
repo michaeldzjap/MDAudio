@@ -60,7 +60,7 @@ namespace md_audio {
         std::array<LowpassFirstOrder, ReverbConfig::number_of_outputs> m_lowpass_shifter;
         std::array<HighpassFirstOrder, ReverbConfig::number_of_delays> m_highpass;
         std::array<SineShaper, ReverbConfig::number_of_delays> m_shaper;
-        std::array<PitchShifter<ReverbConfig::overlap_shifter, TapDelayLinear>, ReverbConfig::number_of_outputs> m_shifter;
+        std::array<PitchShifter, ReverbConfig::number_of_outputs> m_shifter;
         std::array<LowshelfFirstOrder, ReverbConfig::number_of_outputs> m_lowshelf;
         std::array<HighshelfFirstOrder, ReverbConfig::number_of_outputs> m_highshelf;
         std::array<std::array<HannOscillator, ReverbConfig::overlap_ergodic>, ReverbConfig::number_of_delays> m_window;

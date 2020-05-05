@@ -25,6 +25,7 @@ set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
     LowshelfSecondOrder.cpp
     Oscillator.cpp
     Phasor.cpp
+    PitchShifter.cpp
     Reader.cpp
     ReaderCubic.cpp
     ReaderLinear.cpp
