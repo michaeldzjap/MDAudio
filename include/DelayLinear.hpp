@@ -2,22 +2,22 @@
 #define MD_AUDIO_DELAY_LINEAR_HPP
 
 #include "Buffer.hpp"
-#include "Processable.hpp"
+#include "Delayable.hpp"
 #include "ReaderLinear.hpp"
 #include "Writer.hpp"
 #include "utility.hpp"
 
 namespace md_audio {
 
-    class DelayLinear : public Processable<MdFloat, MdFloat> {
+    class DelayLinear : public Delayable {
     public:
         explicit DelayLinear(memory::Allocatable<MdFloat*>&, MdFloat);
 
         explicit DelayLinear(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat);
 
-        void initialise();
+        void initialise() override final;
 
-        inline void set_delay(MdFloat) noexcept;
+        inline void set_delay(MdFloat) noexcept override final;
 
         MdFloat perform(MdFloat) noexcept override final;
 

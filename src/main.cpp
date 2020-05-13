@@ -1,12 +1,15 @@
 #include "AllpassStatic.hpp"
 #include "Buffer.hpp"
+#include "Delay.hpp"
 #include "DelayStatic.hpp"
 #include "DelayCubic.hpp"
 #include "DelayLinear.hpp"
 #include "HighpassFirstOrder.hpp"
 #include "HighshelfFirstOrder.hpp"
+#include "InterpolationType.hpp"
 #include "Latch.hpp"
 #include "LowpassFirstOrder.hpp"
+#include "TapDelay.hpp"
 #include "TapDelayStatic.hpp"
 #include "TapDelayCubic.hpp"
 #include "TapDelayLinear.hpp"
@@ -48,7 +51,8 @@ int main() {
     // for (std::size_t i = 0; i < md_audio::table_size + 1; i++)
     //     std::cout << i << "\t" << md_audio::sine_table[i] << ", " << typeid(md_audio::sine_table[i]).name() << std::endl;
 
-    constexpr auto size = 102;
+    constexpr auto length = static_cast<std::uint32_t>(md_audio::utility::seconds_to_samples(.12f)) + 1;
+    constexpr auto size = 102 + length;
     // constexpr auto size = md_audio::ReverbConfig::total_size;
     // constexpr auto size = md_audio::ReverbConfig::total_size + 102;
 
@@ -61,27 +65,31 @@ int main() {
     // reverb.set_pre_delay(.5f);
     // reverb.set_mix(1.f);
     // md_audio::AllpassStatic<100> allpass(50.354261f, .1f);
+    // md_audio::Delay delay(allocator, 102.f, 50.354261f, md_audio::InterpolationType::cubic);
     // md_audio::DelayStatic delay(allocator, 100.f, 50.354261f);
     // md_audio::DelayLinear delay(allocator, 101.f, 50.354261f);
     // md_audio::DelayCubic delay(allocator, 102.f, 50.354261f);
     constexpr auto TAPS = 4;
     // constexpr std::array<md_audio::MdFloat, TAPS> delay_times{99.725535f, 50.f, 5.123f, 25.56256f};
+    // constexpr md_audio::MdFloat delay_times[TAPS] = {99.725535, 50., 5.123, 25.56256};
 
-    // md_audio::TapDelay<TAPS> delay(allocator, 102.f, delay_times);
-    // md_audio::TapDelayStatic<TAPS> delay(allocator, 102.f);
-    // md_audio::TapDelayLinear<TAPS> delay(allocator, 102.f);
-    // md_audio::TapDelayCubic<TAPS> delay(allocator, 102.f);
-    md_audio::VariableDelay<TAPS> delay(allocator, 102.f);
+    // md_audio::TapDelay delay(allocator, 102.f, delay_times, TAPS);
+    // md_audio::TapDelayStatic delay(allocator, 102.f, delay_times, TAPS);
+    // md_audio::TapDelayStatic delay(allocator, 102.f, TAPS);
+    // md_audio::TapDelayLinear delay(allocator, 102.f, TAPS);
+    // md_audio::TapDelayCubic delay(allocator, 102.f, TAPS);
+    md_audio::VariableDelay delay(allocator, 102.f, TAPS);
     delay.initialise();
     delay.set_delay(49.1234f);
     // delay.set_delay(delay_times);
     // constexpr auto length = static_cast<std::uint32_t>(md_audio::utility::seconds_to_samples(.5f)) + 1;
-    // md_audio::ReverseDelay<2> reverser(allocator, 102.f, 80.123f);
-    // md_audio::ReversibleDelay<2> reverser(allocator, 102.f, 80.123f);
+    // md_audio::ReverseDelay reverser(allocator, 102.f, 80.123f, 2);
+    // md_audio::ReversibleDelay reverser(allocator, 102.f, 80.123f, 2);
     // reverser.initialise();
     // reverser.toggle_reverse();
     // constexpr auto length = static_cast<std::uint32_t>(md_audio::utility::seconds_to_samples(.12f)) + 1;
-    // md_audio::PitchShifter<length, 2> shifter(12.f, md_audio::utility::seconds_to_samples(.12f));
+    // md_audio::PitchShifter shifter(allocator, length, md_audio::utility::seconds_to_samples(.12f), 2);
+    // shifter.initialise();
     // md_audio::HighshelfFirstOrder filter(8000., 6.);
     // md_audio::Lowpass filter(100.);
     // md_audio::SineOscillator osc(44100.f / 512.f);
@@ -102,9 +110,11 @@ int main() {
         const auto y = noise.perform();
         // const auto y = phasor.perform();
         // const auto z = latch.perform(noise.perform(), y);
-        // const auto z = reverser.perform(noise.perform());
-        // const auto z = shifter.perform(osc.perform());
+        // const auto z = reverser.perform(y);
+        // const auto z = shifter.perform(y);
         // const auto z = reverb.perform(y);
+        // md_audio::MdFloat z[TAPS];
+        // delay.perform(y, z, TAPS);
         const auto z = delay.perform(y);
 
         std::cout << i << "\t" << y << "\t" << z << std::endl;

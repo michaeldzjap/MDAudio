@@ -9,8 +9,8 @@ namespace md_audio {
         /**
          * Process a single sample.
          *
-         * @param  in The input sample
-         * @return    The processed sample
+         * @param  in  The input sample
+         * @return     The processed sample
          */
         virtual U perform(V in) noexcept = 0;
     };
