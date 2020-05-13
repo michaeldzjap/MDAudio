@@ -56,14 +56,14 @@ void PitchShifter::set_size(MdFloat size) noexcept {
 void PitchShifter::set_frequency() noexcept {
     auto frequency = compute_frequency(m_transposition, m_size);
 
-    for (auto i = 0; i < m_overlap; i++)
+    for (auto i = 0; i < m_overlap; ++i)
         m_phasor[i].set_frequency(frequency);
 }
 
 MdFloat PitchShifter::perform(MdFloat in) noexcept {
     auto z = static_cast<MdFloat>(0);
 
-    for (auto i = 0; i < m_overlap; i++) {
+    for (auto i = 0; i < m_overlap; ++i) {
         auto phase = m_phasor[i].perform();
 
         m_osc[i].set_phase(static_cast<MdFloat>(phase * two_pi));

@@ -54,8 +54,10 @@ void VariableDelay::initialise(MdFloat delay, MdFloat size) noexcept {
     set_delay(delay);
     set_size(size);
 
-    for (auto i = 0; i < m_overlap; i++)
+    for (auto i = 0; i < m_overlap; ++i) {
         m_phasor[i].set_phase(static_cast<MdFloat>(i) / static_cast<MdFloat>(m_overlap));
+        m_osc[i].set_frequency(static_cast<MdFloat>(0));
+    }
 }
 
 void VariableDelay::set_size(MdFloat size) noexcept {
@@ -63,14 +65,14 @@ void VariableDelay::set_size(MdFloat size) noexcept {
 
     auto frequency = compute_frequency(size);
 
-    for (auto i = 0; i < m_overlap; i++)
+    for (auto i = 0; i < m_overlap; ++i)
         m_phasor[i].set_frequency(frequency);
 }
 
 MdFloat VariableDelay::perform(MdFloat in) noexcept {
     auto z = static_cast<MdFloat>(0);
 
-    for (auto i = 0; i < m_overlap; i++) {
+    for (auto i = 0; i < m_overlap; ++i) {
         auto phase = m_phasor[i].perform();
 
         m_osc[i].set_phase(static_cast<MdFloat>(phase * two_pi));

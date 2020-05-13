@@ -7,8 +7,10 @@
 #include "HannOscillator.hpp"
 #include "HighpassFirstOrder.hpp"
 #include "HighshelfFirstOrder.hpp"
+#include "Latch.hpp"
 #include "LowpassFirstOrder.hpp"
 #include "LowshelfFirstOrder.hpp"
+#include "Phasor.hpp"
 #include "PitchShifter.hpp"
 #include "Processable.hpp"
 #include "Reader.hpp"
@@ -18,12 +20,13 @@
 #include "SineOscillator.hpp"
 #include "SineShaper.hpp"
 #include "TapDelayLinear.hpp"
+#include "WhiteNoise.hpp"
 #include "Writer.hpp"
 #include "types.hpp"
 
 namespace md_audio {
 
-    class Reverb : public Processable<std::array<MdFloat, ReverbConfig::number_of_outputs>, MdFloat> {
+    class Reverb : public Processable<std::array<MdFloat, ReverbConfig::output_count>, MdFloat> {
     public:
         explicit Reverb(memory::Allocatable<MdFloat*>&);
 
@@ -49,28 +52,36 @@ namespace md_audio {
 
         void set_mix(MdFloat) noexcept;
 
-        std::array<MdFloat, ReverbConfig::number_of_outputs> perform(MdFloat) noexcept override final;
+        std::array<MdFloat, ReverbConfig::output_count> perform(MdFloat) noexcept override final;
 
     private:
         ReversibleDelay m_pre_delay;
-        std::array<AllpassStatic, ReverbConfig::number_of_delays> m_allpass;
-        std::array<Buffer, ReverbConfig::number_of_delays> m_buffer;
-        std::array<Writer, ReverbConfig::number_of_delays> m_writer;
-        std::array<LowpassFirstOrder, ReverbConfig::number_of_delays> m_lowpass;
-        std::array<LowpassFirstOrder, ReverbConfig::number_of_outputs> m_lowpass_shifter;
-        std::array<HighpassFirstOrder, ReverbConfig::number_of_delays> m_highpass;
-        std::array<SineShaper, ReverbConfig::number_of_delays> m_shaper;
-        std::array<PitchShifter, ReverbConfig::number_of_outputs> m_shifter;
-        std::array<LowshelfFirstOrder, ReverbConfig::number_of_outputs> m_lowshelf;
-        std::array<HighshelfFirstOrder, ReverbConfig::number_of_outputs> m_highshelf;
-        std::array<std::array<HannOscillator, ReverbConfig::overlap_ergodic>, ReverbConfig::number_of_delays> m_window;
-        std::array<std::array<SineOscillator, ReverbConfig::serial_periodic>, ReverbConfig::number_of_delays> m_osc;
-        std::array<std::array<Reader, ReverbConfig::early_reflections>, ReverbConfig::number_of_delays> m_early_reader;
-        std::array<std::array<Reader, ReverbConfig::overlap_ergodic>, ReverbConfig::number_of_delays> m_late_ergodic_reader;
-        std::array<std::array<ReaderLinear, ReverbConfig::serial_periodic>, ReverbConfig::number_of_delays> m_late_periodic_reader;
-        std::array<MdFloat, ReverbConfig::number_of_delays> m_late_delay;
-        std::array<std::array<MdFloat, ReverbConfig::early_reflections>, ReverbConfig::number_of_delays> m_early_delay;
-        std::array<MdFloat, ReverbConfig::number_of_delays> m_feedback{};
+        std::array<AllpassStatic, ReverbConfig::delay_count> m_allpass;
+        std::array<LowpassFirstOrder, ReverbConfig::delay_count> m_lowpass;
+        std::array<LowpassFirstOrder, ReverbConfig::output_count> m_lowpass_shifter;
+        std::array<HighpassFirstOrder, ReverbConfig::delay_count> m_highpass;
+        std::array<SineShaper, ReverbConfig::delay_count> m_shaper;
+        std::array<PitchShifter, ReverbConfig::output_count> m_shifter;
+        std::array<LowshelfFirstOrder, ReverbConfig::output_count> m_lowshelf;
+        std::array<HighshelfFirstOrder, ReverbConfig::output_count> m_highshelf;
+        std::array<Phasor, ReverbConfig::modulation_stages> m_phasor;
+        std::array<Latch, ReverbConfig::modulation_stages> m_latch;
+        WhiteNoise m_noise;
+        std::array<HannOscillator, ReverbConfig::modulation_stages> m_window;
+        std::array<SineOscillator, ReverbConfig::modulation_stages> m_osc;
+        std::array<std::array<Buffer, ReverbConfig::delay_count>, ReverbConfig::serial_stages> m_buffer;
+        std::array<std::array<Writer, ReverbConfig::delay_count>, ReverbConfig::serial_stages> m_writer;
+        std::array<
+            std::array<std::array<Reader, ReverbConfig::early_reflections>, ReverbConfig::delay_count>,
+            ReverbConfig::serial_stages
+        > m_early_reader;
+        std::array<
+            std::array<std::array<ReaderLinear, ReverbConfig::modulation_stages>, ReverbConfig::delay_count>,
+            ReverbConfig::serial_stages
+        > m_late_reader;
+        std::array<MdFloat, ReverbConfig::delay_count> m_late_delay;
+        std::array<std::array<MdFloat, ReverbConfig::early_reflections>, ReverbConfig::delay_count> m_early_delay;
+        std::array<MdFloat, ReverbConfig::delay_count> m_feedback{};
         MdFloat m_decay;
         MdFloat m_shimmer;
         MdFloat m_ergodic_depth;

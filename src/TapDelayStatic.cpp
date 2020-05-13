@@ -29,13 +29,13 @@ void TapDelayStatic::initialise() {
 }
 
 void TapDelayStatic::set_delay(const MdFloat* delay) noexcept {
-    for (auto i = 0; i < m_taps; i++) set_delay(i, delay[i]);
+    for (auto i = 0; i < m_taps; ++i) set_delay(i, delay[i]);
 }
 
 MdFloat* TapDelayStatic::perform(MdFloat in, MdFloat* out, std::size_t) noexcept {
     m_writer.write(in);
 
-    for (auto i = 0; i < m_taps; i++)
+    for (auto i = 0; i < m_taps; ++i)
         out[i] = m_reader.read(m_writer, m_delay[i]);
 
     m_writer.increment();

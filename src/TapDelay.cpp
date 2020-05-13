@@ -57,7 +57,7 @@ void TapDelay::initialise(const MdFloat* delay, InterpolationType interpolation_
 }
 
 void TapDelay::set_delay(const MdFloat* delay) noexcept {
-    for (auto i = 0; i < m_taps; i++) set_delay(i, delay[i]);
+    for (auto i = 0; i < m_taps; ++i) set_delay(i, delay[i]);
 }
 
 MdFloat* TapDelay::perform(MdFloat in, MdFloat* out, std::size_t n) noexcept {
@@ -67,7 +67,7 @@ MdFloat* TapDelay::perform(MdFloat in, MdFloat* out, std::size_t n) noexcept {
 MdFloat* TapDelay::perform_static(MdFloat in, MdFloat* out, std::size_t) noexcept {
     m_writer.write(in);
 
-    for (auto i = 0; i < m_taps; i++)
+    for (auto i = 0; i < m_taps; ++i)
         out[i] = m_reader.read(m_writer, m_delay[i]);
 
     m_writer.increment();
@@ -78,7 +78,7 @@ MdFloat* TapDelay::perform_static(MdFloat in, MdFloat* out, std::size_t) noexcep
 MdFloat* TapDelay::perform_linear(MdFloat in, MdFloat* out, std::size_t) noexcept {
     m_writer.write(in);
 
-    for (auto i = 0; i < m_taps; i++)
+    for (auto i = 0; i < m_taps; ++i)
         out[i] = m_reader_linear.read(m_writer, m_delay[i], m_frac[i]);
 
     m_writer.increment();
@@ -89,7 +89,7 @@ MdFloat* TapDelay::perform_linear(MdFloat in, MdFloat* out, std::size_t) noexcep
 MdFloat* TapDelay::perform_cubic(MdFloat in, MdFloat* out, std::size_t) noexcept {
     m_writer.write(in);
 
-    for (auto i = 0; i < m_taps; i++)
+    for (auto i = 0; i < m_taps; ++i)
         out[i] = m_reader_cubic.read(m_writer, m_delay[i], m_frac[i]);
 
     m_writer.increment();

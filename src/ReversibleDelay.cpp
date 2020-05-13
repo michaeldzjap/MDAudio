@@ -54,7 +54,7 @@ void ReversibleDelay::initialise(MdFloat size) noexcept {
     set_forward_delay(size);
     set_backward_delay(size);
 
-    for (auto i = 0; i < m_overlap; i++)
+    for (auto i = 0; i < m_overlap; ++i)
         m_phasor[i].set_phase(static_cast<MdFloat>(i) / static_cast<MdFloat>(m_overlap));
 }
 
@@ -63,7 +63,7 @@ void ReversibleDelay::set_backward_delay(MdFloat size) noexcept {
 
     m_frequency = compute_frequency(m_size);
 
-    for (auto i = 0; i < m_overlap; i++)
+    for (auto i = 0; i < m_overlap; ++i)
         m_phasor[i].set_frequency(m_frequency);
 }
 
@@ -75,7 +75,7 @@ MdFloat ReversibleDelay::perform(MdFloat in) noexcept {
     auto z = static_cast<MdFloat>(0);
 
     if (m_reverse) {
-        for (auto i = 0; i < m_overlap; i++) {
+        for (auto i = 0; i < m_overlap; ++i) {
             auto phase = m_phasor[i].perform();
 
             m_osc[i].set_phase(static_cast<MdFloat>(phase * two_pi));
