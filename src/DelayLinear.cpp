@@ -6,7 +6,7 @@ using md_audio::MdFloat;
 
 DelayLinear::DelayLinear(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay) :
     m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
-    m_reader(m_buffer),
+    m_reader(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_max_delay(max_delay - static_cast<MdFloat>(1))
 {
@@ -15,7 +15,7 @@ DelayLinear::DelayLinear(memory::Allocatable<MdFloat*>& allocator, MdFloat max_d
 
 DelayLinear::DelayLinear(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay, MdFloat delay) :
     m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
-    m_reader(m_buffer),
+    m_reader(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_max_delay(max_delay - static_cast<MdFloat>(1))
 {

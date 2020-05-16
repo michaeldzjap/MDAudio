@@ -5,7 +5,7 @@ using md_audio::TapDelayStatic;
 
 TapDelayStatic::TapDelayStatic(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay, std::size_t taps) :
     m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
-    m_reader(m_buffer),
+    m_reader(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_max_delay(max_delay),
     m_taps(taps),
@@ -15,7 +15,7 @@ TapDelayStatic::TapDelayStatic(memory::Allocatable<MdFloat*>& allocator, MdFloat
 TapDelayStatic::TapDelayStatic(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay,
     const MdFloat* delay, std::size_t taps) :
     m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
-    m_reader(m_buffer),
+    m_reader(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_max_delay(max_delay),
     m_taps(taps),

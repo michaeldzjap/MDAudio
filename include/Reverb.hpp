@@ -71,10 +71,7 @@ namespace md_audio {
         std::array<SineOscillator, ReverbConfig::modulation_stages> m_osc;
         std::array<std::array<Buffer, ReverbConfig::delay_count>, ReverbConfig::serial_stages> m_buffer;
         std::array<std::array<Writer, ReverbConfig::delay_count>, ReverbConfig::serial_stages> m_writer;
-        std::array<
-            std::array<std::array<Reader, ReverbConfig::early_reflections>, ReverbConfig::delay_count>,
-            ReverbConfig::serial_stages
-        > m_early_reader;
+        std::array<std::array<Reader, ReverbConfig::early_reflections>, ReverbConfig::delay_count> m_early_reader;
         std::array<
             std::array<std::array<ReaderLinear, ReverbConfig::modulation_stages>, ReverbConfig::delay_count>,
             ReverbConfig::serial_stages
