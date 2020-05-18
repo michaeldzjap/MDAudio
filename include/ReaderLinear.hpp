@@ -9,12 +9,18 @@ namespace md_audio {
 
     class ReaderLinear {
     public:
-        explicit ReaderLinear(Buffer&);
+        explicit ReaderLinear(Buffer&, Writer&);
+
+        explicit ReaderLinear(Buffer&, std::uint32_t);
+
+        explicit ReaderLinear(Buffer&, std::uint32_t, std::uint32_t);
 
         MdFloat read(Writer&, std::uint32_t, MdFloat) noexcept;
 
     private:
         Buffer& m_buffer;
+        std::uint32_t m_lower_bound = 0;
+        std::uint32_t m_upper_bound;
     };
 
 }

@@ -23,6 +23,7 @@ set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
     LowpassSecondOrder.cpp
     LowshelfFirstOrder.cpp
     LowshelfSecondOrder.cpp
+    Normaliser.cpp
     Oscillator.cpp
     Phasor.cpp
     PitchShifter.cpp
