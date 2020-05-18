@@ -1,14 +1,14 @@
 #ifndef MD_AUDIO_NORMALISER_HPP
 #define MD_AUDIO_NORMALISER_HPP
 
-#include "Buffer.hpp"
+#include "Allocatable.hpp"
 #include "Processable.hpp"
-#include "Reader.hpp"
-#include "Writer.hpp"
 #include "types.hpp"
 #include "utility.hpp"
 
 namespace md_audio {
+
+    // Original source: https://github.com/supercollider/supercollider/blob/develop/server/plugins/FilterUGens.cpp
 
     class Normaliser : public Processable<MdFloat, MdFloat> {
     public:
@@ -16,23 +16,29 @@ namespace md_audio {
 
         explicit Normaliser(memory::Allocatable<MdFloat*>&, std::uint32_t, MdFloat);
 
+        void initialise();
+
         inline void set_amplitude(MdFloat) noexcept;
 
         MdFloat perform(MdFloat) noexcept override final;
 
+        ~Normaliser();
+
     private:
-        Buffer m_buffer;
-        Reader m_reader_in;
-        Reader m_reader_mid;
-        Reader m_reader_out;
-        Writer m_writer;
+        memory::Allocatable<MdFloat*>& m_allocator;
+        MdFloat* m_memory = nullptr;
+        MdFloat* m_in_buf = nullptr;
+        MdFloat* m_mid_buf = nullptr;
+        MdFloat* m_out_buf = nullptr;
+        const std::size_t m_size;
+        std::uint32_t m_duration;
         MdFloat m_amplitude;
         std::uint32_t m_flips = 0;
         std::uint32_t m_pos = 0;
         MdFloat m_slope = static_cast<MdFloat>(0);
         MdFloat m_level = static_cast<MdFloat>(1);
         MdFloat m_cur_max_val = static_cast<MdFloat>(0);
-        MdFloat m_pre_max_val = static_cast<MdFloat>(0);
+        MdFloat m_prev_max_val = static_cast<MdFloat>(0);
         MdFloat m_slope_factor;
     };
 

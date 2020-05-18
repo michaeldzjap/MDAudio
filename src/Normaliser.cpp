@@ -1,30 +1,80 @@
 #include "Normaliser.hpp"
+#include <cstring>
 
 using md_audio::MdFloat;
 using md_audio::Normaliser;
 
 Normaliser::Normaliser(memory::Allocatable<MdFloat*>& allocator, std::uint32_t duration) :
-    m_buffer(allocator, duration * 3),
-    m_reader_in(m_buffer, 0, duration - 1),
-    m_reader_mid(m_buffer, duration, (duration << 1) - 1),
-    m_reader_out(m_buffer, duration << 1, duration * 3 - 1),
-    m_writer(m_buffer, duration * 3 - 1),
+    m_allocator(allocator),
+    m_size(3 * duration),
+    m_duration(duration),
     m_slope_factor(static_cast<MdFloat>(1) / static_cast<MdFloat>(duration))
 {
     set_amplitude(static_cast<MdFloat>(1));
 }
 
 Normaliser::Normaliser(memory::Allocatable<MdFloat*>& allocator, std::uint32_t duration, MdFloat amplitude) :
-    m_buffer(allocator, duration * 3),
-    m_reader_in(m_buffer, 0, duration - 1),
-    m_reader_mid(m_buffer, duration, (duration << 1) - 1),
-    m_reader_out(m_buffer, duration << 1, duration * 3 - 1),
-    m_writer(m_buffer, duration * 3 - 1),
+    m_allocator(allocator),
+    m_size(3 * duration),
+    m_duration(duration),
     m_slope_factor(static_cast<MdFloat>(1) / static_cast<MdFloat>(duration))
 {
     set_amplitude(amplitude);
 }
 
-MdFloat Normaliser::perform(MdFloat) noexcept {
-    //
+void Normaliser::initialise() {
+    m_memory = m_allocator.allocate(m_size);
+
+    if (!m_memory)
+        throw std::bad_alloc();
+
+    std::memset(m_memory, 0, m_size * sizeof(MdFloat));
+
+    m_in_buf = m_memory;
+    m_mid_buf = m_in_buf + m_duration;
+    m_out_buf = m_mid_buf + m_duration;
+}
+
+MdFloat Normaliser::perform(MdFloat in) noexcept {
+    MdFloat* in_buf = m_in_buf + m_pos;
+    MdFloat* out_buf = m_out_buf + m_pos;
+
+    (*(in_buf)++) = in;
+
+    auto z = m_flips >= 2 ? m_level * (*(out_buf)++) : static_cast<MdFloat>(0);
+
+    m_level += m_slope;
+    in = std::abs(in);
+
+    if (in > m_cur_max_val) m_cur_max_val = in;
+
+    m_pos++;
+
+    if (m_pos >= m_duration) {
+        m_pos = 0;
+
+        auto max_val_2 = utility::max(m_prev_max_val, m_cur_max_val);
+        m_prev_max_val = m_cur_max_val;
+        m_cur_max_val = static_cast<MdFloat>(0);
+
+        auto next_level = max_val_2 <= static_cast<MdFloat>(0.00001)
+            ? static_cast<MdFloat>(100000) * m_amplitude
+            : m_amplitude / max_val_2;
+
+        m_slope = (next_level - m_level) * m_slope_factor;
+
+        auto temp = m_out_buf;
+        m_out_buf = m_mid_buf;
+        m_mid_buf = m_in_buf;
+        m_in_buf = temp;
+
+        m_flips++;
+    }
+
+    return z;
+}
+
+Normaliser::~Normaliser() {
+    if (m_memory)
+        m_allocator.deallocate(m_memory, m_size);
 }
