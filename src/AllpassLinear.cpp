@@ -40,7 +40,6 @@ MdFloat AllpassLinear::perform(MdFloat in) noexcept {
     auto s = in + m_gain * sd;
 
     m_writer.write(s);
-    m_writer.increment();
 
     return sd - m_gain * s;
 }

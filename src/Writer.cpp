@@ -19,8 +19,6 @@ Writer::Writer(Buffer& buffer, std::uint32_t lower_bound, std::uint32_t upper_bo
 
 void Writer::write(MdFloat in) noexcept {
     m_buffer[m_write_index] = in;
-}
 
-void Writer::increment() noexcept {
     m_write_index = utility::wrap(m_write_index + 1, m_lower_bound, m_upper_bound);
 }
