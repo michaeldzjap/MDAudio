@@ -40,14 +40,11 @@ MdFloat* TapDelayLinear::perform(MdFloat in, MdFloat* out, std::size_t) noexcept
     for (auto i = 0; i < m_taps; ++i)
         out[i] = m_reader.read(m_writer, m_delay[i], m_frac[i]);
 
-    m_writer.increment();
-
     return out;
 }
 
 void TapDelayLinear::write(MdFloat in) noexcept {
     m_writer.write(in);
-    m_writer.increment();
 }
 
 MdFloat TapDelayLinear::read(std::size_t index) noexcept {

@@ -51,8 +51,6 @@ MdFloat Delay::perform_static(MdFloat in) noexcept {
 
     auto z = m_reader.read(m_writer, m_delay);
 
-    m_writer.increment();
-
     return z;
 }
 
@@ -61,8 +59,6 @@ MdFloat Delay::perform_linear(MdFloat in) noexcept {
 
     auto z = m_reader_linear.read(m_writer, m_delay, m_frac);
 
-    m_writer.increment();
-
     return z;
 }
 
@@ -70,8 +66,6 @@ MdFloat Delay::perform_cubic(MdFloat in) noexcept {
     m_writer.write(in);
 
     auto z = m_reader_cubic.read(m_writer, m_delay, m_frac);
-
-    m_writer.increment();
 
     return z;
 }

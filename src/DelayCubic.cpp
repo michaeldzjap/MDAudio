@@ -30,7 +30,5 @@ MdFloat DelayCubic::perform(MdFloat in) noexcept {
 
     auto z = m_reader.read(m_writer, m_delay, m_frac);
 
-    m_writer.increment();
-
     return z;
 }
