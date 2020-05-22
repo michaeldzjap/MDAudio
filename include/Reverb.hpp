@@ -10,6 +10,7 @@
 #include "Latch.hpp"
 #include "LowpassFirstOrder.hpp"
 #include "LowshelfFirstOrder.hpp"
+#include "Normaliser.hpp"
 #include "Phasor.hpp"
 #include "PitchShifter.hpp"
 #include "Processable.hpp"
@@ -69,13 +70,11 @@ namespace md_audio {
         WhiteNoise m_noise;
         std::array<HannOscillator, ReverbConfig::modulation_stages> m_window;
         std::array<SineOscillator, ReverbConfig::modulation_stages> m_osc;
+        std::array<Normaliser, ReverbConfig::delay_count> m_normaliser;
         std::array<std::array<Buffer, ReverbConfig::delay_count>, ReverbConfig::serial_stages> m_buffer;
         std::array<std::array<Writer, ReverbConfig::delay_count>, ReverbConfig::serial_stages> m_writer;
-        std::array<std::array<Reader, ReverbConfig::early_reflections>, ReverbConfig::delay_count> m_early_reader;
-        std::array<
-            std::array<std::array<ReaderLinear, ReverbConfig::modulation_stages>, ReverbConfig::delay_count>,
-            ReverbConfig::serial_stages
-        > m_late_reader;
+        std::array<Reader, ReverbConfig::delay_count> m_early_reader;
+        std::array<std::array<ReaderLinear, ReverbConfig::delay_count>, ReverbConfig::serial_stages> m_late_reader;
         std::array<MdFloat, ReverbConfig::delay_count> m_late_delay;
         std::array<std::array<MdFloat, ReverbConfig::early_reflections>, ReverbConfig::delay_count> m_early_delay;
         std::array<MdFloat, ReverbConfig::delay_count> m_feedback{};
