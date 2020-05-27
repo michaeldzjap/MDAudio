@@ -3,31 +3,31 @@
 using md_audio::MdFloat;
 using md_audio::TapDelayCubic;
 
-TapDelayCubic::TapDelayCubic(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay, std::size_t taps) :
-    m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
+TapDelayCubic::TapDelayCubic(memory::Poolable& pool, MdFloat max_delay, std::size_t taps) :
+    m_pool(pool),
+    m_buffer(pool, static_cast<std::uint32_t>(max_delay)),
     m_reader(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_max_delay(max_delay - static_cast<MdFloat>(2)),
-    m_taps(taps),
-    m_delay(new std::uint32_t[m_taps]),
-    m_frac(new MdFloat[m_taps])
+    m_taps(taps)
 {}
-
-TapDelayCubic::TapDelayCubic(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay,
-    const MdFloat* delay, std::size_t taps) :
-    m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
-    m_reader(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
-    m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
-    m_max_delay(max_delay - static_cast<MdFloat>(2)),
-    m_taps(taps),
-    m_delay(new std::uint32_t[m_taps]),
-    m_frac(new MdFloat[m_taps])
-{
-    set_delay(delay);
-}
 
 void TapDelayCubic::initialise() {
     m_buffer.initialise();
+
+    m_delay = static_cast<std::uint32_t*>(allocate(sizeof(std::uint32_t)));
+    m_frac = static_cast<MdFloat*>(allocate(sizeof(MdFloat)));
+
+    for (auto i = 0; i < m_taps; ++i)
+        set_delay(i, static_cast<MdFloat>(1));
+}
+
+void* TapDelayCubic::allocate(std::size_t size) {
+    auto memory = m_pool.allocate(m_taps * size);
+
+    if (!memory) throw std::bad_alloc();
+
+    return memory;
 }
 
 void TapDelayCubic::set_delay(const MdFloat* delay) noexcept {
@@ -52,6 +52,6 @@ MdFloat TapDelayCubic::read(std::size_t index) noexcept {
 }
 
 TapDelayCubic::~TapDelayCubic() {
-    delete[] m_delay;
-    delete[] m_frac;
+    if (m_delay) m_pool.deallocate(m_delay);
+    if (m_frac) m_pool.deallocate(m_frac);
 }

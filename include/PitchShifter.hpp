@@ -12,9 +12,9 @@ namespace md_audio {
 
     class PitchShifter : public Processable<MdFloat, MdFloat> {
     public:
-        explicit PitchShifter(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat, std::size_t, InterpolationType = InterpolationType::linear);
+        explicit PitchShifter(memory::Poolable&, MdFloat, MdFloat, std::size_t, InterpolationType = InterpolationType::linear);
 
-        explicit PitchShifter(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat, MdFloat, std::size_t, InterpolationType = InterpolationType::linear);
+        explicit PitchShifter(memory::Poolable&, MdFloat, MdFloat, MdFloat, std::size_t, InterpolationType = InterpolationType::linear);
 
         void initialise();
 
@@ -27,15 +27,18 @@ namespace md_audio {
         ~PitchShifter();
 
     private:
+        memory::Poolable& m_pool;
         TapDelay m_delay;
-        Phasor* m_phasor;
-        HannOscillator* m_osc;
+        Phasor* m_phasor = nullptr;
+        HannOscillator* m_osc = nullptr;
         MdFloat m_transposition = 0;
         MdFloat m_size;
         std::size_t m_overlap;
         const MdFloat m_norm;
 
-        void initialise(MdFloat, MdFloat) noexcept;
+        void initialise(MdFloat, MdFloat);
+
+        void* allocate(std::size_t size);
 
         void set_frequency() noexcept;
 

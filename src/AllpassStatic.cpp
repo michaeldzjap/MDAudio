@@ -3,8 +3,8 @@
 using md_audio::AllpassStatic;
 using md_audio::MdFloat;
 
-AllpassStatic::AllpassStatic(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay) :
-    m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
+AllpassStatic::AllpassStatic(memory::Poolable& pool, MdFloat max_delay) :
+    m_buffer(pool, static_cast<std::uint32_t>(max_delay)),
     m_reader(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_max_delay(max_delay)
@@ -12,8 +12,8 @@ AllpassStatic::AllpassStatic(memory::Allocatable<MdFloat*>& allocator, MdFloat m
     set_delay(static_cast<MdFloat>(1));
 }
 
-AllpassStatic::AllpassStatic(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay, MdFloat delay) :
-    m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
+AllpassStatic::AllpassStatic(memory::Poolable& pool, MdFloat max_delay, MdFloat delay) :
+    m_buffer(pool, static_cast<std::uint32_t>(max_delay)),
     m_reader(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_max_delay(max_delay)
@@ -21,8 +21,8 @@ AllpassStatic::AllpassStatic(memory::Allocatable<MdFloat*>& allocator, MdFloat m
     set_delay(delay);
 }
 
-AllpassStatic::AllpassStatic(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay, MdFloat delay, MdFloat gain) :
-    m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
+AllpassStatic::AllpassStatic(memory::Poolable& pool, MdFloat max_delay, MdFloat delay, MdFloat gain) :
+    m_buffer(pool, static_cast<std::uint32_t>(max_delay)),
     m_reader(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_max_delay(max_delay)

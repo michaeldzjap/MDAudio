@@ -3,8 +3,8 @@
 using md_audio::DelayCubic;
 using md_audio::MdFloat;
 
-DelayCubic::DelayCubic(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay) :
-    m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
+DelayCubic::DelayCubic(memory::Poolable& pool, MdFloat max_delay) :
+    m_buffer(pool, static_cast<std::uint32_t>(max_delay)),
     m_reader(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_max_delay(max_delay - static_cast<MdFloat>(2))
@@ -12,8 +12,8 @@ DelayCubic::DelayCubic(memory::Allocatable<MdFloat*>& allocator, MdFloat max_del
     set_delay(static_cast<MdFloat>(1));
 }
 
-DelayCubic::DelayCubic(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay, MdFloat delay) :
-    m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
+DelayCubic::DelayCubic(memory::Poolable& pool, MdFloat max_delay, MdFloat delay) :
+    m_buffer(pool, static_cast<std::uint32_t>(max_delay)),
     m_reader(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_max_delay(max_delay - static_cast<MdFloat>(2))

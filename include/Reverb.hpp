@@ -1,7 +1,6 @@
 #ifndef MD_AUDIO_REVERB_HPP
 #define MD_AUDIO_REVERB_HPP
 
-#include "Allocatable.hpp"
 #include "AllpassStatic.hpp"
 #include "Buffer.hpp"
 #include "HannOscillator.hpp"
@@ -29,7 +28,7 @@ namespace md_audio {
 
     class Reverb : public Processable<std::array<MdFloat, ReverbConfig::output_count>, MdFloat> {
     public:
-        explicit Reverb(memory::Allocatable<MdFloat*>&);
+        explicit Reverb(memory::Poolable&);
 
         void initialise();
 

@@ -11,9 +11,9 @@ namespace md_audio {
 
     class DelayStatic : public Delayable {
     public:
-        explicit DelayStatic(memory::Allocatable<MdFloat*>&, MdFloat);
+        explicit DelayStatic(memory::Poolable&, MdFloat);
 
-        explicit DelayStatic(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat);
+        explicit DelayStatic(memory::Poolable&, MdFloat, MdFloat);
 
         void initialise() override final;
 

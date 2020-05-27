@@ -1,7 +1,7 @@
 #ifndef MD_AUDIO_NORMALISER_HPP
 #define MD_AUDIO_NORMALISER_HPP
 
-#include "Allocatable.hpp"
+#include "Poolable.hpp"
 #include "Processable.hpp"
 #include "types.hpp"
 #include "utility.hpp"
@@ -12,9 +12,9 @@ namespace md_audio {
 
     class Normaliser : public Processable<MdFloat, MdFloat> {
     public:
-        explicit Normaliser(memory::Allocatable<MdFloat*>&, std::uint32_t);
+        explicit Normaliser(memory::Poolable&, std::uint32_t);
 
-        explicit Normaliser(memory::Allocatable<MdFloat*>&, std::uint32_t, MdFloat);
+        explicit Normaliser(memory::Poolable&, std::uint32_t, MdFloat);
 
         void initialise();
 
@@ -25,7 +25,7 @@ namespace md_audio {
         ~Normaliser();
 
     private:
-        memory::Allocatable<MdFloat*>& m_allocator;
+        memory::Poolable& m_pool;
         MdFloat* m_memory = nullptr;
         MdFloat* m_in_buf = nullptr;
         MdFloat* m_mid_buf = nullptr;

@@ -11,11 +11,11 @@ namespace md_audio {
 
     class AllpassCubic : public Processable<MdFloat, MdFloat> {
     public:
-        explicit AllpassCubic(memory::Allocatable<MdFloat*>&, MdFloat);
+        explicit AllpassCubic(memory::Poolable&, MdFloat);
 
-        explicit AllpassCubic(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat);
+        explicit AllpassCubic(memory::Poolable&, MdFloat, MdFloat);
 
-        explicit AllpassCubic(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat, MdFloat);
+        explicit AllpassCubic(memory::Poolable&, MdFloat, MdFloat, MdFloat);
 
         void initialise();
 

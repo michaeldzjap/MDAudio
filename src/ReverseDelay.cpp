@@ -4,26 +4,33 @@
 using md_audio::MdFloat;
 using md_audio::ReverseDelay;
 
-ReverseDelay::ReverseDelay(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay,
-    std::size_t overlap, InterpolationType interpolation_type) :
-    m_delay(allocator, max_delay, overlap, interpolation_type),
+ReverseDelay::ReverseDelay(
+    memory::Poolable& pool,
+    MdFloat max_delay,
+    std::size_t overlap,
+    InterpolationType interpolation_type
+) :
+    m_pool(pool),
+    m_delay(pool, max_delay, overlap, interpolation_type),
     m_overlap(overlap),
-    m_norm(static_cast<MdFloat>(2) / overlap),
-    m_phasor(new Phasor[overlap]),
-    m_osc(new HannOscillator[overlap])
+    m_norm(static_cast<MdFloat>(2) / overlap)
 {
     assert(m_overlap > 1);
 
     initialise(static_cast<MdFloat>(1));
 }
 
-ReverseDelay::ReverseDelay(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay,
-    MdFloat size, std::size_t overlap, InterpolationType interpolation_type) :
-    m_delay(allocator, max_delay, overlap, interpolation_type),
+ReverseDelay::ReverseDelay(
+    memory::Poolable& pool,
+    MdFloat max_delay,
+    MdFloat size,
+    std::size_t overlap,
+    InterpolationType interpolation_type
+) :
+    m_pool(pool),
+    m_delay(pool, max_delay, overlap, interpolation_type),
     m_overlap(overlap),
-    m_norm(static_cast<MdFloat>(2) / overlap),
-    m_phasor(new Phasor[overlap]),
-    m_osc(new HannOscillator[overlap])
+    m_norm(static_cast<MdFloat>(2) / overlap)
 {
     assert(m_overlap > 1);
 
@@ -34,11 +41,22 @@ void ReverseDelay::initialise() {
     m_delay.initialise();
 }
 
-void ReverseDelay::initialise(MdFloat size) noexcept {
+void ReverseDelay::initialise(MdFloat size) {
+    m_phasor = static_cast<Phasor*>(allocate(sizeof(Phasor)));
+    m_osc = static_cast<HannOscillator*>(allocate(sizeof(HannOscillator)));
+
     set_size(size);
 
     for (auto i = 0; i < m_overlap; ++i)
         m_phasor[i].set_phase(static_cast<MdFloat>(i) / static_cast<MdFloat>(m_overlap));
+}
+
+void* ReverseDelay::allocate(std::size_t size) {
+    auto memory = m_pool.allocate(m_overlap * size);
+
+    if (!memory) throw std::bad_alloc();
+
+    return memory;
 }
 
 void ReverseDelay::set_size(MdFloat size) noexcept {
@@ -71,6 +89,6 @@ MdFloat ReverseDelay::perform(MdFloat in) noexcept {
 }
 
 ReverseDelay::~ReverseDelay() {
-    delete[] m_phasor;
-    delete[] m_osc;
+    if (m_phasor) m_pool.deallocate(m_phasor);
+    if (m_osc) m_pool.deallocate(m_osc);
 }

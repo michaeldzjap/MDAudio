@@ -3,9 +3,9 @@
 using md_audio::Delay;
 using md_audio::MdFloat;
 
-Delay::Delay(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay,
+Delay::Delay(memory::Poolable& pool, MdFloat max_delay,
     InterpolationType interpolation_type) :
-    m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
+    m_buffer(pool, static_cast<std::uint32_t>(max_delay)),
     m_reader(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_reader_linear(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_reader_cubic(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
@@ -15,9 +15,9 @@ Delay::Delay(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay,
     initialise(static_cast<MdFloat>(1), interpolation_type);
 }
 
-Delay::Delay(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay, MdFloat delay,
+Delay::Delay(memory::Poolable& pool, MdFloat max_delay, MdFloat delay,
     InterpolationType interpolation_type) :
-    m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
+    m_buffer(pool, static_cast<std::uint32_t>(max_delay)),
     m_reader(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_reader_linear(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_reader_cubic(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),

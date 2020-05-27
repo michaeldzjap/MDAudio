@@ -4,27 +4,35 @@
 using md_audio::MdFloat;
 using md_audio::PitchShifter;
 
-PitchShifter::PitchShifter(memory::Allocatable<MdFloat*>& allocator,
-    MdFloat max_delay, MdFloat size, std::size_t overlap, InterpolationType interpolation_type) :
-    m_delay(allocator, max_delay, overlap, interpolation_type),
+PitchShifter::PitchShifter(
+    memory::Poolable& pool,
+    MdFloat max_delay,
+    MdFloat size,
+    std::size_t overlap,
+    InterpolationType interpolation_type
+) :
+    m_pool(pool),
+    m_delay(pool, max_delay, overlap, interpolation_type),
     m_overlap(overlap),
-    m_norm(static_cast<MdFloat>(2) / overlap),
-    m_phasor(new Phasor[overlap]),
-    m_osc(new HannOscillator[overlap])
+    m_norm(static_cast<MdFloat>(2) / overlap)
 {
     assert(m_overlap > 1);
 
     initialise(size, static_cast<MdFloat>(1));
 }
 
-PitchShifter::PitchShifter(memory::Allocatable<MdFloat*>& allocator,
-    MdFloat max_delay, MdFloat size, MdFloat transposition, std::size_t overlap,
-    InterpolationType interpolation_type) :
-    m_delay(allocator, max_delay, overlap, interpolation_type),
+PitchShifter::PitchShifter(
+    memory::Poolable& pool,
+    MdFloat max_delay,
+    MdFloat size,
+    MdFloat transposition,
+    std::size_t overlap,
+    InterpolationType interpolation_type
+) :
+    m_pool(pool),
+    m_delay(pool, max_delay, overlap, interpolation_type),
     m_overlap(overlap),
-    m_norm(static_cast<MdFloat>(2) / m_overlap),
-    m_phasor(new Phasor[overlap]),
-    m_osc(new HannOscillator[overlap])
+    m_norm(static_cast<MdFloat>(2) / m_overlap)
 {
     assert(m_overlap > 1);
 
@@ -35,7 +43,9 @@ void PitchShifter::initialise() {
     m_delay.initialise();
 }
 
-void PitchShifter::initialise(MdFloat size, MdFloat transposition) noexcept {
+void PitchShifter::initialise(MdFloat size, MdFloat transposition) {
+    m_phasor = static_cast<Phasor*>(allocate(sizeof(Phasor)));
+    m_osc = static_cast<HannOscillator*>(allocate(sizeof(HannOscillator)));
     m_size = check_size(size);
     m_transposition = check_transposition(transposition);
 
@@ -45,6 +55,14 @@ void PitchShifter::initialise(MdFloat size, MdFloat transposition) noexcept {
         m_phasor[i].set_phase(
             static_cast<MdFloat>(1) - static_cast<MdFloat>(i) / static_cast<MdFloat>(m_overlap)
         );
+}
+
+void* PitchShifter::allocate(std::size_t size) {
+    auto memory = m_pool.allocate(m_overlap * size);
+
+    if (!memory) throw std::bad_alloc();
+
+    return memory;
 }
 
 void PitchShifter::set_size(MdFloat size) noexcept {
@@ -81,6 +99,6 @@ MdFloat PitchShifter::perform(MdFloat in) noexcept {
 }
 
 PitchShifter::~PitchShifter() {
-    delete[] m_phasor;
-    delete[] m_osc;
+    if (m_phasor) m_pool.deallocate(m_phasor);
+    if (m_osc) m_pool.deallocate(m_osc);
 }

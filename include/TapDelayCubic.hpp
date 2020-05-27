@@ -11,9 +11,7 @@ namespace md_audio {
 
     class TapDelayCubic : public TapDelayable {
     public:
-        explicit TapDelayCubic(memory::Allocatable<MdFloat*>&, MdFloat, std::size_t);
-
-        explicit TapDelayCubic(memory::Allocatable<MdFloat*>&, MdFloat, const MdFloat*, std::size_t);
+        explicit TapDelayCubic(memory::Poolable&, MdFloat, std::size_t);
 
         void initialise() override final;
 
@@ -32,13 +30,16 @@ namespace md_audio {
         ~TapDelayCubic();
 
     private:
+        memory::Poolable& m_pool;
         Buffer m_buffer;
         ReaderCubic m_reader;
         Writer m_writer;
         MdFloat m_max_delay;
         std::size_t m_taps;
-        std::uint32_t* m_delay;
-        MdFloat* m_frac;
+        std::uint32_t* m_delay = nullptr;
+        MdFloat* m_frac = nullptr;
+
+        void* allocate(std::size_t);
     };
 
     void TapDelayCubic::set_delay(std::size_t index, MdFloat delay) noexcept {

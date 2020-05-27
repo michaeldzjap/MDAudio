@@ -11,9 +11,7 @@ namespace md_audio {
 
     class TapDelayStatic : public TapDelayable {
     public:
-        explicit TapDelayStatic(memory::Allocatable<MdFloat*>&, MdFloat, std::size_t);
-
-        explicit TapDelayStatic(memory::Allocatable<MdFloat*>&, MdFloat, const MdFloat*, std::size_t);
+        explicit TapDelayStatic(memory::Poolable&, MdFloat, std::size_t);
 
         void initialise() override final;
 
@@ -32,12 +30,13 @@ namespace md_audio {
         ~TapDelayStatic();
 
     private:
+        memory::Poolable& m_pool;
         Buffer m_buffer;
         Reader m_reader;
         Writer m_writer;
         MdFloat m_max_delay;
         std::size_t m_taps;
-        std::uint32_t* m_delay;
+        std::uint32_t* m_delay = nullptr;
     };
 
     void TapDelayStatic::set_delay(std::size_t index, MdFloat delay) noexcept {

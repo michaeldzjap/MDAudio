@@ -12,9 +12,9 @@ namespace md_audio {
 
     class ReverseDelay : public Processable<MdFloat, MdFloat> {
     public:
-        explicit ReverseDelay(memory::Allocatable<MdFloat*>&, MdFloat, std::size_t, InterpolationType = InterpolationType::linear);
+        explicit ReverseDelay(memory::Poolable&, MdFloat, std::size_t, InterpolationType = InterpolationType::linear);
 
-        explicit ReverseDelay(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat, std::size_t, InterpolationType = InterpolationType::linear);
+        explicit ReverseDelay(memory::Poolable&, MdFloat, MdFloat, std::size_t, InterpolationType = InterpolationType::linear);
 
         void initialise();
 
@@ -25,14 +25,17 @@ namespace md_audio {
         ~ReverseDelay();
 
     private:
+        memory::Poolable& m_pool;
         TapDelay m_delay;
-        Phasor* m_phasor;
-        HannOscillator* m_osc;
+        Phasor* m_phasor = nullptr;
+        HannOscillator* m_osc = nullptr;
         MdFloat m_size;
         std::size_t m_overlap;
         const MdFloat m_norm;
 
-        void initialise(MdFloat) noexcept;
+        void initialise(MdFloat);
+
+        void* allocate(std::size_t size);
 
         inline static constexpr MdFloat compute_frequency(MdFloat) noexcept;
     };

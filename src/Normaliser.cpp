@@ -4,8 +4,8 @@
 using md_audio::MdFloat;
 using md_audio::Normaliser;
 
-Normaliser::Normaliser(memory::Allocatable<MdFloat*>& allocator, std::uint32_t duration) :
-    m_allocator(allocator),
+Normaliser::Normaliser(memory::Poolable& pool, std::uint32_t duration) :
+    m_pool(pool),
     m_size(3 * duration),
     m_duration(duration),
     m_slope_factor(static_cast<MdFloat>(1) / static_cast<MdFloat>(duration))
@@ -13,8 +13,8 @@ Normaliser::Normaliser(memory::Allocatable<MdFloat*>& allocator, std::uint32_t d
     set_amplitude(static_cast<MdFloat>(1));
 }
 
-Normaliser::Normaliser(memory::Allocatable<MdFloat*>& allocator, std::uint32_t duration, MdFloat amplitude) :
-    m_allocator(allocator),
+Normaliser::Normaliser(memory::Poolable& pool, std::uint32_t duration, MdFloat amplitude) :
+    m_pool(pool),
     m_size(3 * duration),
     m_duration(duration),
     m_slope_factor(static_cast<MdFloat>(1) / static_cast<MdFloat>(duration))
@@ -23,10 +23,11 @@ Normaliser::Normaliser(memory::Allocatable<MdFloat*>& allocator, std::uint32_t d
 }
 
 void Normaliser::initialise() {
-    m_memory = m_allocator.allocate(m_size);
+    auto memory = m_pool.allocate(m_size * sizeof(MdFloat));
 
-    if (!m_memory)
-        throw std::bad_alloc();
+    if (!memory) throw std::bad_alloc();
+
+    m_memory = static_cast<MdFloat*>(memory);
 
     std::memset(m_memory, 0, m_size * sizeof(MdFloat));
 
@@ -75,6 +76,5 @@ MdFloat Normaliser::perform(MdFloat in) noexcept {
 }
 
 Normaliser::~Normaliser() {
-    if (m_memory)
-        m_allocator.deallocate(m_memory, m_size);
+    if (m_memory) m_pool.deallocate(m_memory);
 }

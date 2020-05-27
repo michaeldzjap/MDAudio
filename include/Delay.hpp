@@ -14,9 +14,9 @@ namespace md_audio {
 
     class Delay : public Delayable {
     public:
-        explicit Delay(memory::Allocatable<MdFloat*>&, MdFloat, InterpolationType = InterpolationType::none);
+        explicit Delay(memory::Poolable&, MdFloat, InterpolationType = InterpolationType::none);
 
-        explicit Delay(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat, InterpolationType = InterpolationType::none);
+        explicit Delay(memory::Poolable&, MdFloat, MdFloat, InterpolationType = InterpolationType::none);
 
         void initialise() override final;
 
