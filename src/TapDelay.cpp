@@ -1,4 +1,5 @@
 #include "TapDelay.hpp"
+#include <iostream>
 
 using md_audio::MdFloat;
 using md_audio::TapDelay;
@@ -17,7 +18,9 @@ TapDelay::TapDelay(
     m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_max_delay(max_delay - static_cast<MdFloat>(2)),
     m_taps(taps)
-{}
+{
+    initialise(interpolation_type);
+}
 
 void TapDelay::initialise() {
     m_buffer.initialise();
@@ -39,14 +42,20 @@ void* TapDelay::allocate(std::size_t size) {
 
 void TapDelay::initialise(InterpolationType interpolation_type) noexcept {
     if (interpolation_type == InterpolationType::none) {
-        TapDelay::perform_function = &TapDelay::perform_static;
-        TapDelay::read_function = &TapDelay::read_static;
+        perform_function = [this](MdFloat in, MdFloat* out, std::size_t n) {
+            return perform_static(in, out, n);
+        };
+        read_function = [this](std::size_t size) { return read_static(size); };
     } else if (interpolation_type == InterpolationType::linear) {
-        TapDelay::perform_function = &TapDelay::perform_linear;
-        TapDelay::read_function = &TapDelay::read_linear;
+        perform_function = [this](MdFloat in, MdFloat* out, std::size_t n) {
+            return perform_linear(in, out, n);
+        };
+        read_function = [this](std::size_t size) { return read_linear(size); };
     } else {
-        TapDelay::perform_function = &TapDelay::perform_cubic;
-        TapDelay::read_function = &TapDelay::read_cubic;
+        perform_function = [this](MdFloat in, MdFloat* out, std::size_t n) {
+            return perform_cubic(in, out, n);
+        };
+        read_function = [this](std::size_t size) { return read_cubic(size); };
     }
 }
 
@@ -55,32 +64,32 @@ void TapDelay::set_delay(const MdFloat* delay) noexcept {
 }
 
 MdFloat* TapDelay::perform(MdFloat in, MdFloat* out, std::size_t n) noexcept {
-    return (this->*perform_function)(in, out, n);
+    return perform_function(in, out, n);
 }
 
 MdFloat* TapDelay::perform_static(MdFloat in, MdFloat* out, std::size_t) noexcept {
-    m_writer.write(in);
-
     for (auto i = 0; i < m_taps; ++i)
         out[i] = m_reader.read(m_writer, m_delay[i]);
+
+    m_writer.write(in);
 
     return out;
 }
 
 MdFloat* TapDelay::perform_linear(MdFloat in, MdFloat* out, std::size_t) noexcept {
-    m_writer.write(in);
-
     for (auto i = 0; i < m_taps; ++i)
         out[i] = m_reader_linear.read(m_writer, m_delay[i], m_frac[i]);
+
+    m_writer.write(in);
 
     return out;
 }
 
 MdFloat* TapDelay::perform_cubic(MdFloat in, MdFloat* out, std::size_t) noexcept {
-    m_writer.write(in);
-
     for (auto i = 0; i < m_taps; ++i)
         out[i] = m_reader_cubic.read(m_writer, m_delay[i], m_frac[i]);
+
+    m_writer.write(in);
 
     return out;
 }
@@ -90,7 +99,7 @@ void TapDelay::write(MdFloat in) noexcept {
 }
 
 MdFloat TapDelay::read(std::size_t index) noexcept {
-    return (this->*read_function)(index);
+    return read_function(index);
 }
 
 MdFloat TapDelay::read_static(std::size_t index) noexcept {

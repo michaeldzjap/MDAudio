@@ -21,8 +21,6 @@ namespace md_audio {
 
         void write(MdFloat) noexcept;
 
-        void increment(void) noexcept;
-
     private:
         Buffer& m_buffer;
         std::uint32_t m_lower_bound = 0;

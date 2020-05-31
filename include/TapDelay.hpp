@@ -9,6 +9,7 @@
 #include "TapDelayable.hpp"
 #include "Writer.hpp"
 #include "utility.hpp"
+#include <functional>
 
 namespace md_audio {
 
@@ -43,12 +44,12 @@ namespace md_audio {
         std::size_t m_taps;
         std::uint32_t* m_delay = nullptr;
         MdFloat* m_frac = nullptr;
+        std::function<MdFloat*(MdFloat, MdFloat*, std::size_t)> perform_function;
+        std::function<MdFloat(std::size_t)> read_function;
 
         void initialise(InterpolationType) noexcept;
 
         void* allocate(std::size_t);
-
-        MdFloat* (TapDelay::*perform_function)(MdFloat, MdFloat*, std::size_t) noexcept;
 
         MdFloat* perform_static(MdFloat, MdFloat*, std::size_t) noexcept;
 
@@ -56,7 +57,7 @@ namespace md_audio {
 
         MdFloat* perform_cubic(MdFloat, MdFloat*, std::size_t) noexcept;
 
-        MdFloat (TapDelay::*read_function)(std::size_t) noexcept;
+        // MdFloat (TapDelay::*read_function)(std::size_t) noexcept;
 
         MdFloat read_static(std::size_t) noexcept;
 
