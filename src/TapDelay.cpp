@@ -42,20 +42,14 @@ void* TapDelay::allocate(std::size_t size) {
 
 void TapDelay::initialise(InterpolationType interpolation_type) noexcept {
     if (interpolation_type == InterpolationType::none) {
-        perform_function = [this](MdFloat in, MdFloat* out, std::size_t n) {
-            return perform_static(in, out, n);
-        };
-        read_function = [this](std::size_t size) { return read_static(size); };
+        perform_function = &TapDelay::perform_static;
+        read_function = &TapDelay::read_static;
     } else if (interpolation_type == InterpolationType::linear) {
-        perform_function = [this](MdFloat in, MdFloat* out, std::size_t n) {
-            return perform_linear(in, out, n);
-        };
-        read_function = [this](std::size_t size) { return read_linear(size); };
+        perform_function = &TapDelay::perform_linear;
+        read_function = &TapDelay::read_linear;
     } else {
-        perform_function = [this](MdFloat in, MdFloat* out, std::size_t n) {
-            return perform_cubic(in, out, n);
-        };
-        read_function = [this](std::size_t size) { return read_cubic(size); };
+        perform_function = &TapDelay::perform_cubic;
+        read_function = &TapDelay::read_cubic;
     }
 }
 
@@ -64,7 +58,7 @@ void TapDelay::set_delay(const MdFloat* delay) noexcept {
 }
 
 MdFloat* TapDelay::perform(MdFloat in, MdFloat* out, std::size_t n) noexcept {
-    return perform_function(in, out, n);
+    return (this->*perform_function)(in, out, n);
 }
 
 MdFloat* TapDelay::perform_static(MdFloat in, MdFloat* out, std::size_t) noexcept {
@@ -99,7 +93,7 @@ void TapDelay::write(MdFloat in) noexcept {
 }
 
 MdFloat TapDelay::read(std::size_t index) noexcept {
-    return read_function(index);
+    return (this->*read_function)(index);
 }
 
 MdFloat TapDelay::read_static(std::size_t index) noexcept {
