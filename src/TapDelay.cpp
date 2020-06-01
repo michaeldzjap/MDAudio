@@ -3,57 +3,51 @@
 using md_audio::MdFloat;
 using md_audio::TapDelay;
 
-TapDelay::TapDelay(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay, std::size_t taps,
-    InterpolationType interpolation_type) :
-    m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
+TapDelay::TapDelay(
+    memory::Poolable& pool,
+    MdFloat max_delay,
+    std::size_t taps,
+    InterpolationType interpolation_type
+) :
+    m_pool(pool),
+    m_buffer(pool, static_cast<std::uint32_t>(max_delay)),
     m_reader(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_reader_linear(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_reader_cubic(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_max_delay(max_delay - static_cast<MdFloat>(2)),
-    m_taps(taps),
-    m_delay(new std::uint32_t[m_taps]),
-    m_frac(new MdFloat[m_taps])
+    m_taps(taps)
 {
-    MdFloat* delay = new MdFloat[m_taps]{static_cast<MdFloat>(1)};
-
-    initialise(delay, interpolation_type);
-
-    delete[] delay;
+    initialise(interpolation_type);
 }
 
-TapDelay::TapDelay(memory::Allocatable<MdFloat*>& allocator, MdFloat max_delay,
-    const MdFloat* delay, std::size_t taps, InterpolationType interpolation_type) :
-    m_buffer(allocator, static_cast<std::uint32_t>(max_delay)),
-    m_reader(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
-    m_reader_linear(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
-    m_reader_cubic(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
-    m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
-    m_max_delay(max_delay - static_cast<MdFloat>(2)),
-    m_taps(taps),
-    m_delay(new std::uint32_t[m_taps]),
-    m_frac(new MdFloat[m_taps])
-{
-    initialise(delay, interpolation_type);
+void* TapDelay::allocate(std::size_t size) {
+    auto memory = m_pool.allocate(m_taps * size);
+
+    if (!memory) throw std::bad_alloc();
+
+    return memory;
 }
 
-void TapDelay::initialise() {
+void TapDelay::initialise(InterpolationType interpolation_type) {
     m_buffer.initialise();
-}
 
-void TapDelay::initialise(const MdFloat* delay, InterpolationType interpolation_type) noexcept {
-    set_delay(delay);
+    m_delay = static_cast<std::uint32_t*>(allocate(sizeof(std::uint32_t)));
+    m_frac = static_cast<MdFloat*>(allocate(sizeof(MdFloat)));
 
     if (interpolation_type == InterpolationType::none) {
-        TapDelay::perform_function = &TapDelay::perform_static;
-        TapDelay::read_function = &TapDelay::read_static;
+        perform_function = &TapDelay::perform_static;
+        read_function = &TapDelay::read_static;
     } else if (interpolation_type == InterpolationType::linear) {
-        TapDelay::perform_function = &TapDelay::perform_linear;
-        TapDelay::read_function = &TapDelay::read_linear;
+        perform_function = &TapDelay::perform_linear;
+        read_function = &TapDelay::read_linear;
     } else {
-        TapDelay::perform_function = &TapDelay::perform_cubic;
-        TapDelay::read_function = &TapDelay::read_cubic;
+        perform_function = &TapDelay::perform_cubic;
+        read_function = &TapDelay::read_cubic;
     }
+
+    for (auto i = 0; i < m_taps; ++i)
+        set_delay(i, static_cast<MdFloat>(1));
 }
 
 void TapDelay::set_delay(const MdFloat* delay) noexcept {
@@ -65,28 +59,28 @@ MdFloat* TapDelay::perform(MdFloat in, MdFloat* out, std::size_t n) noexcept {
 }
 
 MdFloat* TapDelay::perform_static(MdFloat in, MdFloat* out, std::size_t) noexcept {
-    m_writer.write(in);
-
     for (auto i = 0; i < m_taps; ++i)
         out[i] = m_reader.read(m_writer, m_delay[i]);
+
+    m_writer.write(in);
 
     return out;
 }
 
 MdFloat* TapDelay::perform_linear(MdFloat in, MdFloat* out, std::size_t) noexcept {
-    m_writer.write(in);
-
     for (auto i = 0; i < m_taps; ++i)
         out[i] = m_reader_linear.read(m_writer, m_delay[i], m_frac[i]);
+
+    m_writer.write(in);
 
     return out;
 }
 
 MdFloat* TapDelay::perform_cubic(MdFloat in, MdFloat* out, std::size_t) noexcept {
-    m_writer.write(in);
-
     for (auto i = 0; i < m_taps; ++i)
         out[i] = m_reader_cubic.read(m_writer, m_delay[i], m_frac[i]);
+
+    m_writer.write(in);
 
     return out;
 }
@@ -112,6 +106,6 @@ MdFloat TapDelay::read_cubic(std::size_t index) noexcept {
 }
 
 TapDelay::~TapDelay() {
-    delete[] m_delay;
-    delete[] m_frac;
+    if (m_delay) m_pool.deallocate(m_delay);
+    if (m_frac) m_pool.deallocate(m_frac);
 }

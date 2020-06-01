@@ -11,18 +11,18 @@ ReaderLinear::ReaderLinear(Buffer& buffer, Writer& writer) :
     m_upper_bound(writer.m_upper_bound)
 {}
 
-ReaderLinear::ReaderLinear(Buffer& buffer, std::uint32_t upper_bound) :
+ReaderLinear::ReaderLinear(Buffer& buffer, std::size_t upper_bound) :
     m_buffer(buffer),
     m_upper_bound(upper_bound)
 {}
 
-ReaderLinear::ReaderLinear(Buffer& buffer, std::uint32_t lower_bound, std::uint32_t upper_bound) :
+ReaderLinear::ReaderLinear(Buffer& buffer, std::size_t lower_bound, std::size_t upper_bound) :
     m_buffer(buffer),
     m_lower_bound(lower_bound),
     m_upper_bound(upper_bound)
 {}
 
-MdFloat ReaderLinear::read(Writer& writer, std::uint32_t offset, MdFloat frac) noexcept {
+MdFloat ReaderLinear::read(Writer& writer, std::size_t offset, MdFloat frac) noexcept {
     // Get the correct read positions into the buffer
     auto phase_a = utility::wrap(writer.m_write_index - offset, m_lower_bound, m_upper_bound);
     auto phase_b = utility::wrap(phase_a - 1, 0, m_upper_bound);

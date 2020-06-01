@@ -11,13 +11,11 @@ namespace md_audio {
 
     class VariableDelay : public Processable<MdFloat, MdFloat> {
     public:
-        explicit VariableDelay(memory::Allocatable<MdFloat*>&, MdFloat, std::size_t);
+        explicit VariableDelay(memory::Poolable&, std::size_t, std::size_t);
 
-        explicit VariableDelay(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat, std::size_t);
+        explicit VariableDelay(memory::Poolable&, std::size_t, MdFloat, std::size_t);
 
-        explicit VariableDelay(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat, MdFloat, std::size_t);
-
-        void initialise();
+        explicit VariableDelay(memory::Poolable&, std::size_t, MdFloat, MdFloat, std::size_t);
 
         inline void set_delay(MdFloat) noexcept;
 
@@ -28,15 +26,18 @@ namespace md_audio {
         ~VariableDelay();
 
     private:
+        memory::Poolable& m_pool;
         TapDelayStatic m_delay;
-        Phasor* m_phasor;
-        HannOscillator* m_osc;
+        Phasor* m_phasor = nullptr;
+        HannOscillator* m_osc = nullptr;
         Latch* m_latch;
         MdFloat m_delay_samples;
         std::size_t m_overlap;
         const MdFloat m_norm;
 
-        void initialise(MdFloat, MdFloat) noexcept;
+        void initialise(MdFloat, MdFloat);
+
+        void* allocate(std::size_t);
 
         inline static constexpr MdFloat compute_frequency(MdFloat) noexcept;
     };

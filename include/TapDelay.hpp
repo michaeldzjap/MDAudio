@@ -9,16 +9,13 @@
 #include "TapDelayable.hpp"
 #include "Writer.hpp"
 #include "utility.hpp"
+#include <functional>
 
 namespace md_audio {
 
     class TapDelay : public TapDelayable {
     public:
-        explicit TapDelay(memory::Allocatable<MdFloat*>&, MdFloat, std::size_t, InterpolationType = InterpolationType::none);
-
-        explicit TapDelay(memory::Allocatable<MdFloat*>&, MdFloat, const MdFloat*, std::size_t, InterpolationType = InterpolationType::none);
-
-        void initialise() override final;
+        explicit TapDelay(memory::Poolable&, MdFloat, std::size_t, InterpolationType = InterpolationType::none);
 
         void set_delay(const MdFloat*) noexcept override final;
 
@@ -35,6 +32,7 @@ namespace md_audio {
         ~TapDelay();
 
     private:
+        memory::Poolable& m_pool;
         Buffer m_buffer;
         Reader m_reader;
         ReaderLinear m_reader_linear;
@@ -42,10 +40,12 @@ namespace md_audio {
         Writer m_writer;
         MdFloat m_max_delay;
         std::size_t m_taps;
-        std::uint32_t* m_delay;
-        MdFloat* m_frac;
+        std::uint32_t* m_delay = nullptr;
+        MdFloat* m_frac = nullptr;
 
-        void initialise(const MdFloat*, InterpolationType) noexcept;
+        void initialise(InterpolationType);
+
+        void* allocate(std::size_t);
 
         MdFloat* (TapDelay::*perform_function)(MdFloat, MdFloat*, std::size_t) noexcept;
 

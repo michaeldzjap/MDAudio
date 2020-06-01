@@ -11,13 +11,11 @@ namespace md_audio {
 
     class AllpassStatic : public Processable<MdFloat, MdFloat> {
     public:
-        explicit AllpassStatic(memory::Allocatable<MdFloat*>&, MdFloat);
+        explicit AllpassStatic(memory::Poolable&, std::size_t);
 
-        explicit AllpassStatic(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat);
+        explicit AllpassStatic(memory::Poolable&, std::size_t, MdFloat);
 
-        explicit AllpassStatic(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat, MdFloat);
-
-        void initialise();
+        explicit AllpassStatic(memory::Poolable&, std::size_t, MdFloat, MdFloat);
 
         inline void set_delay(MdFloat) noexcept;
 

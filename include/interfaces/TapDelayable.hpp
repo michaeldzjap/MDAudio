@@ -9,11 +9,6 @@ namespace md_audio {
     class TapDelayable : MultiOutProcessable<MdFloat, MdFloat> {
     public:
         /**
-         * Initialise the delay line.
-         */
-        virtual void initialise() = 0;
-
-        /**
          * Set the tap delay times (in samples).
          *
          * @param  delay  A pointer to the tap delay times in samples
