@@ -4,7 +4,7 @@
 using md_audio::MdFloat;
 using md_audio::Normaliser;
 
-Normaliser::Normaliser(memory::Poolable& pool, std::uint32_t duration) :
+Normaliser::Normaliser(memory::Poolable& pool, std::size_t duration) :
     m_pool(pool),
     m_size(3 * duration),
     m_duration(duration),
@@ -13,7 +13,7 @@ Normaliser::Normaliser(memory::Poolable& pool, std::uint32_t duration) :
     set_amplitude(static_cast<MdFloat>(1));
 }
 
-Normaliser::Normaliser(memory::Poolable& pool, std::uint32_t duration, MdFloat amplitude) :
+Normaliser::Normaliser(memory::Poolable& pool, std::size_t duration, MdFloat amplitude) :
     m_pool(pool),
     m_size(3 * duration),
     m_duration(duration),

@@ -6,7 +6,7 @@ using md_audio::PitchShifter;
 
 PitchShifter::PitchShifter(
     memory::Poolable& pool,
-    MdFloat max_delay,
+    std::size_t max_delay,
     MdFloat size,
     std::size_t overlap,
     InterpolationType interpolation_type
@@ -23,7 +23,7 @@ PitchShifter::PitchShifter(
 
 PitchShifter::PitchShifter(
     memory::Poolable& pool,
-    MdFloat max_delay,
+    std::size_t max_delay,
     MdFloat size,
     MdFloat transposition,
     std::size_t overlap,

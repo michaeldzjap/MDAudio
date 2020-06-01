@@ -12,9 +12,9 @@ namespace md_audio {
 
     class Normaliser : public Processable<MdFloat, MdFloat> {
     public:
-        explicit Normaliser(memory::Poolable&, std::uint32_t);
+        explicit Normaliser(memory::Poolable&, std::size_t);
 
-        explicit Normaliser(memory::Poolable&, std::uint32_t, MdFloat);
+        explicit Normaliser(memory::Poolable&, std::size_t, MdFloat);
 
         void initialise();
 
@@ -31,7 +31,7 @@ namespace md_audio {
         MdFloat* m_mid_buf = nullptr;
         MdFloat* m_out_buf = nullptr;
         const std::size_t m_size;
-        std::uint32_t m_duration;
+        std::size_t m_duration;
         MdFloat m_amplitude;
         std::uint32_t m_flips = 0;
         std::uint32_t m_pos = 0;

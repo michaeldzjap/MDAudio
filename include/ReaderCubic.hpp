@@ -11,16 +11,16 @@ namespace md_audio {
     public:
         explicit ReaderCubic(Buffer&, Writer&);
 
-        explicit ReaderCubic(Buffer&, std::uint32_t);
+        explicit ReaderCubic(Buffer&, std::size_t);
 
-        explicit ReaderCubic(Buffer&, std::uint32_t, std::uint32_t);
+        explicit ReaderCubic(Buffer&, std::size_t, std::size_t);
 
-        MdFloat read(Writer&, std::uint32_t, MdFloat) noexcept;
+        MdFloat read(Writer&, std::size_t, MdFloat) noexcept;
 
     private:
         Buffer& m_buffer;
-        std::uint32_t m_lower_bound = 0;
-        std::uint32_t m_upper_bound;
+        std::size_t m_lower_bound = 0;
+        std::size_t m_upper_bound;
     };
 
 }

@@ -6,7 +6,7 @@ using md_audio::ReversibleDelay;
 
 ReversibleDelay::ReversibleDelay(
     memory::Poolable& pool,
-    MdFloat max_delay,
+    std::size_t max_delay,
     std::size_t overlap,
     InterpolationType interpolation_type
 ) :
@@ -23,7 +23,7 @@ ReversibleDelay::ReversibleDelay(
 
 ReversibleDelay::ReversibleDelay(
     memory::Poolable& pool,
-    MdFloat max_delay,
+    std::size_t max_delay,
     MdFloat size,
     std::size_t overlap,
     InterpolationType interpolation_type
@@ -41,7 +41,7 @@ ReversibleDelay::ReversibleDelay(
 
 ReversibleDelay::ReversibleDelay(
     memory::Poolable& pool,
-    MdFloat max_delay,
+    std::size_t max_delay,
     MdFloat size,
     bool reverse,
     std::size_t overlap,

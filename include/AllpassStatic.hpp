@@ -11,11 +11,11 @@ namespace md_audio {
 
     class AllpassStatic : public Processable<MdFloat, MdFloat> {
     public:
-        explicit AllpassStatic(memory::Poolable&, MdFloat);
+        explicit AllpassStatic(memory::Poolable&, std::size_t);
 
-        explicit AllpassStatic(memory::Poolable&, MdFloat, MdFloat);
+        explicit AllpassStatic(memory::Poolable&, std::size_t, MdFloat);
 
-        explicit AllpassStatic(memory::Poolable&, MdFloat, MdFloat, MdFloat);
+        explicit AllpassStatic(memory::Poolable&, std::size_t, MdFloat, MdFloat);
 
         void initialise();
 

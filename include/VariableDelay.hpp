@@ -11,11 +11,11 @@ namespace md_audio {
 
     class VariableDelay : public Processable<MdFloat, MdFloat> {
     public:
-        explicit VariableDelay(memory::Poolable&, MdFloat, std::size_t);
+        explicit VariableDelay(memory::Poolable&, std::size_t, std::size_t);
 
-        explicit VariableDelay(memory::Poolable&, MdFloat, MdFloat, std::size_t);
+        explicit VariableDelay(memory::Poolable&, std::size_t, MdFloat, std::size_t);
 
-        explicit VariableDelay(memory::Poolable&, MdFloat, MdFloat, MdFloat, std::size_t);
+        explicit VariableDelay(memory::Poolable&, std::size_t, MdFloat, MdFloat, std::size_t);
 
         void initialise();
 

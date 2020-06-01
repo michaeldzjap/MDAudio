@@ -11,9 +11,9 @@ namespace md_audio {
 
     class DelayLinear : public Delayable {
     public:
-        explicit DelayLinear(memory::Poolable&, MdFloat);
+        explicit DelayLinear(memory::Poolable&, std::size_t);
 
-        explicit DelayLinear(memory::Poolable&, MdFloat, MdFloat);
+        explicit DelayLinear(memory::Poolable&, std::size_t, MdFloat);
 
         void initialise() override final;
 

@@ -14,9 +14,9 @@ namespace md_audio {
 
     class Delay : public Delayable {
     public:
-        explicit Delay(memory::Poolable&, MdFloat, InterpolationType = InterpolationType::none);
+        explicit Delay(memory::Poolable&, std::size_t, InterpolationType = InterpolationType::none);
 
-        explicit Delay(memory::Poolable&, MdFloat, MdFloat, InterpolationType = InterpolationType::none);
+        explicit Delay(memory::Poolable&, std::size_t, MdFloat, InterpolationType = InterpolationType::none);
 
         void initialise() override final;
 
@@ -34,7 +34,7 @@ namespace md_audio {
         std::uint32_t m_delay;
         MdFloat m_frac;
 
-        void initialise(MdFloat, InterpolationType) noexcept;
+        void initialise(std::size_t, MdFloat, InterpolationType) noexcept;
 
         MdFloat (Delay::*perform_function)(MdFloat) noexcept;
 

@@ -15,17 +15,17 @@ namespace md_audio {
 
     class Writer {
     public:
-        explicit Writer(Buffer&, std::uint32_t);
+        explicit Writer(Buffer&, std::size_t);
 
-        explicit Writer(Buffer&, std::uint32_t, std::uint32_t);
+        explicit Writer(Buffer&, std::size_t, std::size_t);
 
         void write(MdFloat) noexcept;
 
     private:
         Buffer& m_buffer;
-        std::uint32_t m_lower_bound = 0;
-        std::uint32_t m_upper_bound;
-        std::uint32_t m_write_index = 0;
+        std::size_t m_lower_bound = 0;
+        std::size_t m_upper_bound;
+        std::size_t m_write_index = 0;
 
         friend class Reader;
         friend class ReaderCubic;

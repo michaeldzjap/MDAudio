@@ -4,7 +4,11 @@
 using md_audio::MdFloat;
 using md_audio::VariableDelay;
 
-VariableDelay::VariableDelay(memory::Poolable& pool, MdFloat max_delay, std::size_t overlap) :
+VariableDelay::VariableDelay(
+    memory::Poolable& pool,
+    std::size_t max_delay,
+    std::size_t overlap
+) :
     m_pool(pool),
     m_delay(pool, max_delay, overlap),
     m_overlap(overlap),
@@ -17,7 +21,7 @@ VariableDelay::VariableDelay(memory::Poolable& pool, MdFloat max_delay, std::siz
 
 VariableDelay::VariableDelay(
     memory::Poolable& pool,
-    MdFloat max_delay,
+    std::size_t max_delay,
     MdFloat delay,
     std::size_t overlap
 ) :
@@ -33,7 +37,7 @@ VariableDelay::VariableDelay(
 
 VariableDelay::VariableDelay(
     memory::Poolable& pool,
-    MdFloat max_delay,
+    std::size_t max_delay,
     MdFloat delay,
     MdFloat size,
     std::size_t overlap

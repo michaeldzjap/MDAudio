@@ -12,9 +12,9 @@ namespace md_audio {
 
     class PitchShifter : public Processable<MdFloat, MdFloat> {
     public:
-        explicit PitchShifter(memory::Poolable&, MdFloat, MdFloat, std::size_t, InterpolationType = InterpolationType::linear);
+        explicit PitchShifter(memory::Poolable&, std::size_t, MdFloat, std::size_t, InterpolationType = InterpolationType::linear);
 
-        explicit PitchShifter(memory::Poolable&, MdFloat, MdFloat, MdFloat, std::size_t, InterpolationType = InterpolationType::linear);
+        explicit PitchShifter(memory::Poolable&, std::size_t, MdFloat, MdFloat, std::size_t, InterpolationType = InterpolationType::linear);
 
         void initialise();
 

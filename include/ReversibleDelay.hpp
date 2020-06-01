@@ -12,11 +12,11 @@ namespace md_audio {
 
     class ReversibleDelay : public Processable<MdFloat, MdFloat> {
     public:
-        explicit ReversibleDelay(memory::Poolable&, MdFloat, std::size_t, InterpolationType = InterpolationType::linear);
+        explicit ReversibleDelay(memory::Poolable&, std::size_t, std::size_t, InterpolationType = InterpolationType::linear);
 
-        explicit ReversibleDelay(memory::Poolable&, MdFloat, MdFloat, std::size_t, InterpolationType = InterpolationType::linear);
+        explicit ReversibleDelay(memory::Poolable&, std::size_t, MdFloat, std::size_t, InterpolationType = InterpolationType::linear);
 
-        explicit ReversibleDelay(memory::Poolable&, MdFloat, MdFloat, bool, std::size_t, InterpolationType = InterpolationType::linear);
+        explicit ReversibleDelay(memory::Poolable&, std::size_t, MdFloat, bool, std::size_t, InterpolationType = InterpolationType::linear);
 
         void initialise();
 
