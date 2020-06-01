@@ -25,7 +25,7 @@ ReaderLinear::ReaderLinear(Buffer& buffer, std::size_t lower_bound, std::size_t 
 MdFloat ReaderLinear::read(Writer& writer, std::size_t offset, MdFloat frac) noexcept {
     // Get the correct read positions into the buffer
     auto phase_a = utility::wrap(writer.m_write_index - offset, m_lower_bound, m_upper_bound);
-    auto phase_b = utility::wrap(phase_a - 1, 0, m_upper_bound);
+    auto phase_b = utility::wrap(phase_a - 1, m_lower_bound, m_upper_bound);
 
     auto d1 = m_buffer[phase_a];
     auto d2 = m_buffer[phase_b];
