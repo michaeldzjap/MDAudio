@@ -1,5 +1,4 @@
 #include "TapDelay.hpp"
-#include <iostream>
 
 using md_audio::MdFloat;
 using md_audio::TapDelay;
