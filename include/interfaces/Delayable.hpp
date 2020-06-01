@@ -9,11 +9,6 @@ namespace md_audio {
     class Delayable : public Processable<MdFloat, MdFloat> {
     public:
         /**
-         * Initialise the delay line.
-         */
-        virtual void initialise() = 0;
-
-        /**
          * Set the delay time (in samples).
          *
          * @param  delay  The delay time in samples

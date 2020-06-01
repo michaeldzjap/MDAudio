@@ -5,12 +5,12 @@ using md_audio::Buffer;
 using md_audio::MdFloat;
 using md_audio::Writer;
 
-Writer::Writer(Buffer& buffer, std::uint32_t upper_bound) :
+Writer::Writer(Buffer& buffer, std::size_t upper_bound) :
     m_buffer(buffer),
     m_upper_bound(upper_bound)
 {}
 
-Writer::Writer(Buffer& buffer, std::uint32_t lower_bound, std::uint32_t upper_bound) :
+Writer::Writer(Buffer& buffer, std::size_t lower_bound, std::size_t upper_bound) :
     m_buffer(buffer),
     m_lower_bound(lower_bound),
     m_upper_bound(upper_bound),

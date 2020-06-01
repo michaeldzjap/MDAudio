@@ -1,7 +1,7 @@
 #ifndef MD_AUDIO_NORMALISER_HPP
 #define MD_AUDIO_NORMALISER_HPP
 
-#include "Allocatable.hpp"
+#include "Poolable.hpp"
 #include "Processable.hpp"
 #include "types.hpp"
 #include "utility.hpp"
@@ -12,11 +12,9 @@ namespace md_audio {
 
     class Normaliser : public Processable<MdFloat, MdFloat> {
     public:
-        explicit Normaliser(memory::Allocatable<MdFloat*>&, std::uint32_t);
+        explicit Normaliser(memory::Poolable&, std::size_t);
 
-        explicit Normaliser(memory::Allocatable<MdFloat*>&, std::uint32_t, MdFloat);
-
-        void initialise();
+        explicit Normaliser(memory::Poolable&, std::size_t, MdFloat);
 
         inline void set_amplitude(MdFloat) noexcept;
 
@@ -25,13 +23,13 @@ namespace md_audio {
         ~Normaliser();
 
     private:
-        memory::Allocatable<MdFloat*>& m_allocator;
+        memory::Poolable& m_pool;
         MdFloat* m_memory = nullptr;
         MdFloat* m_in_buf = nullptr;
         MdFloat* m_mid_buf = nullptr;
         MdFloat* m_out_buf = nullptr;
         const std::size_t m_size;
-        std::uint32_t m_duration;
+        std::size_t m_duration;
         MdFloat m_amplitude;
         std::uint32_t m_flips = 0;
         std::uint32_t m_pos = 0;
@@ -40,6 +38,8 @@ namespace md_audio {
         MdFloat m_cur_max_val = static_cast<MdFloat>(0);
         MdFloat m_prev_max_val = static_cast<MdFloat>(0);
         MdFloat m_slope_factor;
+
+        void initialise(MdFloat);
     };
 
     void Normaliser::set_amplitude(MdFloat amplitude) noexcept {

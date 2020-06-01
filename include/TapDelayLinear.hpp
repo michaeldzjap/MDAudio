@@ -11,11 +11,7 @@ namespace md_audio {
 
     class TapDelayLinear : public TapDelayable {
     public:
-        explicit TapDelayLinear(memory::Allocatable<MdFloat*>&, MdFloat, std::size_t);
-
-        explicit TapDelayLinear(memory::Allocatable<MdFloat*>&, MdFloat, const MdFloat*, std::size_t);
-
-        void initialise() override final;
+        explicit TapDelayLinear(memory::Poolable&, MdFloat, std::size_t);
 
         void set_delay(const MdFloat*) noexcept override final;
 
@@ -32,13 +28,18 @@ namespace md_audio {
         ~TapDelayLinear();
 
     private:
+        memory::Poolable& m_pool;
         Buffer m_buffer;
         ReaderLinear m_reader;
         Writer m_writer;
         MdFloat m_max_delay;
         std::size_t m_taps;
-        std::uint32_t* m_delay;
-        MdFloat* m_frac;
+        std::uint32_t* m_delay = nullptr;
+        MdFloat* m_frac = nullptr;
+
+        void initialise();
+
+        void* allocate(std::size_t);
     };
 
     void TapDelayLinear::set_delay(std::size_t index, MdFloat delay) noexcept {

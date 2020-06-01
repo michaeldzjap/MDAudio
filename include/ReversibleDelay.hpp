@@ -12,13 +12,11 @@ namespace md_audio {
 
     class ReversibleDelay : public Processable<MdFloat, MdFloat> {
     public:
-        explicit ReversibleDelay(memory::Allocatable<MdFloat*>&, MdFloat, std::size_t, InterpolationType = InterpolationType::linear);
+        explicit ReversibleDelay(memory::Poolable&, std::size_t, std::size_t, InterpolationType = InterpolationType::linear);
 
-        explicit ReversibleDelay(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat, std::size_t, InterpolationType = InterpolationType::linear);
+        explicit ReversibleDelay(memory::Poolable&, std::size_t, MdFloat, std::size_t, InterpolationType = InterpolationType::linear);
 
-        explicit ReversibleDelay(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat, bool, std::size_t, InterpolationType = InterpolationType::linear);
-
-        void initialise();
+        explicit ReversibleDelay(memory::Poolable&, std::size_t, MdFloat, bool, std::size_t, InterpolationType = InterpolationType::linear);
 
         void set_backward_delay(MdFloat) noexcept;
 
@@ -35,16 +33,19 @@ namespace md_audio {
         ~ReversibleDelay();
 
     private:
+        memory::Poolable& m_pool;
         TapDelay m_delay;
-        Phasor* m_phasor;
-        HannOscillator* m_osc;
+        Phasor* m_phasor = nullptr;
+        HannOscillator* m_osc = nullptr;
         MdFloat m_size;
         MdFloat m_frequency;
         bool m_reverse;
         std::size_t m_overlap;
         const MdFloat m_norm;
 
-        void initialise(MdFloat) noexcept;
+        void initialise(MdFloat);
+
+        void* allocate(std::size_t size);
 
         inline static constexpr MdFloat compute_frequency(MdFloat) noexcept;
     };

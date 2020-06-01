@@ -11,11 +11,9 @@ namespace md_audio {
 
     class DelayCubic : public Delayable {
     public:
-        explicit DelayCubic(memory::Allocatable<MdFloat*>&, MdFloat);
+        explicit DelayCubic(memory::Poolable&, std::size_t);
 
-        explicit DelayCubic(memory::Allocatable<MdFloat*>&, MdFloat, MdFloat);
-
-        void initialise() override final;
+        explicit DelayCubic(memory::Poolable&, std::size_t, MdFloat);
 
         inline void set_delay(MdFloat) noexcept override final;
 

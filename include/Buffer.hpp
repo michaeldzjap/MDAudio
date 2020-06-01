@@ -1,7 +1,7 @@
 #ifndef MD_AUDIO_BUFFER_HPP
 #define MD_AUDIO_BUFFER_HPP
 
-#include "Allocatable.hpp"
+#include "Poolable.hpp"
 #include "types.hpp"
 #include <cstdint>
 
@@ -9,7 +9,7 @@ namespace md_audio {
 
     class Buffer {
     public:
-        explicit Buffer(memory::Allocatable<MdFloat*>&, std::size_t);
+        explicit Buffer(memory::Poolable&, std::size_t);
 
         void initialise();
 
@@ -20,7 +20,7 @@ namespace md_audio {
         ~Buffer();
 
     private:
-        memory::Allocatable<MdFloat*>& m_allocator;
+        memory::Poolable& m_pool;
         MdFloat* m_memory = nullptr;
         const std::size_t m_size;
     };

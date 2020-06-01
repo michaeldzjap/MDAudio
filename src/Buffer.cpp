@@ -7,16 +7,18 @@
 using md_audio::Buffer;
 using md_audio::MdFloat;
 
-Buffer::Buffer(memory::Allocatable<MdFloat*>& allocator, std::size_t size) :
-    m_allocator(allocator),
+Buffer::Buffer(memory::Poolable& pool, std::size_t size) :
+    m_pool(pool),
     m_size(size)
 {}
 
 void Buffer::initialise() {
-    m_memory = m_allocator.allocate(m_size);
+    auto memory = m_pool.allocate(m_size * sizeof(MdFloat));
 
-    if (!m_memory)
+    if (!memory)
         throw std::bad_alloc();
+
+    m_memory = static_cast<MdFloat*>(memory);
 
     std::memset(m_memory, 0, m_size * sizeof(MdFloat));
 }
@@ -35,5 +37,5 @@ const MdFloat& Buffer::operator[] (std::size_t index) const noexcept {
 
 Buffer::~Buffer() {
     if (m_memory)
-        m_allocator.deallocate(m_memory, m_size);
+        m_pool.deallocate(m_memory);
 }
