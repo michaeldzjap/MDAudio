@@ -1,7 +1,7 @@
 #ifndef MD_AUDIO_LOWPASS_SECOND_ORDER_HPP
 #define MD_AUDIO_LOWPASS_SECOND_ORDER_HPP
 
-#include "Processable.hpp"
+#include "interfaces/Processable.hpp"
 #include "zdf.hpp"
 
 namespace md_audio {

@@ -1,8 +1,8 @@
 #ifndef MD_AUDIO_WHITE_NOISE_HPP
 #define MD_AUDIO_WHITE_NOISE_HPP
 
-#include "Generatable.hpp"
 #include "Taus88.hpp"
+#include "interfaces/Generatable.hpp"
 #include "types.hpp"
 
 namespace md_audio {

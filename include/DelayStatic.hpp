@@ -2,9 +2,9 @@
 #define MD_AUDIO_DELAY_STATIC_HPP
 
 #include "Buffer.hpp"
-#include "Delayable.hpp"
 #include "Reader.hpp"
 #include "Writer.hpp"
+#include "interfaces/Delayable.hpp"
 #include "utility.hpp"
 
 namespace md_audio {

@@ -2,9 +2,9 @@
 #define MD_AUDIO_ALLPASS_LINEAR_HPP
 
 #include "Buffer.hpp"
-#include "Processable.hpp"
 #include "ReaderLinear.hpp"
 #include "Writer.hpp"
+#include "interfaces/Processable.hpp"
 #include "utility.hpp"
 
 namespace md_audio {

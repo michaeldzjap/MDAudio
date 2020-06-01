@@ -1,9 +1,9 @@
 #ifndef MD_AUDIO_PHASOR_HPP
 #define MD_AUDIO_PHASOR_HPP
 
-#include "Generatable.hpp"
-#include "Processable.hpp"
 #include "constants.hpp"
+#include "interfaces/Generatable.hpp"
+#include "interfaces/Processable.hpp"
 #include "types.hpp"
 #include "utility.hpp"
 

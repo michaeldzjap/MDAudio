@@ -1,7 +1,7 @@
 #ifndef MD_AUDIO_BANDSTOP_HPP
 #define MD_AUDIO_BANDSTOP_HPP
 
-#include "Processable.hpp"
+#include "interfaces/Processable.hpp"
 #include "zdf.hpp"
 
 namespace md_audio {

@@ -1,7 +1,7 @@
 #ifndef MD_AUDIO_LATCH_HPP
 #define MD_AUDIO_LATCH_HPP
 
-#include "DuoProcessable.hpp"
+#include "interfaces/DuoProcessable.hpp"
 #include "types.hpp"
 #include "utility.hpp"
 

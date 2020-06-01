@@ -2,7 +2,7 @@
 #define MD_AUDIO_TAP_DELAYABLE_HPP
 
 #include "MultiOutProcessable.hpp"
-#include "types.hpp"
+#include "../types.hpp"
 
 namespace md_audio {
 
