@@ -10,7 +10,9 @@ TapDelayLinear::TapDelayLinear(memory::Poolable& pool, MdFloat max_delay, std::s
     m_writer(m_buffer, static_cast<std::uint32_t>(max_delay) - 1),
     m_max_delay(max_delay - static_cast<MdFloat>(1)),
     m_taps(taps)
-{}
+{
+    initialise();
+}
 
 void TapDelayLinear::initialise() {
     m_buffer.initialise();

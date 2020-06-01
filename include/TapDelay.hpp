@@ -17,8 +17,6 @@ namespace md_audio {
     public:
         explicit TapDelay(memory::Poolable&, MdFloat, std::size_t, InterpolationType = InterpolationType::none);
 
-        void initialise() override final;
-
         void set_delay(const MdFloat*) noexcept override final;
 
         inline void set_delay(std::size_t, MdFloat) noexcept override final;
@@ -45,7 +43,7 @@ namespace md_audio {
         std::uint32_t* m_delay = nullptr;
         MdFloat* m_frac = nullptr;
 
-        void initialise(InterpolationType) noexcept;
+        void initialise(InterpolationType);
 
         void* allocate(std::size_t);
 

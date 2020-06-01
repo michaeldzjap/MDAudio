@@ -16,8 +16,6 @@ namespace md_audio {
 
         explicit PitchShifter(memory::Poolable&, std::size_t, MdFloat, MdFloat, std::size_t, InterpolationType = InterpolationType::linear);
 
-        void initialise();
-
         inline void set_transposition(MdFloat) noexcept;
 
         void set_size(MdFloat) noexcept;

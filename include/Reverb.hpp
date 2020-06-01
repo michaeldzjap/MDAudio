@@ -30,8 +30,6 @@ namespace md_audio {
     public:
         explicit Reverb(memory::Poolable&);
 
-        void initialise();
-
         void set_size(MdFloat) noexcept;
 
         void set_decay(MdFloat) noexcept;

@@ -52,10 +52,6 @@ VariableDelay::VariableDelay(
     initialise(delay, size);
 }
 
-void VariableDelay::initialise() {
-    m_delay.initialise();
-}
-
 void VariableDelay::initialise(MdFloat delay, MdFloat size) {
     m_phasor = static_cast<Phasor*>(allocate(sizeof(Phasor)));
     m_osc = static_cast<HannOscillator*>(allocate(sizeof(HannOscillator)));

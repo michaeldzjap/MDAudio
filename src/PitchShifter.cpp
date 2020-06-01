@@ -39,10 +39,6 @@ PitchShifter::PitchShifter(
     initialise(size, transposition);
 }
 
-void PitchShifter::initialise() {
-    m_delay.initialise();
-}
-
 void PitchShifter::initialise(MdFloat size, MdFloat transposition) {
     m_phasor = static_cast<Phasor*>(allocate(sizeof(Phasor)));
     m_osc = static_cast<HannOscillator*>(allocate(sizeof(HannOscillator)));

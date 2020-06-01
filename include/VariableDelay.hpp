@@ -17,8 +17,6 @@ namespace md_audio {
 
         explicit VariableDelay(memory::Poolable&, std::size_t, MdFloat, MdFloat, std::size_t);
 
-        void initialise();
-
         inline void set_delay(MdFloat) noexcept;
 
         void set_size(MdFloat) noexcept;

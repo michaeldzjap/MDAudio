@@ -13,8 +13,6 @@ namespace md_audio {
     public:
         explicit TapDelayStatic(memory::Poolable&, MdFloat, std::size_t);
 
-        void initialise() override final;
-
         void set_delay(const MdFloat*) noexcept override final;
 
         inline void set_delay(std::size_t, MdFloat) noexcept override final;
@@ -37,6 +35,8 @@ namespace md_audio {
         MdFloat m_max_delay;
         std::size_t m_taps;
         std::uint32_t* m_delay = nullptr;
+
+        void initialise();
     };
 
     void TapDelayStatic::set_delay(std::size_t index, MdFloat delay) noexcept {

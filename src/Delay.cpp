@@ -32,11 +32,9 @@ Delay::Delay(
     initialise(max_delay, delay, interpolation_type);
 }
 
-void Delay::initialise() {
-    m_buffer.initialise();
-}
-
 void Delay::initialise(std::size_t max_delay, MdFloat delay, InterpolationType interpolation_type) noexcept {
+    m_buffer.initialise();
+
     if (interpolation_type == InterpolationType::none) {
         Delay::perform_function = &Delay::perform_static;
         m_max_delay = max_delay;

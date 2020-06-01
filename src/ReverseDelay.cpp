@@ -37,10 +37,6 @@ ReverseDelay::ReverseDelay(
     initialise(size);
 }
 
-void ReverseDelay::initialise() {
-    m_delay.initialise();
-}
-
 void ReverseDelay::initialise(MdFloat size) {
     m_phasor = static_cast<Phasor*>(allocate(sizeof(Phasor)));
     m_osc = static_cast<HannOscillator*>(allocate(sizeof(HannOscillator)));

@@ -58,16 +58,12 @@ ReversibleDelay::ReversibleDelay(
     initialise(size);
 }
 
-void ReversibleDelay::initialise() {
-    m_delay.initialise();
-}
-
 void ReversibleDelay::initialise(MdFloat size) {
     m_phasor = static_cast<Phasor*>(allocate(sizeof(Phasor)));
     m_osc = static_cast<HannOscillator*>(allocate(sizeof(HannOscillator)));
 
-    set_forward_delay(size);
     set_backward_delay(size);
+    set_forward_delay(size);
 
     for (auto i = 0; i < m_overlap; ++i)
         m_phasor[i].set_phase(static_cast<MdFloat>(i) / static_cast<MdFloat>(m_overlap));

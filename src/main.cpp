@@ -6,6 +6,7 @@
 #include "Reverb.hpp"
 #include "ReverbConfig.hpp"
 #include "ReverseDelay.hpp"
+#include "ReversibleDelay.hpp"
 #include "StaticPool.hpp"
 #include "TapDelay.hpp"
 #include "TapDelayCubic.hpp"
@@ -54,14 +55,23 @@ int main() {
     //
     // Pool<TOTAL_SIZE> pool;
 
-    md_audio::Delay delay(pool, 102, 50.73536f, md_audio::InterpolationType::none);
+    // // ReversibleDelay delay
+    // constexpr auto MAX_DELAY = 102;
+    // constexpr auto MAX_DELAY_SIZE = MAX_DELAY * sizeof(md_audio::MdFloat);
+    // constexpr auto OVERLAP = 2;
+    // constexpr auto OVERLAP_SIZE = (OVERLAP + 1) * (sizeof(std::uint32_t) + sizeof(md_audio::MdFloat)) + OVERLAP * (sizeof(md_audio::Phasor) + sizeof(md_audio::HannOscillator));
+    // constexpr auto TOTAL_SIZE = MAX_DELAY_SIZE + OVERLAP_SIZE;
+    //
+    // Pool<TOTAL_SIZE> pool;
+
+    md_audio::Delay delay(pool, 102, 50.73536f, md_audio::InterpolationType::linear);
     // md_audio::TapDelayLinear delay(pool, 102, TAPS);
     // md_audio::TapDelay delay(pool, 102, TAPS, md_audio::InterpolationType::cubic);
-    // md_audio::ReverseDelay delay(pool, 102, 50.f, 2);
+    // md_audio::ReverseDelay delay(pool, MAX_DELAY, 50.f, OVERLAP);
+    // md_audio::ReversibleDelay delay(pool, MAX_DELAY, 50.f, OVERLAP);
     // md_audio::Normaliser normaliser(pool, DURATION);
     md_audio::WhiteNoise noise;
 
-    delay.initialise();
     // delay.set_delay(DELAY_TIMES);
 
     // normaliser.initialise();

@@ -18,8 +18,6 @@ namespace md_audio {
 
         explicit Delay(memory::Poolable&, std::size_t, MdFloat, InterpolationType = InterpolationType::none);
 
-        void initialise() override final;
-
         inline void set_delay(MdFloat) noexcept override final;
 
         MdFloat perform(MdFloat) noexcept override final;

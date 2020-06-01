@@ -17,8 +17,6 @@ namespace md_audio {
 
         explicit AllpassCubic(memory::Poolable&, size_t, MdFloat, MdFloat);
 
-        void initialise();
-
         inline void set_delay(MdFloat) noexcept;
 
         inline void set_gain(MdFloat) noexcept;

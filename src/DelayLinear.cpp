@@ -10,6 +10,8 @@ DelayLinear::DelayLinear(memory::Poolable& pool, std::size_t max_delay) :
     m_writer(m_buffer, max_delay - 1),
     m_max_delay(static_cast<MdFloat>(max_delay - 1))
 {
+    m_buffer.initialise();
+
     set_delay(static_cast<MdFloat>(1));
 }
 
@@ -19,11 +21,9 @@ DelayLinear::DelayLinear(memory::Poolable& pool, std::size_t max_delay, MdFloat 
     m_writer(m_buffer, max_delay - 1),
     m_max_delay(static_cast<MdFloat>(max_delay - 1))
 {
-    set_delay(delay);
-}
-
-void DelayLinear::initialise() {
     m_buffer.initialise();
+
+    set_delay(delay);
 }
 
 MdFloat DelayLinear::perform(MdFloat in) noexcept {

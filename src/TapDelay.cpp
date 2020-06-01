@@ -21,16 +21,6 @@ TapDelay::TapDelay(
     initialise(interpolation_type);
 }
 
-void TapDelay::initialise() {
-    m_buffer.initialise();
-
-    m_delay = static_cast<std::uint32_t*>(allocate(sizeof(std::uint32_t)));
-    m_frac = static_cast<MdFloat*>(allocate(sizeof(MdFloat)));
-
-    for (auto i = 0; i < m_taps; ++i)
-        set_delay(i, static_cast<MdFloat>(1));
-}
-
 void* TapDelay::allocate(std::size_t size) {
     auto memory = m_pool.allocate(m_taps * size);
 
@@ -39,7 +29,12 @@ void* TapDelay::allocate(std::size_t size) {
     return memory;
 }
 
-void TapDelay::initialise(InterpolationType interpolation_type) noexcept {
+void TapDelay::initialise(InterpolationType interpolation_type) {
+    m_buffer.initialise();
+
+    m_delay = static_cast<std::uint32_t*>(allocate(sizeof(std::uint32_t)));
+    m_frac = static_cast<MdFloat*>(allocate(sizeof(MdFloat)));
+
     if (interpolation_type == InterpolationType::none) {
         perform_function = &TapDelay::perform_static;
         read_function = &TapDelay::read_static;
@@ -50,6 +45,9 @@ void TapDelay::initialise(InterpolationType interpolation_type) noexcept {
         perform_function = &TapDelay::perform_cubic;
         read_function = &TapDelay::read_cubic;
     }
+
+    for (auto i = 0; i < m_taps; ++i)
+        set_delay(i, static_cast<MdFloat>(1));
 }
 
 void TapDelay::set_delay(const MdFloat* delay) noexcept {
