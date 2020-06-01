@@ -25,9 +25,9 @@ ReaderCubic::ReaderCubic(Buffer& buffer, std::size_t lower_bound, std::size_t up
 MdFloat ReaderCubic::read(Writer& writer, std::size_t offset, MdFloat frac) noexcept {
     // Get the correct read positions into the buffer
     auto phase_1 = utility::wrap(writer.m_write_index - offset, m_lower_bound, m_upper_bound);
-    auto phase_2 = utility::wrap(phase_1 - 1, 0, m_upper_bound);
-    auto phase_3 = utility::wrap(phase_1 - 2, 0, m_upper_bound);
-    auto phase_0 = utility::wrap(phase_1 + 1, 0, m_upper_bound);
+    auto phase_2 = utility::wrap(phase_1 - 1, m_lower_bound, m_upper_bound);
+    auto phase_3 = utility::wrap(phase_1 - 2, m_lower_bound, m_upper_bound);
+    auto phase_0 = utility::wrap(phase_1 + 1, m_lower_bound, m_upper_bound);
 
     auto d0 = m_buffer[phase_0];
     auto d1 = m_buffer[phase_1];
