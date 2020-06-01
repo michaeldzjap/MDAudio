@@ -1,8 +1,10 @@
 #include "Delay.hpp"
 #include "HannOscillator.hpp"
 #include "InterpolationType.hpp"
+#include "Latch.hpp"
 #include "Normaliser.hpp"
 #include "Phasor.hpp"
+#include "PitchShifter.hpp"
 #include "Reverb.hpp"
 #include "ReverbConfig.hpp"
 #include "ReverseDelay.hpp"
@@ -12,6 +14,7 @@
 #include "TapDelayCubic.hpp"
 #include "TapDelayLinear.hpp"
 #include "TapDelayStatic.hpp"
+#include "VariableDelay.hpp"
 #include "WhiteNoise.hpp"
 #include "types.hpp"
 #include <iomanip>
@@ -55,11 +58,29 @@ int main() {
     //
     // Pool<TOTAL_SIZE> pool;
 
-    // ReversibleDelay delay
+    // // ReversibleDelay delay
+    // constexpr auto MAX_DELAY = 102;
+    // constexpr auto MAX_DELAY_SIZE = MAX_DELAY * sizeof(md_audio::MdFloat);
+    // constexpr auto OVERLAP = 2;
+    // constexpr auto OVERLAP_SIZE = (OVERLAP + 1) * (sizeof(std::uint32_t) + sizeof(md_audio::MdFloat)) + OVERLAP * (sizeof(md_audio::Phasor) + sizeof(md_audio::HannOscillator));
+    // constexpr auto TOTAL_SIZE = MAX_DELAY_SIZE + OVERLAP_SIZE;
+    //
+    // Pool<TOTAL_SIZE> pool;
+
+    // // Pitch shifter
+    // constexpr auto MAX_SIZE = 102;
+    // constexpr auto MAX_SIZE_SIZE = MAX_SIZE * sizeof(md_audio::MdFloat);
+    // constexpr auto OVERLAP = 2;
+    // constexpr auto OVERLAP_SIZE = OVERLAP * (sizeof(std::uint32_t) + sizeof(md_audio::MdFloat) + sizeof(md_audio::Phasor) + sizeof(md_audio::HannOscillator));
+    // constexpr auto TOTAL_SIZE = MAX_SIZE_SIZE + OVERLAP_SIZE;
+    //
+    // Pool<TOTAL_SIZE> pool;
+
+    // Variable delay
     constexpr auto MAX_DELAY = 102;
     constexpr auto MAX_DELAY_SIZE = MAX_DELAY * sizeof(md_audio::MdFloat);
     constexpr auto OVERLAP = 2;
-    constexpr auto OVERLAP_SIZE = (OVERLAP + 1) * (sizeof(std::uint32_t) + sizeof(md_audio::MdFloat)) + OVERLAP * (sizeof(md_audio::Phasor) + sizeof(md_audio::HannOscillator));
+    constexpr auto OVERLAP_SIZE = OVERLAP * (sizeof(std::uint32_t) + sizeof(md_audio::MdFloat) + sizeof(md_audio::Phasor) + sizeof(md_audio::HannOscillator) + sizeof(md_audio::Latch));
     constexpr auto TOTAL_SIZE = MAX_DELAY_SIZE + OVERLAP_SIZE;
 
     Pool<TOTAL_SIZE> pool;
@@ -68,8 +89,10 @@ int main() {
     // md_audio::TapDelayLinear delay(pool, 102, TAPS);
     // md_audio::TapDelay delay(pool, 102, TAPS, md_audio::InterpolationType::cubic);
     // md_audio::ReverseDelay delay(pool, MAX_DELAY, 50.f, OVERLAP);
-    md_audio::ReversibleDelay delay(pool, MAX_DELAY, 50.f, true, OVERLAP);
+    // md_audio::ReversibleDelay delay(pool, MAX_DELAY, 50.f, true, OVERLAP);
     // md_audio::Normaliser normaliser(pool, DURATION);
+    // md_audio::PitchShifter shifter(pool, MAX_SIZE, 50.f, OVERLAP);
+    md_audio::VariableDelay delay(pool, MAX_DELAY, 50.f, OVERLAP);
     md_audio::WhiteNoise noise;
 
     // delay.set_delay(DELAY_TIMES);
@@ -81,6 +104,7 @@ int main() {
         // const auto z = normaliser.perform(y);
         // delay.perform(y, z, TAPS);
         const auto z = delay.perform(y);
+        // const auto z = shifter.perform(y);
 
         std::cout << i << "\t" << y << "\t" << z << std::endl;
 
