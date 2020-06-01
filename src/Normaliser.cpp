@@ -10,7 +10,7 @@ Normaliser::Normaliser(memory::Poolable& pool, std::size_t duration) :
     m_duration(duration),
     m_slope_factor(static_cast<MdFloat>(1) / static_cast<MdFloat>(duration))
 {
-    set_amplitude(static_cast<MdFloat>(1));
+    initialise(static_cast<MdFloat>(1));
 }
 
 Normaliser::Normaliser(memory::Poolable& pool, std::size_t duration, MdFloat amplitude) :
@@ -19,10 +19,10 @@ Normaliser::Normaliser(memory::Poolable& pool, std::size_t duration, MdFloat amp
     m_duration(duration),
     m_slope_factor(static_cast<MdFloat>(1) / static_cast<MdFloat>(duration))
 {
-    set_amplitude(amplitude);
+    initialise(amplitude);
 }
 
-void Normaliser::initialise() {
+void Normaliser::initialise(MdFloat amplitude) {
     auto memory = m_pool.allocate(m_size * sizeof(MdFloat));
 
     if (!memory) throw std::bad_alloc();
@@ -34,6 +34,8 @@ void Normaliser::initialise() {
     m_in_buf = m_memory;
     m_mid_buf = m_in_buf + m_duration;
     m_out_buf = m_mid_buf + m_duration;
+
+    set_amplitude(amplitude);
 }
 
 MdFloat Normaliser::perform(MdFloat in) noexcept {

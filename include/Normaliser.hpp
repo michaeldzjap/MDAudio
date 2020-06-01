@@ -16,8 +16,6 @@ namespace md_audio {
 
         explicit Normaliser(memory::Poolable&, std::size_t, MdFloat);
 
-        void initialise();
-
         inline void set_amplitude(MdFloat) noexcept;
 
         MdFloat perform(MdFloat) noexcept override final;
@@ -40,6 +38,8 @@ namespace md_audio {
         MdFloat m_cur_max_val = static_cast<MdFloat>(0);
         MdFloat m_prev_max_val = static_cast<MdFloat>(0);
         MdFloat m_slope_factor;
+
+        void initialise(MdFloat);
     };
 
     void Normaliser::set_amplitude(MdFloat amplitude) noexcept {
