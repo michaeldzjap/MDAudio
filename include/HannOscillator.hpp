@@ -1,9 +1,9 @@
 #ifndef MD_AUDIO_HANN_OSCILLATOR_HPP
 #define MD_AUDIO_HANN_OSCILLATOR_HPP
 
-#include "Generatable.hpp"
 #include "Oscillator.hpp"
 #include "constants.hpp"
+#include "interfaces/Generatable.hpp"
 #include "types.hpp"
 
 namespace md_audio {

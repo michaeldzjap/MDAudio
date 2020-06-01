@@ -6,8 +6,8 @@
 #include "Reader.hpp"
 #include "ReaderCubic.hpp"
 #include "ReaderLinear.hpp"
-#include "TapDelayable.hpp"
 #include "Writer.hpp"
+#include "interfaces/TapDelayable.hpp"
 #include "utility.hpp"
 #include <functional>
 

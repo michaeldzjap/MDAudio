@@ -12,7 +12,6 @@
 #include "Normaliser.hpp"
 #include "Phasor.hpp"
 #include "PitchShifter.hpp"
-#include "Processable.hpp"
 #include "Reader.hpp"
 #include "ReaderLinear.hpp"
 #include "ReverbConfig.hpp"
@@ -22,6 +21,7 @@
 #include "TapDelayLinear.hpp"
 #include "WhiteNoise.hpp"
 #include "Writer.hpp"
+#include "interfaces/Processable.hpp"
 #include "types.hpp"
 
 namespace md_audio {

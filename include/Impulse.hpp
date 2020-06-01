@@ -1,8 +1,8 @@
 #ifndef MD_AUDIO_IMPULSE_HPP
 #define MD_AUDIO_IMPULSE_HPP
 
-#include "Generatable.hpp"
 #include "constants.hpp"
+#include "interfaces/Generatable.hpp"
 #include "types.hpp"
 #include "utility.hpp"
 

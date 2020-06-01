@@ -2,12 +2,12 @@
 #define MD_AUDIO_DELAY_HPP
 
 #include "Buffer.hpp"
-#include "Delayable.hpp"
 #include "InterpolationType.hpp"
 #include "Reader.hpp"
 #include "ReaderCubic.hpp"
 #include "ReaderLinear.hpp"
 #include "Writer.hpp"
+#include "interfaces/Delayable.hpp"
 #include "utility.hpp"
 
 namespace md_audio {

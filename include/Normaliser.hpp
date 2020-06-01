@@ -1,8 +1,8 @@
 #ifndef MD_AUDIO_NORMALISER_HPP
 #define MD_AUDIO_NORMALISER_HPP
 
-#include "Poolable.hpp"
-#include "Processable.hpp"
+#include "interfaces/Poolable.hpp"
+#include "interfaces/Processable.hpp"
 #include "types.hpp"
 #include "utility.hpp"
 

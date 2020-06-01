@@ -1,5 +1,4 @@
 #include "DelayLinear.hpp"
-#include "utility.hpp"
 
 using md_audio::DelayLinear;
 using md_audio::MdFloat;

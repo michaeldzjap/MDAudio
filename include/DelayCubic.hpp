@@ -2,9 +2,9 @@
 #define MD_AUDIO_DELAY_CUBIC_HPP
 
 #include "Buffer.hpp"
-#include "Delayable.hpp"
 #include "ReaderCubic.hpp"
 #include "Writer.hpp"
+#include "interfaces/Delayable.hpp"
 #include "utility.hpp"
 
 namespace md_audio {

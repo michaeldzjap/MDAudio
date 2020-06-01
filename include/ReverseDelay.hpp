@@ -4,8 +4,8 @@
 #include "HannOscillator.hpp"
 #include "InterpolationType.hpp"
 #include "Phasor.hpp"
-#include "Processable.hpp"
 #include "TapDelay.hpp"
+#include "interfaces/Processable.hpp"
 #include "types.hpp"
 
 namespace md_audio {

@@ -3,8 +3,8 @@
 
 #include "Buffer.hpp"
 #include "ReaderCubic.hpp"
-#include "TapDelayable.hpp"
 #include "Writer.hpp"
+#include "interfaces/TapDelayable.hpp"
 #include "utility.hpp"
 
 namespace md_audio {

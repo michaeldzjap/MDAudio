@@ -1,7 +1,7 @@
 #ifndef MD_AUDIO_STATIC_ALLOCATOR_HPP
 #define MD_AUDIO_STATIC_ALLOCATOR_HPP
 
-#include "Allocatable.hpp"
+#include "../interfaces/Allocatable.hpp"
 #include <type_traits>
 
 namespace md_audio::memory {

@@ -1,7 +1,7 @@
 #ifndef MD_AUDIO_BUFFER_HPP
 #define MD_AUDIO_BUFFER_HPP
 
-#include "Poolable.hpp"
+#include "interfaces/Poolable.hpp"
 #include "types.hpp"
 #include <cstdint>
 

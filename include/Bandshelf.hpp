@@ -1,7 +1,7 @@
 #ifndef MD_AUDIO_BANDSHELF_HPP
 #define MD_AUDIO_BANDSHELF_HPP
 
-#include "Processable.hpp"
+#include "interfaces/Processable.hpp"
 #include "zdf.hpp"
 
 namespace md_audio {
