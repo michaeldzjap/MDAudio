@@ -1,8 +1,8 @@
 #ifndef MD_AUDIO_STATIC_POOL_HPP
 #define MD_AUDIO_STATIC_POOL_HPP
 
-#include "Poolable.hpp"
-#include "Uncopyable.hpp"
+#include "interfaces/Poolable.hpp"
+#include "interfaces/Uncopyable.hpp"
 #include <algorithm>
 #include <cstdint>
 
@@ -27,7 +27,7 @@ namespace md_audio::memory {
 
     template <std::size_t TOTAL_SIZE>
     void* StaticPool<TOTAL_SIZE>::allocate(std::size_t size) {
-        if (m_ptr + size - &m_buffer[0] > TOTAL_SIZE)
+        if (static_cast<std::uint32_t>(m_ptr + size - &m_buffer[0]) > TOTAL_SIZE)
             throw std::bad_alloc();
 
         auto ret = m_ptr;
