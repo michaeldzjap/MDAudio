@@ -15,7 +15,7 @@ namespace md_audio {
 
     class TapDelay : public TapDelayable {
     public:
-        explicit TapDelay(memory::Poolable&, MdFloat, std::size_t, InterpolationType = InterpolationType::none);
+        explicit TapDelay(memory::Poolable&, std::size_t, std::size_t, InterpolationType = InterpolationType::none);
 
         void set_delay(const MdFloat*) noexcept override final;
 
