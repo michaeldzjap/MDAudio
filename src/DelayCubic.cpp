@@ -26,9 +26,9 @@ DelayCubic::DelayCubic(memory::Poolable& pool, std::size_t max_delay, MdFloat de
 }
 
 MdFloat DelayCubic::perform(MdFloat in) noexcept {
-    m_writer.write(in);
-
     auto z = m_reader.read(m_writer, m_delay, m_frac);
+
+    m_writer.write(in);
 
     return z;
 }

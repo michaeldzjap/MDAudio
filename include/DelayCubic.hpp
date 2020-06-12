@@ -4,18 +4,18 @@
 #include "Buffer.hpp"
 #include "ReaderCubic.hpp"
 #include "Writer.hpp"
-#include "interfaces/Delayable.hpp"
+#include "interfaces/Processable.hpp"
 #include "utility.hpp"
 
 namespace md_audio {
 
-    class DelayCubic : public Delayable {
+    class DelayCubic : public Processable<MdFloat, MdFloat> {
     public:
         explicit DelayCubic(memory::Poolable&, std::size_t);
 
         explicit DelayCubic(memory::Poolable&, std::size_t, MdFloat);
 
-        inline void set_delay(MdFloat) noexcept override final;
+        inline void set_delay(MdFloat) noexcept;
 
         MdFloat perform(MdFloat) noexcept override final;
 

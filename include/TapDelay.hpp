@@ -7,27 +7,27 @@
 #include "ReaderCubic.hpp"
 #include "ReaderLinear.hpp"
 #include "Writer.hpp"
-#include "interfaces/TapDelayable.hpp"
+#include "interfaces/MultiOutProcessable.hpp"
 #include "utility.hpp"
 #include <functional>
 
 namespace md_audio {
 
-    class TapDelay : public TapDelayable {
+    class TapDelay : public MultiOutProcessable<MdFloat, MdFloat> {
     public:
         explicit TapDelay(memory::Poolable&, std::size_t, std::size_t, InterpolationType = InterpolationType::none);
 
-        void set_delay(const MdFloat*) noexcept override final;
+        void set_delay(const MdFloat*) noexcept;
 
-        inline void set_delay(std::size_t, MdFloat) noexcept override final;
+        inline void set_delay(std::size_t, MdFloat) noexcept;
 
-        inline constexpr MdFloat get_max_delay() noexcept override final;
+        inline constexpr MdFloat get_max_delay() noexcept;
 
         MdFloat* perform(MdFloat, MdFloat*, std::size_t) noexcept override final;
 
-        void write(MdFloat) noexcept override final;
+        void write(MdFloat) noexcept;
 
-        MdFloat read(std::size_t) noexcept override final;
+        MdFloat read(std::size_t) noexcept;
 
         ~TapDelay();
 
