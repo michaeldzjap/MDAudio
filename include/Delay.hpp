@@ -7,18 +7,18 @@
 #include "ReaderCubic.hpp"
 #include "ReaderLinear.hpp"
 #include "Writer.hpp"
-#include "interfaces/Delayable.hpp"
+#include "interfaces/Processable.hpp"
 #include "utility.hpp"
 
 namespace md_audio {
 
-    class Delay : public Delayable {
+    class Delay : public Processable<MdFloat, MdFloat> {
     public:
         explicit Delay(memory::Poolable&, std::size_t, InterpolationType = InterpolationType::none);
 
         explicit Delay(memory::Poolable&, std::size_t, MdFloat, InterpolationType = InterpolationType::none);
 
-        inline void set_delay(MdFloat) noexcept override final;
+        inline void set_delay(MdFloat) noexcept;
 
         MdFloat perform(MdFloat) noexcept override final;
 

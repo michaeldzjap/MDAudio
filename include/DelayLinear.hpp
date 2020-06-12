@@ -4,18 +4,18 @@
 #include "Buffer.hpp"
 #include "ReaderLinear.hpp"
 #include "Writer.hpp"
-#include "interfaces/Delayable.hpp"
+#include "interfaces/Processable.hpp"
 #include "utility.hpp"
 
 namespace md_audio {
 
-    class DelayLinear : public Delayable {
+    class DelayLinear : public Processable<MdFloat, MdFloat> {
     public:
         explicit DelayLinear(memory::Poolable&, std::size_t);
 
         explicit DelayLinear(memory::Poolable&, std::size_t, MdFloat);
 
-        inline void set_delay(MdFloat) noexcept override final;
+        inline void set_delay(MdFloat) noexcept;
 
         MdFloat perform(MdFloat) noexcept override final;
 
