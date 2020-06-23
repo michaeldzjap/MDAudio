@@ -14,8 +14,8 @@ namespace md_audio {
         MdFloat perform(MdFloat, MdFloat) noexcept override final;
 
     private:
-        MdFloat m_level = 0;
-        MdFloat m_previous = 0;
+        MdFloat m_level = static_cast<MdFloat>(0);
+        MdFloat m_previous = static_cast<MdFloat>(0);
     };
 
 }

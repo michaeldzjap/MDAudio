@@ -42,6 +42,24 @@ ReversibleDelay::ReversibleDelay(
 ReversibleDelay::ReversibleDelay(
     memory::Poolable& pool,
     std::size_t max_delay,
+    bool reverse,
+    std::size_t overlap,
+    InterpolationType interpolation_type
+) :
+    m_pool(pool),
+    m_delay(pool, max_delay, overlap + 1, interpolation_type),
+    m_overlap(overlap),
+    m_reverse(reverse),
+    m_norm(static_cast<MdFloat>(2) / overlap)
+{
+    assert(m_overlap > 1);
+
+    initialise(static_cast<MdFloat>(0));
+}
+
+ReversibleDelay::ReversibleDelay(
+    memory::Poolable& pool,
+    std::size_t max_delay,
     MdFloat size,
     bool reverse,
     std::size_t overlap,

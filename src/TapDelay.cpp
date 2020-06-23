@@ -38,7 +38,7 @@ void TapDelay::initialise(InterpolationType interpolation_type) {
     if (interpolation_type == InterpolationType::none) {
         perform_function = &TapDelay::perform_static;
         read_function = &TapDelay::read_static;
-    } else if (interpolation_type == InterpolationType::linear) {
+     } else if (interpolation_type == InterpolationType::linear) {
         perform_function = &TapDelay::perform_linear;
         read_function = &TapDelay::read_linear;
     } else {

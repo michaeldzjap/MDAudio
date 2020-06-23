@@ -16,6 +16,8 @@ namespace md_audio {
 
         explicit ReversibleDelay(memory::Poolable&, std::size_t, MdFloat, std::size_t, InterpolationType = InterpolationType::linear);
 
+        explicit ReversibleDelay(memory::Poolable&, std::size_t, bool, std::size_t, InterpolationType = InterpolationType::linear);
+
         explicit ReversibleDelay(memory::Poolable&, std::size_t, MdFloat, bool, std::size_t, InterpolationType = InterpolationType::linear);
 
         void set_backward_delay(MdFloat) noexcept;

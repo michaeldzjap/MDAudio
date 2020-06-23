@@ -49,6 +49,5 @@ MdFloat TapDelayStatic::read(std::size_t index) noexcept {
 }
 
 TapDelayStatic::~TapDelayStatic() {
-    if (m_delay)
-        m_pool.deallocate(m_delay);
+    if (m_delay) m_pool.deallocate(m_delay);
 }
