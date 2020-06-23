@@ -17,15 +17,9 @@ namespace md_audio {
 
         explicit Oscillator(MdFloat, MdFloat);
 
-        inline void set_frequency(MdFloat frequency) noexcept {
-            m_frequency_rate = cycles_to_increment * static_cast<double>(
-                utility::clip(frequency, static_cast<MdFloat>(-half_sample_rate), static_cast<MdFloat>(half_sample_rate))
-            );
-        }
+        inline void set_frequency(MdFloat) noexcept;
 
-        inline void set_phase(MdFloat phase) noexcept {
-            m_phase_rate = radians_to_increment * static_cast<double>(phase);
-        }
+        inline void set_phase(MdFloat) noexcept;
 
         virtual ~Oscillator() = 0;
 
@@ -37,6 +31,16 @@ namespace md_audio {
         double m_phase_rate = 0.;
         double m_frequency_rate = 0.;
     };
+
+    void Oscillator::set_frequency(MdFloat frequency) noexcept {
+        m_frequency_rate = cycles_to_increment * static_cast<double>(
+            utility::clip(frequency, static_cast<MdFloat>(-half_sample_rate), static_cast<MdFloat>(half_sample_rate))
+        );
+    }
+
+    void Oscillator::set_phase(MdFloat phase) noexcept {
+        m_phase_rate = radians_to_increment * static_cast<double>(phase);
+    }
 
 }
 
