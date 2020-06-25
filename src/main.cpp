@@ -1,4 +1,7 @@
 #include "Delay.hpp"
+#include "DelayCubic.hpp"
+#include "DelayLinear.hpp"
+#include "DelayStatic.hpp"
 #include "HannOscillator.hpp"
 #include "InterpolationType.hpp"
 #include "Latch.hpp"
@@ -27,6 +30,30 @@ using Pool = md_audio::memory::StaticPool<Size>;
 int main() {
     std::cout << std::fixed;
     std::cout << std::setprecision(9);
+
+    // // Delay static
+    // constexpr auto MAX_DELAY_TIME = static_cast<md_audio::MdFloat>(.2);
+    // constexpr auto DELAY_TIME = static_cast<md_audio::MdFloat>(.001);
+    // constexpr auto MAX_DELAY_SAMPLES = static_cast<std::uint32_t>(MAX_DELAY_TIME * md_audio::sample_rate) + 1;
+    // constexpr auto TOTAL_SIZE = MAX_DELAY_SAMPLES * sizeof(md_audio::MdFloat);
+    //
+    // Pool<TOTAL_SIZE> pool;
+
+    // // Delay linear
+    // constexpr auto MAX_DELAY_TIME = static_cast<md_audio::MdFloat>(.2);
+    // constexpr auto DELAY_TIME = static_cast<md_audio::MdFloat>(.001);
+    // constexpr auto MAX_DELAY_SAMPLES = static_cast<std::uint32_t>(MAX_DELAY_TIME * md_audio::sample_rate) + 2;
+    // constexpr auto TOTAL_SIZE = MAX_DELAY_SAMPLES * sizeof(md_audio::MdFloat);
+    //
+    // Pool<TOTAL_SIZE> pool;
+
+    // Delay cubic
+    constexpr auto MAX_DELAY_TIME = static_cast<md_audio::MdFloat>(.2);
+    constexpr auto DELAY_TIME = static_cast<md_audio::MdFloat>(.001);
+    constexpr auto MAX_DELAY_SAMPLES = static_cast<std::uint32_t>(MAX_DELAY_TIME * md_audio::sample_rate) + 3;
+    constexpr auto TOTAL_SIZE = MAX_DELAY_SAMPLES * sizeof(md_audio::MdFloat);
+
+    Pool<TOTAL_SIZE> pool;
 
     // // Delay
     // constexpr auto MAX_DELAY = 102;
@@ -77,15 +104,18 @@ int main() {
     //
     // Pool<TOTAL_SIZE> pool;
 
-    // Variable delay
-    constexpr auto MAX_DELAY = /*102*/ static_cast<std::uint32_t>(5 * md_audio::sample_rate);
-    constexpr auto MAX_DELAY_SIZE = MAX_DELAY * sizeof(md_audio::MdFloat);
-    constexpr auto OVERLAP = 2;
-    constexpr auto OVERLAP_SIZE = OVERLAP * (sizeof(std::uint32_t) + sizeof(md_audio::MdFloat) + sizeof(md_audio::Phasor) + sizeof(md_audio::HannOscillator) + sizeof(md_audio::Latch));
-    constexpr auto TOTAL_SIZE = MAX_DELAY_SIZE + OVERLAP_SIZE;
+    // // Variable delay
+    // constexpr auto MAX_DELAY = /*102*/ static_cast<std::uint32_t>(5 * md_audio::sample_rate);
+    // constexpr auto MAX_DELAY_SIZE = MAX_DELAY * sizeof(md_audio::MdFloat);
+    // constexpr auto OVERLAP = 2;
+    // constexpr auto OVERLAP_SIZE = OVERLAP * (sizeof(std::uint32_t) + sizeof(md_audio::MdFloat) + sizeof(md_audio::Phasor) + sizeof(md_audio::HannOscillator) + sizeof(md_audio::Latch));
+    // constexpr auto TOTAL_SIZE = MAX_DELAY_SIZE + OVERLAP_SIZE;
+    //
+    // Pool<TOTAL_SIZE> pool;
 
-    Pool<TOTAL_SIZE> pool;
-
+    // md_audio::DelayStatic delay(pool, MAX_DELAY_TIME, DELAY_TIME);
+    // md_audio::DelayLinear delay(pool, MAX_DELAY_TIME, DELAY_TIME);
+    md_audio::DelayCubic delay(pool, MAX_DELAY_TIME, DELAY_TIME);
     // md_audio::Delay delay(pool, 102, 50.73536f, md_audio::InterpolationType::linear);
     // md_audio::TapDelayLinear delay(pool, MAX_DELAY, TAPS);
     // md_audio::TapDelay delay(pool, MAX_DELAY, TAPS, static_cast<md_audio::InterpolationType>(0));
@@ -94,22 +124,22 @@ int main() {
     // md_audio::ReversibleDelay delay(pool, MAX_DELAY, 50.f, true, OVERLAP);
     // md_audio::Normaliser normaliser(pool, DURATION);
     // md_audio::PitchShifter shifter(pool, MAX_SIZE, 50.f, OVERLAP);
-    md_audio::VariableDelay delay(pool, MAX_DELAY, .2f * md_audio::sample_rate, .2f * md_audio::sample_rate, OVERLAP);
+    // md_audio::VariableDelay delay(pool, MAX_DELAY, .2f * md_audio::sample_rate, .2f * md_audio::sample_rate, OVERLAP);
     md_audio::WhiteNoise noise;
 
     // delay.set_delay(DELAY_TIMES);
 
-    for (std::size_t i = 0; i < 44100; ++i) {
+    for (std::size_t i = 0; i < 441; ++i) {
         // md_audio::MdFloat z[TAPS];
 
         const auto y = noise.perform();
         // const auto z = normaliser.perform(y);
         // delay.perform(y, z, TAPS);
-        delay.set_delay((y * .5 + .5) * ((.3 - .2) + .2) * md_audio::sample_rate);
+        // delay.set_delay((y * .5 + .5) * ((.3 - .2) + .2) * md_audio::sample_rate);
         const auto z = delay.perform(y);
         // const auto z = shifter.perform(y);
 
-        // std::cout << i << "\t" << y << "\t" << z << std::endl;
+        std::cout << i << "\t" << y << "\t" << z << std::endl;
 
         // std::cout << i << "\t";
         //
