@@ -33,6 +33,7 @@ set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
     Reverb.cpp
     ReverseDelay.cpp
     ReversibleDelay.cpp
+    SampleRate.cpp
     SineOscillator.cpp
     SineShaper.cpp
     Svf.cpp

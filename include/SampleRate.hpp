@@ -1,11 +1,11 @@
-#ifndef MD_AUDIO_MD_AUDIO_HPP
-#define MD_AUDIO_MD_AUDIO_HPP
+#ifndef MD_AUDIO_SAMPLE_RATE_HPP
+#define MD_AUDIO_SAMPLE_RATE_HPP
 
 #include "types.hpp"
 
 namespace md_audio {
 
-    class MdAudio {
+    class SampleRate {
     public:
         static double get_sample_rate() noexcept;
 
@@ -17,9 +17,9 @@ namespace md_audio {
 
         static double get_pi_over_sample_rate() noexcept;
 
-        virtual ~MdAudio() = 0;
+        virtual ~SampleRate() = 0;
 
-    private:
+    protected:
         static double m_sample_rate;
         static double m_half_sample_rate;
         static double m_sample_duration;
@@ -28,4 +28,4 @@ namespace md_audio {
 
 }
 
-#endif /* MD_AUDIO_MD_AUDIO_HPP */
+#endif /* MD_AUDIO_SAMPLE_RATE_HPP */
