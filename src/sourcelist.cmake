@@ -45,6 +45,8 @@ set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
     TiltFirstOrder.cpp
     TiltSecondOrder.cpp
     TptFilter.cpp
+    TptSecondOrder.cpp
+    TptShelving.cpp
     VariableDelay.cpp
     WhiteNoise.cpp
     Writer.cpp

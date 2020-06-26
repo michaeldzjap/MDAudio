@@ -1,12 +1,17 @@
 #ifndef MD_AUDIO_BANDSTOP_HPP
 #define MD_AUDIO_BANDSTOP_HPP
 
+#include "TptFilter.hpp"
+#include "TptSecondOrder.hpp"
 #include "interfaces/Processable.hpp"
-#include "zdf.hpp"
 
 namespace md_audio {
 
-    class Bandstop : public Processable<MdFloat, MdFloat> {
+    class Bandstop :
+        public TptFilter,
+        public TptSecondOrder,
+        public Processable<MdFloat, MdFloat>
+    {
     public:
         explicit Bandstop();
 

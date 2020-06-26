@@ -1,12 +1,17 @@
 #ifndef MD_AUDIO_BANDPASS_HPP
 #define MD_AUDIO_BANDPASS_HPP
 
+#include "TptFilter.hpp"
+#include "TptSecondOrder.hpp"
 #include "interfaces/Processable.hpp"
-#include "zdf.hpp"
 
 namespace md_audio {
 
-    class Bandpass : public Processable<MdFloat, MdFloat> {
+    class Bandpass :
+        public TptFilter,
+        public TptSecondOrder,
+        public Processable<MdFloat, MdFloat>
+    {
     public:
         explicit Bandpass();
 
