@@ -10,7 +10,7 @@ namespace md_audio {
 
     class HannOscillator : public Generatable<MdFloat>, public Oscillator {
     public:
-        HannOscillator() = default;
+        explicit HannOscillator();
 
         explicit HannOscillator(MdFloat);
 

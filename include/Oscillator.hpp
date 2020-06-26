@@ -11,8 +11,6 @@ namespace md_audio {
 
     class Oscillator : public SampleRate {
     public:
-        Oscillator() = default;
-
         explicit Oscillator(MdFloat);
 
         explicit Oscillator(MdFloat, MdFloat);

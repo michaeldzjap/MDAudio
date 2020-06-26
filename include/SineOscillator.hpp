@@ -10,7 +10,7 @@ namespace md_audio {
 
     class SineOscillator : public Oscillator, public Generatable<MdFloat> {
     public:
-        SineOscillator() = default;
+        explicit SineOscillator();
 
         explicit SineOscillator(MdFloat);
 

@@ -33,7 +33,7 @@ namespace md_audio {
         delay = utility::clip(
             static_cast<MdFloat>(sample_rate * delay),
             static_cast<MdFloat>(1),
-            static_cast<MdFloat>(m_max_delay - 2)
+            static_cast<MdFloat>(m_max_delay)
         );
 
         m_delay = static_cast<std::uint32_t>(delay);

@@ -1,3 +1,6 @@
+#include "AllpassCubic.hpp"
+#include "AllpassLinear.hpp"
+#include "AllpassStatic.hpp"
 #include "Delay.hpp"
 #include "DelayCubic.hpp"
 #include "DelayLinear.hpp"
@@ -31,37 +34,39 @@ int main() {
     std::cout << std::fixed;
     std::cout << std::setprecision(9);
 
-    // // Delay static
-    // constexpr auto MAX_DELAY_TIME = static_cast<md_audio::MdFloat>(.2);
-    // constexpr auto DELAY_TIME = static_cast<md_audio::MdFloat>(.001);
-    // constexpr auto MAX_DELAY_SAMPLES = static_cast<std::uint32_t>(MAX_DELAY_TIME * md_audio::sample_rate) + 1;
-    // constexpr auto TOTAL_SIZE = MAX_DELAY_SAMPLES * sizeof(md_audio::MdFloat);
-    //
-    // Pool<TOTAL_SIZE> pool;
+    // Allpass / Delay Static
+    constexpr auto MAX_DELAY_TIME = static_cast<md_audio::MdFloat>(.001);
+    constexpr auto DELAY_TIME = static_cast<md_audio::MdFloat>(.001);
+    constexpr auto MAX_DELAY_SAMPLES = static_cast<std::uint32_t>(MAX_DELAY_TIME * md_audio::sample_rate) + 1;
+    constexpr auto TOTAL_SIZE = MAX_DELAY_SAMPLES * sizeof(md_audio::MdFloat);
 
-    // // Delay linear
-    // constexpr auto MAX_DELAY_TIME = static_cast<md_audio::MdFloat>(.2);
+    Pool<TOTAL_SIZE> pool;
+
+    // // Allpass / Delay Linear
+    // constexpr auto MAX_DELAY_TIME = static_cast<md_audio::MdFloat>(.001);
     // constexpr auto DELAY_TIME = static_cast<md_audio::MdFloat>(.001);
     // constexpr auto MAX_DELAY_SAMPLES = static_cast<std::uint32_t>(MAX_DELAY_TIME * md_audio::sample_rate) + 2;
     // constexpr auto TOTAL_SIZE = MAX_DELAY_SAMPLES * sizeof(md_audio::MdFloat);
     //
     // Pool<TOTAL_SIZE> pool;
 
-    // Delay cubic
-    constexpr auto MAX_DELAY_TIME = static_cast<md_audio::MdFloat>(.2);
-    constexpr auto DELAY_TIME = static_cast<md_audio::MdFloat>(.001);
-    constexpr auto MAX_DELAY_SAMPLES = static_cast<std::uint32_t>(MAX_DELAY_TIME * md_audio::sample_rate) + 3;
-    constexpr auto TOTAL_SIZE = MAX_DELAY_SAMPLES * sizeof(md_audio::MdFloat);
-
-    Pool<TOTAL_SIZE> pool;
+    // // Allpass / Delay Cubic
+    // constexpr auto MAX_DELAY_TIME = static_cast<md_audio::MdFloat>(.001);
+    // constexpr auto DELAY_TIME = static_cast<md_audio::MdFloat>(.001);
+    // constexpr auto MAX_DELAY_SAMPLES = static_cast<std::uint32_t>(MAX_DELAY_TIME * md_audio::sample_rate) + 3;
+    // constexpr auto TOTAL_SIZE = MAX_DELAY_SAMPLES * sizeof(md_audio::MdFloat);
+    //
+    // Pool<TOTAL_SIZE> pool;
 
     // // Delay
-    // constexpr auto MAX_DELAY = 102;
-    // constexpr auto MAX_DELAY_SIZE = MAX_DELAY * sizeof(md_audio::MdFloat);
+    // constexpr auto MAX_DELAY_TIME = static_cast<md_audio::MdFloat>(.001);
+    // constexpr auto DELAY_TIME = static_cast<md_audio::MdFloat>(.001);
+    // constexpr auto MAX_DELAY_SAMPLES = static_cast<std::uint32_t>(MAX_DELAY_TIME * md_audio::sample_rate) + 3;
+    // constexpr auto TOTAL_SIZE = MAX_DELAY_SAMPLES * sizeof(md_audio::MdFloat);
     //
-    // Pool<MAX_DELAY_SIZE> pool;
+    // Pool<TOTAL_SIZE> pool;
 
-    // // Tap delay
+    // // Tap Delay
     // constexpr auto MAX_DELAY = 102;
     // constexpr auto MAX_DELAY_SIZE = MAX_DELAY * sizeof(md_audio::MdFloat);
     // constexpr auto TAPS = 4;
@@ -77,7 +82,7 @@ int main() {
     //
     // Pool<DURATION_SIZE> pool;
 
-    // // ReverseDelay delay
+    // // Reverse Delay
     // constexpr auto MAX_DELAY = 102;
     // constexpr auto MAX_DELAY_SIZE = MAX_DELAY * sizeof(md_audio::MdFloat);
     // constexpr auto OVERLAP = 2;
@@ -86,7 +91,7 @@ int main() {
     //
     // Pool<TOTAL_SIZE> pool;
 
-    // // ReversibleDelay delay
+    // // Reversible Delay
     // constexpr auto MAX_DELAY = 102;
     // constexpr auto MAX_DELAY_SIZE = MAX_DELAY * sizeof(md_audio::MdFloat);
     // constexpr auto OVERLAP = 2;
@@ -95,7 +100,7 @@ int main() {
     //
     // Pool<TOTAL_SIZE> pool;
 
-    // // Pitch shifter
+    // // Pitch Shifter
     // constexpr auto MAX_SIZE = 102;
     // constexpr auto MAX_SIZE_SIZE = MAX_SIZE * sizeof(md_audio::MdFloat);
     // constexpr auto OVERLAP = 2;
@@ -104,7 +109,7 @@ int main() {
     //
     // Pool<TOTAL_SIZE> pool;
 
-    // // Variable delay
+    // // Variable Delay
     // constexpr auto MAX_DELAY = /*102*/ static_cast<std::uint32_t>(5 * md_audio::sample_rate);
     // constexpr auto MAX_DELAY_SIZE = MAX_DELAY * sizeof(md_audio::MdFloat);
     // constexpr auto OVERLAP = 2;
@@ -113,10 +118,11 @@ int main() {
     //
     // Pool<TOTAL_SIZE> pool;
 
+    md_audio::AllpassStatic allpass(pool, MAX_DELAY_TIME, DELAY_TIME);
     // md_audio::DelayStatic delay(pool, MAX_DELAY_TIME, DELAY_TIME);
     // md_audio::DelayLinear delay(pool, MAX_DELAY_TIME, DELAY_TIME);
-    md_audio::DelayCubic delay(pool, MAX_DELAY_TIME, DELAY_TIME);
-    // md_audio::Delay delay(pool, 102, 50.73536f, md_audio::InterpolationType::linear);
+    // md_audio::DelayCubic delay(pool, MAX_DELAY_TIME, DELAY_TIME);
+    // md_audio::Delay delay(pool, MAX_DELAY_TIME, DELAY_TIME, md_audio::InterpolationType::cubic);
     // md_audio::TapDelayLinear delay(pool, MAX_DELAY, TAPS);
     // md_audio::TapDelay delay(pool, MAX_DELAY, TAPS, static_cast<md_audio::InterpolationType>(0));
     // md_audio::TapDelayStatic delay(pool, MAX_DELAY, TAPS);
@@ -136,7 +142,8 @@ int main() {
         // const auto z = normaliser.perform(y);
         // delay.perform(y, z, TAPS);
         // delay.set_delay((y * .5 + .5) * ((.3 - .2) + .2) * md_audio::sample_rate);
-        const auto z = delay.perform(y);
+        // const auto z = delay.perform(y);
+        const auto z = allpass.perform(y);
         // const auto z = shifter.perform(y);
 
         std::cout << i << "\t" << y << "\t" << z << std::endl;
