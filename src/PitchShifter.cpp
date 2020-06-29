@@ -6,33 +6,33 @@ using md_audio::PitchShifter;
 
 PitchShifter::PitchShifter(
     memory::Poolable& pool,
-    std::size_t max_size,
+    MdFloat max_size,
     MdFloat size,
-    std::size_t overlap,
-    InterpolationType interpolation_type
+    std::size_t overlap
 ) :
-    m_pool(pool),
-    m_delay(pool, max_size, overlap, interpolation_type),
+    m_max_size(max_size),
     m_overlap(overlap),
-    m_norm(static_cast<MdFloat>(2) / overlap)
+    m_norm(static_cast<MdFloat>(2) / m_overlap),
+    m_pool(pool),
+    m_delay(pool, max_size, m_overlap)
 {
     assert(m_overlap > 1);
 
-    initialise(size, static_cast<MdFloat>(1));
+    initialise(size, static_cast<MdFloat>(0));
 }
 
 PitchShifter::PitchShifter(
     memory::Poolable& pool,
-    std::size_t max_size,
+    MdFloat max_size,
     MdFloat size,
     MdFloat transposition,
-    std::size_t overlap,
-    InterpolationType interpolation_type
+    std::size_t overlap
 ) :
-    m_pool(pool),
-    m_delay(pool, max_size, overlap, interpolation_type),
+    m_max_size(max_size),
     m_overlap(overlap),
-    m_norm(static_cast<MdFloat>(2) / m_overlap)
+    m_norm(static_cast<MdFloat>(2) / m_overlap),
+    m_pool(pool),
+    m_delay(pool, m_max_size, m_overlap)
 {
     assert(m_overlap > 1);
 
@@ -47,10 +47,13 @@ void PitchShifter::initialise(MdFloat size, MdFloat transposition) {
 
     set_frequency();
 
-    for (auto i = 0; i < m_overlap; i++)
+    for (std::uint32_t i = 0; i < m_overlap; ++i) {
         m_phasor[i].set_phase(
             static_cast<MdFloat>(1) - static_cast<MdFloat>(i) / static_cast<MdFloat>(m_overlap)
         );
+
+        m_osc[i].set_frequency(static_cast<MdFloat>(0));
+    }
 }
 
 void* PitchShifter::allocate(std::size_t size) {
@@ -70,14 +73,14 @@ void PitchShifter::set_size(MdFloat size) noexcept {
 void PitchShifter::set_frequency() noexcept {
     auto frequency = compute_frequency(m_transposition, m_size);
 
-    for (auto i = 0; i < m_overlap; ++i)
+    for (std::uint32_t i = 0; i < m_overlap; ++i)
         m_phasor[i].set_frequency(frequency);
 }
 
 MdFloat PitchShifter::perform(MdFloat in) noexcept {
     auto z = static_cast<MdFloat>(0);
 
-    for (auto i = 0; i < m_overlap; ++i) {
+    for (std::uint32_t i = 0; i < m_overlap; ++i) {
         auto phase = m_phasor[i].perform();
 
         m_osc[i].set_phase(static_cast<MdFloat>(phase * two_pi));

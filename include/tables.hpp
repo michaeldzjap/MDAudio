@@ -10,7 +10,6 @@
 namespace md_audio {
 
     constexpr std::size_t table_size = 512;
-    constexpr double cycles_to_increment = table_size * sample_duration;
     constexpr double radians_to_increment = table_size / two_pi;
 
     template <typename T>

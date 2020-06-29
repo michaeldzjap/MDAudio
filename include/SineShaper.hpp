@@ -1,7 +1,6 @@
 #ifndef MD_AUDIO_SINE_SHAPER_HPP
 #define MD_AUDIO_SINE_SHAPER_HPP
 
-#include "constants.hpp"
 #include "interfaces/Processable.hpp"
 #include "tables.hpp"
 #include "types.hpp"

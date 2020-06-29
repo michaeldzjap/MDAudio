@@ -4,7 +4,7 @@ using md_audio::AllpassCubic;
 using md_audio::MdFloat;
 
 AllpassCubic::AllpassCubic(memory::Poolable& pool, MdFloat max_delay) :
-    m_max_delay(static_cast<std::uint32_t>(sample_rate * max_delay) + 3),
+    m_max_delay(utility::ceil(sample_rate * max_delay) + 2),
     m_buffer(pool, m_max_delay),
     m_reader(m_buffer, m_max_delay - 1),
     m_writer(m_buffer, m_max_delay - 1)
@@ -15,7 +15,7 @@ AllpassCubic::AllpassCubic(memory::Poolable& pool, MdFloat max_delay) :
 }
 
 AllpassCubic::AllpassCubic(memory::Poolable& pool, MdFloat max_delay, MdFloat delay) :
-    m_max_delay(static_cast<std::uint32_t>(sample_rate * max_delay) + 3),
+    m_max_delay(utility::ceil(sample_rate * max_delay) + 2),
     m_buffer(pool, m_max_delay),
     m_reader(m_buffer, m_max_delay - 1),
     m_writer(m_buffer, m_max_delay - 1)
@@ -26,7 +26,7 @@ AllpassCubic::AllpassCubic(memory::Poolable& pool, MdFloat max_delay, MdFloat de
 }
 
 AllpassCubic::AllpassCubic(memory::Poolable& pool, MdFloat max_delay, MdFloat delay, MdFloat gain) :
-    m_max_delay(static_cast<std::uint32_t>(sample_rate * max_delay) + 3),
+    m_max_delay(utility::ceil(sample_rate * max_delay) + 2),
     m_buffer(pool, m_max_delay),
     m_reader(m_buffer, m_max_delay - 1),
     m_writer(m_buffer, m_max_delay - 1)

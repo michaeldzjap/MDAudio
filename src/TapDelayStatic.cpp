@@ -3,13 +3,13 @@
 using md_audio::MdFloat;
 using md_audio::TapDelayStatic;
 
-TapDelayStatic::TapDelayStatic(memory::Poolable& pool, std::size_t max_delay, std::size_t taps) :
+TapDelayStatic::TapDelayStatic(memory::Poolable& pool, MdFloat max_delay, std::size_t taps) :
+    m_max_delay(utility::ceil(sample_rate * max_delay)),
+    m_taps(taps),
     m_pool(pool),
-    m_buffer(pool, max_delay),
-    m_reader(m_buffer, max_delay - 1),
-    m_writer(m_buffer, max_delay - 1),
-    m_max_delay(static_cast<MdFloat>(max_delay)),
-    m_taps(taps)
+    m_buffer(pool, m_max_delay),
+    m_reader(m_buffer, m_max_delay - 1),
+    m_writer(m_buffer, m_max_delay - 1)
 {
     initialise();
 }
@@ -23,16 +23,16 @@ void TapDelayStatic::initialise() {
 
     m_delay = static_cast<std::uint32_t*>(memory);
 
-    for (auto i = 0; i < m_taps; ++i)
+    for (std::uint32_t i = 0; i < m_taps; ++i)
         set_delay(i, static_cast<MdFloat>(1));
 }
 
 void TapDelayStatic::set_delay(const MdFloat* delay) noexcept {
-    for (auto i = 0; i < m_taps; ++i) set_delay(i, delay[i]);
+    for (std::uint32_t i = 0; i < m_taps; ++i) set_delay(i, delay[i]);
 }
 
 MdFloat* TapDelayStatic::perform(MdFloat in, MdFloat* out, std::size_t) noexcept {
-    for (auto i = 0; i < m_taps; ++i)
+    for (std::uint32_t i = 0; i < m_taps; ++i)
         out[i] = m_reader.read(m_writer, m_delay[i]);
 
     m_writer.write(in);

@@ -2,9 +2,8 @@
 #define MD_AUDIO_REVERSIBLE_DELAY_HPP
 
 #include "HannOscillator.hpp"
-#include "InterpolationType.hpp"
 #include "Phasor.hpp"
-#include "TapDelay.hpp"
+#include "TapDelayLinear.hpp"
 #include "interfaces/Processable.hpp"
 #include "types.hpp"
 
@@ -12,13 +11,13 @@ namespace md_audio {
 
     class ReversibleDelay : public Processable<MdFloat, MdFloat> {
     public:
-        explicit ReversibleDelay(memory::Poolable&, std::size_t, std::size_t, InterpolationType = InterpolationType::linear);
+        explicit ReversibleDelay(memory::Poolable&, MdFloat, std::size_t);
 
-        explicit ReversibleDelay(memory::Poolable&, std::size_t, MdFloat, std::size_t, InterpolationType = InterpolationType::linear);
+        explicit ReversibleDelay(memory::Poolable&, MdFloat, MdFloat, std::size_t);
 
-        explicit ReversibleDelay(memory::Poolable&, std::size_t, bool, std::size_t, InterpolationType = InterpolationType::linear);
+        explicit ReversibleDelay(memory::Poolable&, MdFloat, bool, std::size_t);
 
-        explicit ReversibleDelay(memory::Poolable&, std::size_t, MdFloat, bool, std::size_t, InterpolationType = InterpolationType::linear);
+        explicit ReversibleDelay(memory::Poolable&, MdFloat, MdFloat, bool, std::size_t);
 
         void set_backward_delay(MdFloat) noexcept;
 
@@ -35,15 +34,15 @@ namespace md_audio {
         ~ReversibleDelay();
 
     private:
+        MdFloat m_max_delay;
+        MdFloat m_size;
+        std::size_t m_overlap;
+        bool m_reverse;
+        const MdFloat m_norm;
         memory::Poolable& m_pool;
-        TapDelay m_delay;
+        TapDelayLinear m_delay;
         Phasor* m_phasor = nullptr;
         HannOscillator* m_osc = nullptr;
-        MdFloat m_size;
-        MdFloat m_frequency;
-        bool m_reverse;
-        std::size_t m_overlap;
-        const MdFloat m_norm;
 
         void initialise(MdFloat);
 
@@ -65,7 +64,7 @@ namespace md_audio {
     }
 
     constexpr MdFloat ReversibleDelay::compute_frequency(MdFloat size) noexcept {
-        return static_cast<MdFloat>(2) * static_cast<MdFloat>(sample_rate) / size;
+        return static_cast<MdFloat>(2) / size;
     }
 
 }

@@ -6,22 +6,22 @@
 #include "Reader.hpp"
 #include "ReaderCubic.hpp"
 #include "ReaderLinear.hpp"
+#include "SampleRate.hpp"
 #include "Writer.hpp"
 #include "interfaces/MultiOutProcessable.hpp"
 #include "utility.hpp"
-#include <functional>
 
 namespace md_audio {
 
-    class TapDelay : public MultiOutProcessable<MdFloat, MdFloat> {
+    class TapDelay : public SampleRate, public MultiOutProcessable<MdFloat, MdFloat> {
     public:
-        explicit TapDelay(memory::Poolable&, std::size_t, std::size_t, InterpolationType = InterpolationType::none);
+        explicit TapDelay(memory::Poolable&, MdFloat, std::size_t, InterpolationType = InterpolationType::none);
 
         void set_delay(const MdFloat*) noexcept;
 
         inline void set_delay(std::size_t, MdFloat) noexcept;
 
-        inline constexpr MdFloat get_max_delay() noexcept;
+        inline constexpr auto get_max_delay() const noexcept;
 
         MdFloat* perform(MdFloat, MdFloat*, std::size_t) noexcept override final;
 
@@ -32,16 +32,16 @@ namespace md_audio {
         ~TapDelay();
 
     private:
+        std::uint32_t m_max_delay;
+        std::size_t m_taps;
+        std::uint32_t* m_delay = nullptr;
+        MdFloat* m_frac = nullptr;
         memory::Poolable& m_pool;
         Buffer m_buffer;
         Reader m_reader;
         ReaderLinear m_reader_linear;
         ReaderCubic m_reader_cubic;
         Writer m_writer;
-        MdFloat m_max_delay;
-        std::size_t m_taps;
-        std::uint32_t* m_delay = nullptr;
-        MdFloat* m_frac = nullptr;
 
         void initialise(InterpolationType);
 
@@ -62,16 +62,22 @@ namespace md_audio {
         MdFloat read_linear(std::size_t) noexcept;
 
         MdFloat read_cubic(std::size_t) noexcept;
+
+        std::uint32_t compute_max_delay(MdFloat, InterpolationType) noexcept;
     };
 
     void TapDelay::set_delay(std::size_t index, MdFloat delay) noexcept {
-        delay = utility::clip(delay, static_cast<MdFloat>(1), m_max_delay);
+        delay = utility::clip(
+            static_cast<MdFloat>(sample_rate * delay),
+            static_cast<MdFloat>(1),
+            static_cast<MdFloat>(m_max_delay)
+        );
 
         m_delay[index] = static_cast<std::uint32_t>(delay);
         m_frac[index] = delay - static_cast<MdFloat>(m_delay[index]);
     }
 
-    constexpr MdFloat TapDelay::get_max_delay() noexcept {
+    constexpr auto TapDelay::get_max_delay() const noexcept {
         return m_max_delay;
     }
 

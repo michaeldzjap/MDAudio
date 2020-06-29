@@ -11,11 +11,11 @@ namespace md_audio {
 
     class VariableDelay : public Processable<MdFloat, MdFloat> {
     public:
-        explicit VariableDelay(memory::Poolable&, std::size_t, std::size_t);
+        explicit VariableDelay(memory::Poolable&, MdFloat, std::size_t);
 
-        explicit VariableDelay(memory::Poolable&, std::size_t, MdFloat, std::size_t);
+        explicit VariableDelay(memory::Poolable&, MdFloat, MdFloat, std::size_t);
 
-        explicit VariableDelay(memory::Poolable&, std::size_t, MdFloat, MdFloat, std::size_t);
+        explicit VariableDelay(memory::Poolable&, MdFloat, MdFloat, MdFloat, std::size_t);
 
         inline void set_delay(MdFloat) noexcept;
 
@@ -26,14 +26,15 @@ namespace md_audio {
         ~VariableDelay();
 
     private:
+        MdFloat m_max_delay;
+        MdFloat m_delay_time;
+        std::size_t m_overlap;
+        const MdFloat m_norm;
         memory::Poolable& m_pool;
         TapDelayStatic m_delay;
         Phasor* m_phasor = nullptr;
         HannOscillator* m_osc = nullptr;
-        Latch* m_latch;
-        MdFloat m_delay_samples;
-        std::size_t m_overlap;
-        const MdFloat m_norm;
+        Latch* m_latch = nullptr;
 
         void initialise(MdFloat, MdFloat);
 
@@ -43,11 +44,11 @@ namespace md_audio {
     };
 
     void VariableDelay::set_delay(MdFloat delay) noexcept {
-        m_delay_samples = utility::clip(delay, static_cast<MdFloat>(5), m_delay.get_max_delay());;
+        m_delay_time = utility::clip(delay, static_cast<MdFloat>(.01), m_max_delay);
     }
 
     constexpr MdFloat VariableDelay::compute_frequency(MdFloat size) noexcept {
-        return static_cast<MdFloat>(sample_rate) / size;
+        return static_cast<MdFloat>(1) / size;
     }
 
 }

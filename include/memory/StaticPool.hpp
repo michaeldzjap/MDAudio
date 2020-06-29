@@ -38,7 +38,7 @@ namespace md_audio::memory {
     }
 
     template <std::size_t TOTAL_SIZE>
-    void StaticPool<TOTAL_SIZE>::deallocate(void* ptr) noexcept {}
+    void StaticPool<TOTAL_SIZE>::deallocate(void*) noexcept {}
 
 }
 

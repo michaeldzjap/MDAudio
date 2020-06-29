@@ -84,10 +84,10 @@ std::uint32_t Delay::compute_max_delay(
 ) noexcept {
     switch (interpolation_type) {
         case InterpolationType::none:
-            return static_cast<std::uint32_t>(sample_rate * max_delay) + 1;
+            return utility::ceil(sample_rate * max_delay);
         case InterpolationType::linear:
-            return static_cast<std::uint32_t>(sample_rate * max_delay) + 2;
+            return utility::ceil(sample_rate * max_delay) + 1;
         default:
-            return static_cast<std::uint32_t>(sample_rate * max_delay) + 3;
+            return utility::ceil(sample_rate * max_delay) + 2;
     }
 }

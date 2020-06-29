@@ -2,9 +2,8 @@
 #define MD_AUDIO_REVERSE_DELAY_HPP
 
 #include "HannOscillator.hpp"
-#include "InterpolationType.hpp"
 #include "Phasor.hpp"
-#include "TapDelay.hpp"
+#include "TapDelayLinear.hpp"
 #include "interfaces/Processable.hpp"
 #include "types.hpp"
 
@@ -12,9 +11,9 @@ namespace md_audio {
 
     class ReverseDelay : public Processable<MdFloat, MdFloat> {
     public:
-        explicit ReverseDelay(memory::Poolable&, std::size_t, std::size_t, InterpolationType = InterpolationType::linear);
+        explicit ReverseDelay(memory::Poolable&, MdFloat, std::size_t);
 
-        explicit ReverseDelay(memory::Poolable&, std::size_t, MdFloat, std::size_t, InterpolationType = InterpolationType::linear);
+        explicit ReverseDelay(memory::Poolable&, MdFloat, MdFloat, std::size_t);
 
         void set_size(MdFloat) noexcept;
 
@@ -23,13 +22,14 @@ namespace md_audio {
         ~ReverseDelay();
 
     private:
-        memory::Poolable& m_pool;
-        TapDelay m_delay;
-        Phasor* m_phasor = nullptr;
-        HannOscillator* m_osc = nullptr;
+        MdFloat m_max_delay;
         MdFloat m_size;
         std::size_t m_overlap;
         const MdFloat m_norm;
+        memory::Poolable& m_pool;
+        TapDelayLinear m_delay;
+        Phasor* m_phasor = nullptr;
+        HannOscillator* m_osc = nullptr;
 
         void initialise(MdFloat);
 
@@ -39,7 +39,7 @@ namespace md_audio {
     };
 
     constexpr MdFloat ReverseDelay::compute_frequency(MdFloat size) noexcept {
-        return static_cast<MdFloat>(2) * static_cast<MdFloat>(sample_rate) / size;
+        return static_cast<MdFloat>(2) / size;
     }
 
 }
