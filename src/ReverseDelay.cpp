@@ -6,14 +6,14 @@ using md_audio::ReverseDelay;
 
 ReverseDelay::ReverseDelay(
     memory::Poolable& pool,
-    std::size_t max_delay,
-    std::size_t overlap,
-    InterpolationType interpolation_type
+    MdFloat max_delay,
+    std::size_t overlap
 ) :
-    m_pool(pool),
-    m_delay(pool, max_delay, overlap, interpolation_type),
+    m_max_delay(max_delay),
     m_overlap(overlap),
-    m_norm(static_cast<MdFloat>(2) / overlap)
+    m_norm(static_cast<MdFloat>(2) / m_overlap),
+    m_pool(pool),
+    m_delay(pool, max_delay, m_overlap)
 {
     assert(m_overlap > 1);
 
@@ -22,15 +22,15 @@ ReverseDelay::ReverseDelay(
 
 ReverseDelay::ReverseDelay(
     memory::Poolable& pool,
-    std::size_t max_delay,
+    MdFloat max_delay,
     MdFloat size,
-    std::size_t overlap,
-    InterpolationType interpolation_type
+    std::size_t overlap
 ) :
-    m_pool(pool),
-    m_delay(pool, max_delay, overlap, interpolation_type),
+    m_max_delay(max_delay),
     m_overlap(overlap),
-    m_norm(static_cast<MdFloat>(2) / overlap)
+    m_norm(static_cast<MdFloat>(2) / m_overlap),
+    m_pool(pool),
+    m_delay(pool, max_delay, m_overlap)
 {
     assert(m_overlap > 1);
 
@@ -43,7 +43,7 @@ void ReverseDelay::initialise(MdFloat size) {
 
     set_size(size);
 
-    for (auto i = 0; i < m_overlap; ++i)
+    for (std::uint32_t i = 0; i < m_overlap; ++i)
         m_phasor[i].set_phase(static_cast<MdFloat>(i) / static_cast<MdFloat>(m_overlap));
 }
 
@@ -56,18 +56,18 @@ void* ReverseDelay::allocate(std::size_t size) {
 }
 
 void ReverseDelay::set_size(MdFloat size) noexcept {
-    m_size = utility::clip(size, static_cast<MdFloat>(5), m_delay.get_max_delay());
+    m_size = utility::clip(size, static_cast<MdFloat>(.01), m_max_delay);
 
     auto frequency = compute_frequency(m_size);
 
-    for (auto i = 0; i < m_overlap; ++i)
+    for (std::uint32_t i = 0; i < m_overlap; ++i)
         m_phasor[i].set_frequency(frequency);
 }
 
 MdFloat ReverseDelay::perform(MdFloat in) noexcept {
     auto z = static_cast<MdFloat>(0);
 
-    for (auto i = 0; i < m_overlap; ++i) {
+    for (std::uint32_t i = 0; i < m_overlap; ++i) {
         auto phase = m_phasor[i].perform();
 
         m_osc[i].set_phase(static_cast<MdFloat>(phase * two_pi));

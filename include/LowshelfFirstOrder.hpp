@@ -1,12 +1,17 @@
 #ifndef MD_AUDIO_LOWSHELF_FIRST_ORDER_HPP
 #define MD_AUDIO_LOWSHELF_FIRST_ORDER_HPP
 
+#include "TptFilter.hpp"
+#include "TptShelving.hpp"
 #include "interfaces/Processable.hpp"
-#include "zdf.hpp"
 
 namespace md_audio {
 
-    class LowshelfFirstOrder : public Processable<MdFloat, MdFloat> {
+    class LowshelfFirstOrder :
+        public TptFilter,
+        public TptShelving,
+        public Processable<MdFloat, MdFloat>
+    {
     public:
         explicit LowshelfFirstOrder();
 

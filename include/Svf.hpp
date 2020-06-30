@@ -1,12 +1,17 @@
 #ifndef MD_AUDIO_SVF_HPP
 #define MD_AUDIO_SVF_HPP
 
+#include "TptFilter.hpp"
+#include "TptSecondOrder.hpp"
 #include "interfaces/Processable.hpp"
-#include "zdf.hpp"
 
 namespace md_audio {
 
-    class Svf : Processable<std::array<MdFloat, 3>, MdFloat> {
+    class Svf :
+        public TptFilter,
+        public TptSecondOrder,
+        public Processable<std::array<MdFloat, 3>, MdFloat>
+    {
     public:
         explicit Svf();
 

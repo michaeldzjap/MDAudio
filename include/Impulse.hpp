@@ -1,19 +1,21 @@
 #ifndef MD_AUDIO_IMPULSE_HPP
 #define MD_AUDIO_IMPULSE_HPP
 
-#include "constants.hpp"
+#include "SampleRate.hpp"
 #include "interfaces/Generatable.hpp"
 #include "types.hpp"
 #include "utility.hpp"
 
 namespace md_audio {
 
-    class Impulse : public Generatable<MdFloat> {
+    class Impulse : public SampleRate, public Generatable<MdFloat> {
     public:
         explicit Impulse(MdFloat);
 
         inline void set_frequency(MdFloat frequency) noexcept {
-            m_rate = sample_duration * utility::clip(frequency, static_cast<MdFloat>(0), static_cast<MdFloat>(sample_rate));
+            m_rate = m_sample_duration * utility::clip(
+                frequency, static_cast<MdFloat>(0), static_cast<MdFloat>(sample_rate)
+            );
         }
 
         MdFloat perform(void) noexcept override final;

@@ -1,12 +1,19 @@
 #ifndef MD_AUDIO_TILT_SECOND_ORDER_HPP
 #define MD_AUDIO_TILT_SECOND_ORDER_HPP
 
+#include "TptFilter.hpp"
+#include "TptSecondOrder.hpp"
+#include "TptShelving.hpp"
 #include "interfaces/Processable.hpp"
-#include "zdf.hpp"
 
 namespace md_audio {
 
-    class TiltSecondOrder : public Processable<MdFloat, MdFloat> {
+    class TiltSecondOrder :
+        public TptFilter,
+        public TptSecondOrder,
+        public TptShelving,
+        public Processable<MdFloat, MdFloat>
+    {
     public:
         explicit TiltSecondOrder();
 

@@ -1,12 +1,19 @@
 #ifndef MD_AUDIO_HIGHSHELF_SECOND_ORDER_HPP
 #define MD_AUDIO_HIGHSHELF_SECOND_ORDER_HPP
 
+#include "TptFilter.hpp"
+#include "TptSecondOrder.hpp"
+#include "TptShelving.hpp"
 #include "interfaces/Processable.hpp"
-#include "zdf.hpp"
 
 namespace md_audio {
 
-    class HighShelfSecondOrder : public Processable<MdFloat, MdFloat> {
+    class HighShelfSecondOrder :
+        public TptFilter,
+        public TptSecondOrder,
+        public TptShelving,
+        public Processable<MdFloat, MdFloat>
+    {
     public:
         explicit HighShelfSecondOrder();
 

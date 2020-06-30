@@ -6,13 +6,14 @@ using md_audio::VariableDelay;
 
 VariableDelay::VariableDelay(
     memory::Poolable& pool,
-    std::size_t max_delay,
+    MdFloat max_delay,
     std::size_t overlap
 ) :
-    m_pool(pool),
-    m_delay(pool, max_delay, overlap),
+    m_max_delay(max_delay),
     m_overlap(overlap),
-    m_norm(static_cast<MdFloat>(2) / overlap)
+    m_norm(static_cast<MdFloat>(2) / m_overlap),
+    m_pool(pool),
+    m_delay(pool, max_delay, m_overlap)
 {
     assert(m_overlap > 1);
 
@@ -21,14 +22,15 @@ VariableDelay::VariableDelay(
 
 VariableDelay::VariableDelay(
     memory::Poolable& pool,
-    std::size_t max_delay,
+    MdFloat max_delay,
     MdFloat delay,
     std::size_t overlap
 ) :
-    m_pool(pool),
-    m_delay(pool, max_delay, overlap),
+    m_max_delay(max_delay),
     m_overlap(overlap),
-    m_norm(static_cast<MdFloat>(2) / overlap)
+    m_norm(static_cast<MdFloat>(2) / m_overlap),
+    m_pool(pool),
+    m_delay(pool, max_delay, m_overlap)
 {
     assert(m_overlap > 1);
 
@@ -37,15 +39,16 @@ VariableDelay::VariableDelay(
 
 VariableDelay::VariableDelay(
     memory::Poolable& pool,
-    std::size_t max_delay,
+    MdFloat max_delay,
     MdFloat delay,
     MdFloat size,
     std::size_t overlap
 ) :
-    m_pool(pool),
-    m_delay(pool, max_delay, overlap),
+    m_max_delay(max_delay),
     m_overlap(overlap),
-    m_norm(static_cast<MdFloat>(2) / overlap)
+    m_norm(static_cast<MdFloat>(2) / m_overlap),
+    m_pool(pool),
+    m_delay(pool, max_delay, m_overlap)
 {
     assert(m_overlap > 1);
 
@@ -60,7 +63,7 @@ void VariableDelay::initialise(MdFloat delay, MdFloat size) {
     set_delay(delay);
     set_size(size);
 
-    for (auto i = 0; i < m_overlap; ++i) {
+    for (std::uint32_t i = 0; i < m_overlap; ++i) {
         m_phasor[i].set_phase(static_cast<MdFloat>(i) / static_cast<MdFloat>(m_overlap));
         m_osc[i].set_frequency(static_cast<MdFloat>(0));
     }
@@ -75,24 +78,24 @@ void* VariableDelay::allocate(std::size_t size) {
 }
 
 void VariableDelay::set_size(MdFloat size) noexcept {
-    size = utility::clip(size, static_cast<MdFloat>(5), m_delay.get_max_delay());
+    size = utility::clip(size, static_cast<MdFloat>(.01), m_max_delay);
 
     auto frequency = compute_frequency(size);
 
-    for (auto i = 0; i < m_overlap; ++i)
+    for (std::uint32_t i = 0; i < m_overlap; ++i)
         m_phasor[i].set_frequency(frequency);
 }
 
 MdFloat VariableDelay::perform(MdFloat in) noexcept {
     auto z = static_cast<MdFloat>(0);
 
-    for (auto i = 0; i < m_overlap; ++i) {
+    for (std::uint32_t i = 0; i < m_overlap; ++i) {
         auto phase = m_phasor[i].perform();
 
         m_osc[i].set_phase(static_cast<MdFloat>(phase * two_pi));
 
         auto window = m_osc[i].perform();
-        auto delay = m_latch[i].perform(m_delay_samples, phase);
+        auto delay = m_latch[i].perform(m_delay_time, phase);
 
         m_delay.set_delay(i, delay);
 

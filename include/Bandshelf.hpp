@@ -1,12 +1,19 @@
 #ifndef MD_AUDIO_BANDSHELF_HPP
 #define MD_AUDIO_BANDSHELF_HPP
 
+#include "TptFilter.hpp"
+#include "TptSecondOrder.hpp"
+#include "TptShelving.hpp"
 #include "interfaces/Processable.hpp"
-#include "zdf.hpp"
 
 namespace md_audio {
 
-    class Bandshelf : public Processable<MdFloat, MdFloat> {
+    class Bandshelf :
+        public TptFilter,
+        public TptSecondOrder,
+        public TptShelving,
+        public Processable<MdFloat, MdFloat>
+    {
     public:
         explicit Bandshelf();
 

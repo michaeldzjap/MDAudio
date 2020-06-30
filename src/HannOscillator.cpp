@@ -6,6 +6,8 @@ using md_audio::HannOscillator;
 using md_audio::MdFloat;
 using md_audio::Oscillator;
 
+HannOscillator::HannOscillator() : Oscillator(static_cast<MdFloat>(440)) {}
+
 HannOscillator::HannOscillator(MdFloat frequency) : Oscillator(frequency) {}
 
 HannOscillator::HannOscillator(MdFloat frequency, MdFloat phase) : Oscillator(frequency, phase) {}

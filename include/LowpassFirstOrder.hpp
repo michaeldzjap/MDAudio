@@ -1,12 +1,12 @@
 #ifndef MD_AUDIO_LOWPASS_FIRST_ORDER_HPP
 #define MD_AUDIO_LOWPASS_FIRST_ORDER_HPP
 
+#include "TptFilter.hpp"
 #include "interfaces/Processable.hpp"
-#include "zdf.hpp"
 
 namespace md_audio {
 
-    class LowpassFirstOrder : public Processable<MdFloat, MdFloat> {
+    class LowpassFirstOrder : public TptFilter, public Processable<MdFloat, MdFloat> {
     public:
         explicit LowpassFirstOrder();
 

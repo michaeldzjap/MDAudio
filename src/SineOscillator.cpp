@@ -6,6 +6,8 @@ using md_audio::SineOscillator;
 using md_audio::MdFloat;
 using md_audio::Oscillator;
 
+SineOscillator::SineOscillator() : Oscillator(static_cast<MdFloat>(440)) {}
+
 SineOscillator::SineOscillator(MdFloat frequency) : Oscillator(frequency) {}
 
 SineOscillator::SineOscillator(MdFloat frequency, MdFloat phase) : Oscillator(frequency, phase) {}

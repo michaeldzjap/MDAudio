@@ -3,21 +3,22 @@
 
 #include "Buffer.hpp"
 #include "ReaderCubic.hpp"
+#include "SampleRate.hpp"
 #include "Writer.hpp"
 #include "interfaces/MultiOutProcessable.hpp"
 #include "utility.hpp"
 
 namespace md_audio {
 
-    class TapDelayCubic : public MultiOutProcessable<MdFloat, MdFloat> {
+    class TapDelayCubic : public SampleRate, public MultiOutProcessable<MdFloat, MdFloat> {
     public:
-        explicit TapDelayCubic(memory::Poolable&, std::size_t, std::size_t);
+        explicit TapDelayCubic(memory::Poolable&, MdFloat, std::size_t);
 
         void set_delay(const MdFloat*) noexcept;
 
         inline void set_delay(std::size_t, MdFloat) noexcept;
 
-        inline constexpr MdFloat get_max_delay() noexcept;
+        inline constexpr auto get_max_delay() const noexcept;
 
         MdFloat* perform(MdFloat, MdFloat*, std::size_t) noexcept override final;
 
@@ -28,14 +29,14 @@ namespace md_audio {
         ~TapDelayCubic();
 
     private:
+        std::uint32_t m_max_delay;
+        std::size_t m_taps;
+        std::uint32_t* m_delay = nullptr;
+        MdFloat* m_frac = nullptr;
         memory::Poolable& m_pool;
         Buffer m_buffer;
         ReaderCubic m_reader;
         Writer m_writer;
-        MdFloat m_max_delay;
-        std::size_t m_taps;
-        std::uint32_t* m_delay = nullptr;
-        MdFloat* m_frac = nullptr;
 
         void initialise();
 
@@ -43,13 +44,17 @@ namespace md_audio {
     };
 
     void TapDelayCubic::set_delay(std::size_t index, MdFloat delay) noexcept {
-        delay = utility::clip(delay, static_cast<MdFloat>(1), m_max_delay);
+        delay = utility::clip(
+            static_cast<MdFloat>(sample_rate * delay),
+            static_cast<MdFloat>(1),
+            static_cast<MdFloat>(m_max_delay)
+        );
 
         m_delay[index] = static_cast<std::uint32_t>(delay);
         m_frac[index] = delay - static_cast<MdFloat>(m_delay[index]);
     }
 
-    constexpr MdFloat TapDelayCubic::get_max_delay() noexcept {
+    constexpr auto TapDelayCubic::get_max_delay() const noexcept {
         return m_max_delay;
     }
 

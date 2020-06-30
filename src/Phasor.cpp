@@ -3,6 +3,10 @@
 using md_audio::MdFloat;
 using md_audio::Phasor;
 
+Phasor::Phasor() {
+    set_frequency(static_cast<MdFloat>(440));
+}
+
 Phasor::Phasor(MdFloat frequency) {
     set_frequency(frequency);
 }
