@@ -2,9 +2,8 @@
 #define MD_AUDIO_PITCH_SHIFTER_HPP
 
 #include "HannOscillator.hpp"
-#include "InterpolationType.hpp"
 #include "Phasor.hpp"
-#include "TapDelay.hpp"
+#include "TapDelayLinear.hpp"
 #include "interfaces/Processable.hpp"
 #include "types.hpp"
 
@@ -12,9 +11,9 @@ namespace md_audio {
 
     class PitchShifter : public Processable<MdFloat, MdFloat> {
     public:
-        explicit PitchShifter(memory::Poolable&, std::size_t, MdFloat, std::size_t, InterpolationType = InterpolationType::linear);
+        explicit PitchShifter(memory::Poolable&, MdFloat, MdFloat, std::size_t);
 
-        explicit PitchShifter(memory::Poolable&, std::size_t, MdFloat, MdFloat, std::size_t, InterpolationType = InterpolationType::linear);
+        explicit PitchShifter(memory::Poolable&, MdFloat, MdFloat, MdFloat, std::size_t);
 
         inline void set_transposition(MdFloat) noexcept;
 
@@ -25,14 +24,15 @@ namespace md_audio {
         ~PitchShifter();
 
     private:
-        memory::Poolable& m_pool;
-        TapDelay m_delay;
-        Phasor* m_phasor = nullptr;
-        HannOscillator* m_osc = nullptr;
-        MdFloat m_transposition = 0;
+        MdFloat m_max_size;
+        MdFloat m_transposition = static_cast<MdFloat>(0);
         MdFloat m_size;
         std::size_t m_overlap;
         const MdFloat m_norm;
+        memory::Poolable& m_pool;
+        TapDelayLinear m_delay;
+        Phasor* m_phasor = nullptr;
+        HannOscillator* m_osc = nullptr;
 
         void initialise(MdFloat, MdFloat);
 
@@ -60,12 +60,11 @@ namespace md_audio {
     }
 
     MdFloat PitchShifter::check_size(MdFloat size) noexcept {
-        return utility::clip(size, static_cast<MdFloat>(5), m_delay.get_max_delay());
+        return utility::clip(size, static_cast<MdFloat>(.01), m_max_size);
     }
 
     constexpr MdFloat PitchShifter::compute_frequency(MdFloat transposition, MdFloat size) noexcept {
-        return -(utility::midi_ratio(transposition) - static_cast<MdFloat>(1))
-            * static_cast<MdFloat>(sample_rate) / size;
+        return -(utility::midi_ratio(transposition) - static_cast<MdFloat>(1)) / size;
     }
 
 }

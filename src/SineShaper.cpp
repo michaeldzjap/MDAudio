@@ -1,5 +1,4 @@
 #include "SineShaper.hpp"
-#include "tables.hpp"
 
 using md_audio::MdFloat;
 using md_audio::SineShaper;

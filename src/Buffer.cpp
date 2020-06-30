@@ -15,8 +15,7 @@ Buffer::Buffer(memory::Poolable& pool, std::size_t size) :
 void Buffer::initialise() {
     auto memory = m_pool.allocate(m_size * sizeof(MdFloat));
 
-    if (!memory)
-        throw std::bad_alloc();
+    if (!memory) throw std::bad_alloc();
 
     m_memory = static_cast<MdFloat*>(memory);
 
@@ -36,6 +35,5 @@ const MdFloat& Buffer::operator[] (std::size_t index) const noexcept {
 }
 
 Buffer::~Buffer() {
-    if (m_memory)
-        m_pool.deallocate(m_memory);
+    if (m_memory) m_pool.deallocate(m_memory);
 }

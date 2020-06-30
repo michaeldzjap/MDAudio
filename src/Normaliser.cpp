@@ -4,20 +4,20 @@
 using md_audio::MdFloat;
 using md_audio::Normaliser;
 
-Normaliser::Normaliser(memory::Poolable& pool, std::size_t duration) :
+Normaliser::Normaliser(memory::Poolable& pool, MdFloat duration) :
     m_pool(pool),
-    m_size(3 * duration),
-    m_duration(duration),
-    m_slope_factor(static_cast<MdFloat>(1) / static_cast<MdFloat>(duration))
+    m_duration(utility::ceil(sample_rate * duration)),
+    m_size(3 * m_duration),
+    m_slope_factor(static_cast<MdFloat>(1) / static_cast<MdFloat>(m_duration))
 {
     initialise(static_cast<MdFloat>(1));
 }
 
-Normaliser::Normaliser(memory::Poolable& pool, std::size_t duration, MdFloat amplitude) :
+Normaliser::Normaliser(memory::Poolable& pool, MdFloat duration, MdFloat amplitude) :
     m_pool(pool),
-    m_size(3 * duration),
-    m_duration(duration),
-    m_slope_factor(static_cast<MdFloat>(1) / static_cast<MdFloat>(duration))
+    m_duration(utility::ceil(sample_rate * duration)),
+    m_size(3 * m_duration),
+    m_slope_factor(static_cast<MdFloat>(1) / static_cast<MdFloat>(m_duration))
 {
     initialise(amplitude);
 }

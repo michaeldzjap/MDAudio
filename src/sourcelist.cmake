@@ -33,6 +33,7 @@ set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
     Reverb.cpp
     ReverseDelay.cpp
     ReversibleDelay.cpp
+    SampleRate.cpp
     SineOscillator.cpp
     SineShaper.cpp
     Svf.cpp
@@ -43,6 +44,9 @@ set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
     Taus88.cpp
     TiltFirstOrder.cpp
     TiltSecondOrder.cpp
+    TptFilter.cpp
+    TptSecondOrder.cpp
+    TptShelving.cpp
     VariableDelay.cpp
     WhiteNoise.cpp
     Writer.cpp

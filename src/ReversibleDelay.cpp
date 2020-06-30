@@ -6,15 +6,15 @@ using md_audio::ReversibleDelay;
 
 ReversibleDelay::ReversibleDelay(
     memory::Poolable& pool,
-    std::size_t max_delay,
-    std::size_t overlap,
-    InterpolationType interpolation_type
+    MdFloat max_delay,
+    std::size_t overlap
 ) :
-    m_pool(pool),
-    m_delay(pool, max_delay, overlap + 1, interpolation_type),
+    m_max_delay(max_delay),
     m_overlap(overlap),
     m_reverse(false),
-    m_norm(static_cast<MdFloat>(2) / overlap)
+    m_norm(static_cast<MdFloat>(2) / m_overlap),
+    m_pool(pool),
+    m_delay(pool, max_delay, m_overlap + 1)
 {
     assert(m_overlap > 1);
 
@@ -23,16 +23,16 @@ ReversibleDelay::ReversibleDelay(
 
 ReversibleDelay::ReversibleDelay(
     memory::Poolable& pool,
-    std::size_t max_delay,
+    MdFloat max_delay,
     MdFloat size,
-    std::size_t overlap,
-    InterpolationType interpolation_type
+    std::size_t overlap
 ) :
-    m_pool(pool),
-    m_delay(pool, max_delay, overlap + 1, interpolation_type),
+    m_max_delay(max_delay),
     m_overlap(overlap),
     m_reverse(false),
-    m_norm(static_cast<MdFloat>(2) / overlap)
+    m_norm(static_cast<MdFloat>(2) / m_overlap),
+    m_pool(pool),
+    m_delay(pool, max_delay, m_overlap + 1)
 {
     assert(m_overlap > 1);
 
@@ -41,16 +41,16 @@ ReversibleDelay::ReversibleDelay(
 
 ReversibleDelay::ReversibleDelay(
     memory::Poolable& pool,
-    std::size_t max_delay,
+    MdFloat max_delay,
     bool reverse,
-    std::size_t overlap,
-    InterpolationType interpolation_type
+    std::size_t overlap
 ) :
-    m_pool(pool),
-    m_delay(pool, max_delay, overlap + 1, interpolation_type),
+    m_max_delay(max_delay),
     m_overlap(overlap),
     m_reverse(reverse),
-    m_norm(static_cast<MdFloat>(2) / overlap)
+    m_norm(static_cast<MdFloat>(2) / m_overlap),
+    m_pool(pool),
+    m_delay(pool, max_delay, m_overlap + 1)
 {
     assert(m_overlap > 1);
 
@@ -59,17 +59,17 @@ ReversibleDelay::ReversibleDelay(
 
 ReversibleDelay::ReversibleDelay(
     memory::Poolable& pool,
-    std::size_t max_delay,
+    MdFloat max_delay,
     MdFloat size,
     bool reverse,
-    std::size_t overlap,
-    InterpolationType interpolation_type
+    std::size_t overlap
 ) :
-    m_pool(pool),
-    m_delay(pool, max_delay, overlap + 1, interpolation_type),
+    m_max_delay(max_delay),
     m_overlap(overlap),
     m_reverse(reverse),
-    m_norm(static_cast<MdFloat>(2) / overlap)
+    m_norm(static_cast<MdFloat>(2) / m_overlap),
+    m_pool(pool),
+    m_delay(pool, max_delay, m_overlap + 1)
 {
     assert(m_overlap > 1);
 
@@ -83,7 +83,7 @@ void ReversibleDelay::initialise(MdFloat size) {
     set_backward_delay(size);
     set_forward_delay(size);
 
-    for (auto i = 0; i < m_overlap; ++i)
+    for (std::uint32_t i = 0; i < m_overlap; ++i)
         m_phasor[i].set_phase(static_cast<MdFloat>(i) / static_cast<MdFloat>(m_overlap));
 }
 
@@ -96,12 +96,12 @@ void* ReversibleDelay::allocate(std::size_t size) {
 }
 
 void ReversibleDelay::set_backward_delay(MdFloat size) noexcept {
-    m_size = utility::clip(size, static_cast<MdFloat>(5), m_delay.get_max_delay());
+    m_size = utility::clip(size, static_cast<MdFloat>(.01), m_max_delay);
 
-    m_frequency = compute_frequency(m_size);
+    auto frequency = compute_frequency(m_size);
 
-    for (auto i = 0; i < m_overlap; ++i)
-        m_phasor[i].set_frequency(m_frequency);
+    for (std::uint32_t i = 0; i < m_overlap; ++i)
+        m_phasor[i].set_frequency(frequency);
 }
 
 void ReversibleDelay::set_forward_delay(MdFloat delay) noexcept {
@@ -112,7 +112,7 @@ MdFloat ReversibleDelay::perform(MdFloat in) noexcept {
     auto z = static_cast<MdFloat>(0);
 
     if (m_reverse) {
-        for (auto i = 0; i < m_overlap; ++i) {
+        for (std::uint32_t i = 0; i < m_overlap; ++i) {
             auto phase = m_phasor[i].perform();
 
             m_osc[i].set_phase(static_cast<MdFloat>(phase * two_pi));

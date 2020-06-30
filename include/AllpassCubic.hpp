@@ -3,19 +3,20 @@
 
 #include "Buffer.hpp"
 #include "ReaderCubic.hpp"
+#include "SampleRate.hpp"
 #include "Writer.hpp"
 #include "interfaces/Processable.hpp"
 #include "utility.hpp"
 
 namespace md_audio {
 
-    class AllpassCubic : public Processable<MdFloat, MdFloat> {
+    class AllpassCubic : public SampleRate, public Processable<MdFloat, MdFloat> {
     public:
-        explicit AllpassCubic(memory::Poolable&, size_t);
+        explicit AllpassCubic(memory::Poolable&, MdFloat);
 
-        explicit AllpassCubic(memory::Poolable&, size_t, MdFloat);
+        explicit AllpassCubic(memory::Poolable&, MdFloat, MdFloat);
 
-        explicit AllpassCubic(memory::Poolable&, size_t, MdFloat, MdFloat);
+        explicit AllpassCubic(memory::Poolable&, MdFloat, MdFloat, MdFloat);
 
         inline void set_delay(MdFloat) noexcept;
 
@@ -24,17 +25,21 @@ namespace md_audio {
         MdFloat perform(MdFloat) noexcept override final;
 
     private:
+        std::uint32_t m_max_delay;
+        std::uint32_t m_delay;
+        MdFloat m_gain = static_cast<MdFloat>(0);
+        MdFloat m_frac;
         Buffer m_buffer;
         ReaderCubic m_reader;
         Writer m_writer;
-        MdFloat m_max_delay;
-        std::uint32_t m_delay;
-        MdFloat m_gain = 0.;
-        MdFloat m_frac;
     };
 
     void AllpassCubic::set_delay(MdFloat delay) noexcept {
-        delay = utility::clip(delay, static_cast<MdFloat>(1), m_max_delay);
+        delay = utility::clip(
+            static_cast<MdFloat>(sample_rate * delay),
+            static_cast<MdFloat>(1),
+            static_cast<MdFloat>(m_max_delay)
+        );
 
         m_delay = static_cast<std::uint32_t>(delay);
         m_frac = delay - static_cast<MdFloat>(m_delay);
