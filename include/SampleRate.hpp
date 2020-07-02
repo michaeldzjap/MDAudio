@@ -11,11 +11,7 @@ namespace md_audio {
 
         static void set_sample_rate(double) noexcept;
 
-        static double get_half_sample_rate() noexcept;
-
         static double get_sample_duration() noexcept;
-
-        static double get_pi_over_sample_rate() noexcept;
 
         virtual ~SampleRate() = 0;
 
@@ -24,6 +20,7 @@ namespace md_audio {
         static double m_half_sample_rate;
         static double m_sample_duration;
         static double m_pi_over_sample_rate;
+        static double m_cycles_to_increment;
     };
 
 }
