@@ -4,12 +4,12 @@
 using md_audio::MdFloat;
 using md_audio::Oscillator;
 
-Oscillator::Oscillator(MdFloat frequency) : m_cycles_to_increment(table_size * m_sample_duration) {
+Oscillator::Oscillator(MdFloat frequency) {
     set_frequency(frequency);
     set_phase(static_cast<MdFloat>(0));
 }
 
-Oscillator::Oscillator(MdFloat frequency, MdFloat phase) : m_cycles_to_increment(table_size * m_sample_duration) {
+Oscillator::Oscillator(MdFloat frequency, MdFloat phase) {
     set_frequency(frequency);
     set_phase(phase);
 }

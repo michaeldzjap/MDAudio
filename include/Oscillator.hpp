@@ -28,7 +28,6 @@ namespace md_audio {
         double m_phase_acc = 0.;
         double m_phase_rate = 0.;
         double m_frequency_rate = 0.;
-        double m_cycles_to_increment;
     };
 
     void Oscillator::set_frequency(MdFloat frequency) noexcept {

@@ -11,6 +11,7 @@ namespace md_audio {
 
     constexpr std::size_t table_size = 512;
     constexpr double radians_to_increment = table_size / two_pi;
+    constexpr double cycles_to_increment = table_size * sample_duration;
 
     template <typename T>
     constexpr T sine_period(T index) noexcept {
