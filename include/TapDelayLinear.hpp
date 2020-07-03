@@ -39,13 +39,11 @@ namespace md_audio {
         Writer m_writer;
 
         void initialise();
-
-        void* allocate(std::size_t);
     };
 
     void TapDelayLinear::set_delay(std::size_t index, MdFloat delay) noexcept {
         delay = utility::clip(
-            static_cast<MdFloat>(sample_rate * delay),
+            static_cast<MdFloat>(m_sample_rate * delay),
             static_cast<MdFloat>(1),
             static_cast<MdFloat>(m_max_delay)
         );

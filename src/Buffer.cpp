@@ -13,11 +13,7 @@ Buffer::Buffer(memory::Poolable& pool, std::size_t size) :
 {}
 
 void Buffer::initialise() {
-    auto memory = m_pool.allocate(m_size * sizeof(MdFloat));
-
-    if (!memory) throw std::bad_alloc();
-
-    m_memory = static_cast<MdFloat*>(memory);
+    m_memory = static_cast<MdFloat*>(m_pool.allocate(m_size * sizeof(MdFloat)));
 
     std::memset(m_memory, 0, m_size * sizeof(MdFloat));
 }

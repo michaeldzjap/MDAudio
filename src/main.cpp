@@ -61,13 +61,13 @@ int main() {
     // Pool<TOTAL_SIZE> pool;
 
     // Reverse Delay
-    constexpr auto MAX_DELAY_TIME = static_cast<md_audio::MdFloat>(.02);;
+    constexpr auto MAX_DELAY_TIME = static_cast<md_audio::MdFloat>(.02);
     constexpr auto SIZE_TIME = static_cast<md_audio::MdFloat>(.02);
     constexpr auto MAX_DELAY_SAMPLES = md_audio::utility::ceil(MAX_DELAY_TIME * md_audio::sample_rate) + 1;
     constexpr auto MAX_DELAY_SIZE = MAX_DELAY_SAMPLES * sizeof(md_audio::MdFloat);
     constexpr auto OVERLAP = 2;
     constexpr auto OVERLAP_SIZE = OVERLAP * (sizeof(std::uint32_t) + sizeof(md_audio::MdFloat) + sizeof(md_audio::Phasor) + sizeof(md_audio::HannOscillator));
-    constexpr auto TOTAL_SIZE = MAX_DELAY_SIZE + OVERLAP_SIZE + 40;
+    constexpr auto TOTAL_SIZE = MAX_DELAY_SIZE + OVERLAP_SIZE /*+ 40*/;
 
     Pool<TOTAL_SIZE> pool;
 

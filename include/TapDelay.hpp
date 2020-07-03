@@ -45,8 +45,6 @@ namespace md_audio {
 
         void initialise(InterpolationType);
 
-        void* allocate(std::size_t);
-
         MdFloat* (TapDelay::*perform_function)(MdFloat, MdFloat*, std::size_t) noexcept;
 
         MdFloat* perform_static(MdFloat, MdFloat*, std::size_t) noexcept;
@@ -68,7 +66,7 @@ namespace md_audio {
 
     void TapDelay::set_delay(std::size_t index, MdFloat delay) noexcept {
         delay = utility::clip(
-            static_cast<MdFloat>(sample_rate * delay),
+            static_cast<MdFloat>(m_sample_rate * delay),
             static_cast<MdFloat>(1),
             static_cast<MdFloat>(m_max_delay)
         );

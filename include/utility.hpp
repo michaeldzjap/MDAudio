@@ -1,7 +1,6 @@
 #ifndef MD_AUDIO_UTILITY_HPP
 #define MD_AUDIO_UTILITY_HPP
 
-#include "constants.hpp"
 #include "tables.hpp"
 #include <array>
 #include <cmath>
@@ -45,6 +44,20 @@ namespace md_audio::utility {
         return static_cast<double>(static_cast<std::int32_t>(value)) == value
             ? static_cast<std::int32_t>(value)
             : static_cast<std::int32_t>(value) + (value > 0 ? 1 : 0);
+    }
+
+    template <typename T>
+    inline constexpr IsFloat<T> ceil(const float value) noexcept {
+        return static_cast<float>(static_cast<std::int32_t>(value)) == value
+            ? static_cast<T>(value)
+            : static_cast<T>(value) + static_cast<T>(value > 0 ? 1 : 0);
+    }
+
+    template <typename T>
+    inline constexpr IsFloat<T> ceil(const double value) noexcept {
+        return static_cast<double>(static_cast<std::int32_t>(value)) == value
+            ? static_cast<T>(value)
+            : static_cast<T>(value) + static_cast<T>(value > 0 ? 1 : 0);
     }
 
     inline constexpr auto wrap(std::int32_t value, const std::int32_t lo, const std::int32_t hi) noexcept {
@@ -177,8 +190,33 @@ namespace md_audio::utility {
     }
 
     template <typename T>
-    inline constexpr IsFloat<T> seconds_to_samples(T delay_time, T sr = static_cast<T>(sample_rate)) noexcept {
-        return delay_time * sr;
+    inline constexpr IsFloat<T> seconds_to_samples(T delay_time, T sample_rate) noexcept {
+        return utility::ceil(delay_time * sample_rate);
+    }
+
+    template <typename T, std::size_t N>
+    inline constexpr std::array<IsFloat<T>, N> seconds_to_samples(const std::array<T, N>& in,
+        const T sample_rate, const T margin = 0) noexcept {
+        std::array<T, N> out{};
+
+        for (std::uint32_t i = 0; i < N; ++i)
+            out[i] = utility::seconds_to_samples(in[i], sample_rate) + margin;
+
+        return out;
+    }
+
+    template <typename T, std::size_t N, std::size_t M>
+    constexpr std::array<std::array<IsFloat<T>, M>, N> seconds_to_samples(
+        const std::array<std::array<T, M>, N>& in,
+        const MdFloat sample_rate,
+        const MdFloat margin = 0
+    ) noexcept {
+        std::array<std::array<T, M>, N> out{};
+
+        for (std::uint32_t i = 0; i < N; ++i)
+            out[i] = seconds_to_samples(in[i], sample_rate, margin);
+
+        return out;
     }
 
     template <typename T>

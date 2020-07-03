@@ -46,8 +46,6 @@ namespace md_audio {
 
         void initialise(MdFloat);
 
-        void* allocate(std::size_t size);
-
         inline static constexpr MdFloat compute_frequency(MdFloat) noexcept;
     };
 

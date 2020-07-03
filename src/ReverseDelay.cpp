@@ -1,5 +1,6 @@
 #include "ReverseDelay.hpp"
 #include <cassert>
+#include <new>
 
 using md_audio::MdFloat;
 using md_audio::ReverseDelay;
@@ -38,21 +39,13 @@ ReverseDelay::ReverseDelay(
 }
 
 void ReverseDelay::initialise(MdFloat size) {
-    m_phasor = static_cast<Phasor*>(allocate(sizeof(Phasor)));
-    m_osc = static_cast<HannOscillator*>(allocate(sizeof(HannOscillator)));
+    m_phasor = static_cast<Phasor*>(m_pool.allocate(m_overlap * sizeof(Phasor)));
+    m_osc = static_cast<HannOscillator*>(m_pool.allocate(m_overlap * sizeof(HannOscillator)));
 
     set_size(size);
 
     for (std::uint32_t i = 0; i < m_overlap; ++i)
         m_phasor[i].set_phase(static_cast<MdFloat>(i) / static_cast<MdFloat>(m_overlap));
-}
-
-void* ReverseDelay::allocate(std::size_t size) {
-    auto memory = m_pool.allocate(m_overlap * size);
-
-    if (!memory) throw std::bad_alloc();
-
-    return memory;
 }
 
 void ReverseDelay::set_size(MdFloat size) noexcept {

@@ -21,19 +21,11 @@ TapDelay::TapDelay(
     initialise(interpolation_type);
 }
 
-void* TapDelay::allocate(std::size_t size) {
-    auto memory = m_pool.allocate(m_taps * size);
-
-    if (!memory) throw std::bad_alloc();
-
-    return memory;
-}
-
 void TapDelay::initialise(InterpolationType interpolation_type) {
     m_buffer.initialise();
 
-    m_delay = static_cast<std::uint32_t*>(allocate(sizeof(std::uint32_t)));
-    m_frac = static_cast<MdFloat*>(allocate(sizeof(MdFloat)));
+    m_delay = static_cast<std::uint32_t*>(m_pool.allocate(m_taps * sizeof(std::uint32_t)));
+    m_frac = static_cast<MdFloat*>(m_pool.allocate(m_taps * sizeof(MdFloat)));
 
     if (interpolation_type == InterpolationType::none) {
         perform_function = &TapDelay::perform_static;

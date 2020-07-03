@@ -56,9 +56,9 @@ VariableDelay::VariableDelay(
 }
 
 void VariableDelay::initialise(MdFloat delay, MdFloat size) {
-    m_phasor = static_cast<Phasor*>(allocate(sizeof(Phasor)));
-    m_osc = static_cast<HannOscillator*>(allocate(sizeof(HannOscillator)));
-    m_latch = static_cast<Latch*>(allocate(sizeof(Latch)));
+    m_phasor = static_cast<Phasor*>(m_pool.allocate(m_overlap * sizeof(Phasor)));
+    m_osc = static_cast<HannOscillator*>(m_pool.allocate(m_overlap * sizeof(HannOscillator)));
+    m_latch = static_cast<Latch*>(m_pool.allocate(m_overlap * sizeof(Latch)));
 
     set_delay(delay);
     set_size(size);
@@ -67,14 +67,6 @@ void VariableDelay::initialise(MdFloat delay, MdFloat size) {
         m_phasor[i].set_phase(static_cast<MdFloat>(i) / static_cast<MdFloat>(m_overlap));
         m_osc[i].set_frequency(static_cast<MdFloat>(0));
     }
-}
-
-void* VariableDelay::allocate(std::size_t size) {
-    auto memory = m_pool.allocate(m_overlap * size);
-
-    if (!memory) throw std::bad_alloc();
-
-    return memory;
 }
 
 void VariableDelay::set_size(MdFloat size) noexcept {
