@@ -17,19 +17,11 @@ TapDelayLinear::TapDelayLinear(memory::Poolable& pool, MdFloat max_delay, std::s
 void TapDelayLinear::initialise() {
     m_buffer.initialise();
 
-    m_delay = static_cast<std::uint32_t*>(allocate(sizeof(std::uint32_t)));
-    m_frac = static_cast<MdFloat*>(allocate(sizeof(MdFloat)));
+    m_delay = static_cast<std::uint32_t*>(m_pool.allocate(m_taps * sizeof(std::uint32_t)));
+    m_frac = static_cast<MdFloat*>(m_pool.allocate(m_taps * sizeof(MdFloat)));
 
     for (std::uint32_t i = 0; i < m_taps; ++i)
         set_delay(i, static_cast<MdFloat>(1));
-}
-
-void* TapDelayLinear::allocate(std::size_t size) {
-    auto memory = m_pool.allocate(m_taps * size);
-
-    if (!memory) throw std::bad_alloc();
-
-    return memory;
 }
 
 void TapDelayLinear::set_delay(const MdFloat* delay) noexcept {

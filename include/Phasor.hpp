@@ -32,7 +32,7 @@ namespace md_audio {
     private:
         double m_rate;
         double m_level = 0.;
-        MdFloat m_previous = 0.;
+        MdFloat m_previous = static_cast<MdFloat>(0);
     };
 
     void Phasor::set_frequency(MdFloat frequency) noexcept {

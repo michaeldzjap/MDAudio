@@ -77,22 +77,14 @@ ReversibleDelay::ReversibleDelay(
 }
 
 void ReversibleDelay::initialise(MdFloat size) {
-    m_phasor = static_cast<Phasor*>(allocate(sizeof(Phasor)));
-    m_osc = static_cast<HannOscillator*>(allocate(sizeof(HannOscillator)));
+    m_phasor = static_cast<Phasor*>(m_pool.allocate(m_overlap * sizeof(Phasor)));
+    m_osc = static_cast<HannOscillator*>(m_pool.allocate(m_overlap * sizeof(HannOscillator)));
 
     set_backward_delay(size);
     set_forward_delay(size);
 
     for (std::uint32_t i = 0; i < m_overlap; ++i)
         m_phasor[i].set_phase(static_cast<MdFloat>(i) / static_cast<MdFloat>(m_overlap));
-}
-
-void* ReversibleDelay::allocate(std::size_t size) {
-    auto memory = m_pool.allocate(m_overlap * size);
-
-    if (!memory) throw std::bad_alloc();
-
-    return memory;
 }
 
 void ReversibleDelay::set_backward_delay(MdFloat size) noexcept {

@@ -1,8 +1,6 @@
 #ifndef MD_AUDIO_SAMPLE_RATE_HPP
 #define MD_AUDIO_SAMPLE_RATE_HPP
 
-#include "types.hpp"
-
 namespace md_audio {
 
     class SampleRate {

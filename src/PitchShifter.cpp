@@ -40,8 +40,8 @@ PitchShifter::PitchShifter(
 }
 
 void PitchShifter::initialise(MdFloat size, MdFloat transposition) {
-    m_phasor = static_cast<Phasor*>(allocate(sizeof(Phasor)));
-    m_osc = static_cast<HannOscillator*>(allocate(sizeof(HannOscillator)));
+    m_phasor = static_cast<Phasor*>(m_pool.allocate(m_overlap * sizeof(Phasor)));
+    m_osc = static_cast<HannOscillator*>(m_pool.allocate(m_overlap * sizeof(HannOscillator)));
     m_size = check_size(size);
     m_transposition = check_transposition(transposition);
 
@@ -54,14 +54,6 @@ void PitchShifter::initialise(MdFloat size, MdFloat transposition) {
 
         m_osc[i].set_frequency(static_cast<MdFloat>(0));
     }
-}
-
-void* PitchShifter::allocate(std::size_t size) {
-    auto memory = m_pool.allocate(m_overlap * size);
-
-    if (!memory) throw std::bad_alloc();
-
-    return memory;
 }
 
 void PitchShifter::set_size(MdFloat size) noexcept {

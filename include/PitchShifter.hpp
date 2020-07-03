@@ -36,8 +36,6 @@ namespace md_audio {
 
         void initialise(MdFloat, MdFloat);
 
-        void* allocate(std::size_t size);
-
         void set_frequency() noexcept;
 
         inline MdFloat check_transposition(MdFloat) noexcept;
