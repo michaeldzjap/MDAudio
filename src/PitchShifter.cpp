@@ -51,7 +51,6 @@ void PitchShifter::initialise(MdFloat size, MdFloat transposition) {
         m_phasor[i].set_phase(
             static_cast<MdFloat>(1) - static_cast<MdFloat>(i) / static_cast<MdFloat>(m_overlap)
         );
-
         m_osc[i].set_frequency(static_cast<MdFloat>(0));
     }
 }
