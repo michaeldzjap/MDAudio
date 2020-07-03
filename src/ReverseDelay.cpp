@@ -44,8 +44,10 @@ void ReverseDelay::initialise(MdFloat size) {
 
     set_size(size);
 
-    for (std::uint32_t i = 0; i < m_overlap; ++i)
+    for (std::uint32_t i = 0; i < m_overlap; ++i) {
         m_phasor[i].set_phase(static_cast<MdFloat>(i) / static_cast<MdFloat>(m_overlap));
+        m_osc[i].set_frequency(static_cast<MdFloat>(0));
+    }
 }
 
 void ReverseDelay::set_size(MdFloat size) noexcept {
