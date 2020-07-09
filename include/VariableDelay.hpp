@@ -26,9 +26,9 @@ namespace md_audio {
         ~VariableDelay();
 
     private:
-        MdFloat m_max_delay;
+        const MdFloat m_max_delay;
         MdFloat m_delay_time;
-        std::size_t m_overlap;
+        const std::size_t m_overlap;
         const MdFloat m_norm;
         memory::Poolable& m_pool;
         TapDelayStatic m_delay;

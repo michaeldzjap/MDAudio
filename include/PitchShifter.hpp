@@ -24,10 +24,10 @@ namespace md_audio {
         ~PitchShifter();
 
     private:
-        MdFloat m_max_size;
+        const MdFloat m_max_size;
         MdFloat m_transposition = static_cast<MdFloat>(0);
         MdFloat m_size;
-        std::size_t m_overlap;
+        const std::size_t m_overlap;
         const MdFloat m_norm;
         memory::Poolable& m_pool;
         TapDelayLinear m_delay;

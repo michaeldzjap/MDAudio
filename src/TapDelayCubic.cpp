@@ -15,8 +15,6 @@ TapDelayCubic::TapDelayCubic(memory::Poolable& pool, MdFloat max_delay, std::siz
 }
 
 void TapDelayCubic::initialise() {
-    m_buffer.initialise();
-
     m_delay = static_cast<std::uint32_t*>(m_pool.allocate(m_taps * sizeof(std::uint32_t)));
     m_frac = static_cast<MdFloat*>(m_pool.allocate(m_taps * sizeof(MdFloat)));
 

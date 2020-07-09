@@ -10,5 +10,6 @@ add_executable(md_audio_exe $<TARGET_OBJECTS:md_audio> "${CMAKE_CURRENT_SOURCE_D
 if (MSVC)
     target_compile_options(md_audio PRIVATE /W4 /WX)
 else ()
-    target_compile_options(md_audio PRIVATE -Wall -Wextra -pedantic -Werror)
+    # target_compile_options(md_audio PRIVATE -Wall -Wextra -pedantic -Werror)
+    target_compile_options(md_audio PRIVATE -Wall -Wextra -pedantic)
 endif ()

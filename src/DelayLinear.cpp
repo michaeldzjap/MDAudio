@@ -9,8 +9,6 @@ DelayLinear::DelayLinear(memory::Poolable& pool, MdFloat max_delay) :
     m_reader(m_buffer, m_max_delay - 1),
     m_writer(m_buffer, m_max_delay - 1)
 {
-    m_buffer.initialise();
-
     set_delay(static_cast<MdFloat>(1));
 }
 
@@ -20,8 +18,6 @@ DelayLinear::DelayLinear(memory::Poolable& pool, MdFloat max_delay, MdFloat dela
     m_reader(m_buffer, m_max_delay - 1),
     m_writer(m_buffer, m_max_delay - 1)
 {
-    m_buffer.initialise();
-
     set_delay(delay);
 }
 

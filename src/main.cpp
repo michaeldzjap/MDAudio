@@ -60,16 +60,16 @@ int main() {
     //
     // Pool<TOTAL_SIZE> pool;
 
-    // Reverse Delay
-    constexpr auto MAX_DELAY_TIME = static_cast<md_audio::MdFloat>(.02);
-    constexpr auto SIZE_TIME = static_cast<md_audio::MdFloat>(.02);
-    constexpr auto MAX_DELAY_SAMPLES = md_audio::utility::ceil(MAX_DELAY_TIME * md_audio::sample_rate) + 1;
-    constexpr auto MAX_DELAY_SIZE = MAX_DELAY_SAMPLES * sizeof(md_audio::MdFloat);
-    constexpr auto OVERLAP = 2;
-    constexpr auto OVERLAP_SIZE = OVERLAP * (sizeof(std::uint32_t) + sizeof(md_audio::MdFloat) + sizeof(md_audio::Phasor) + sizeof(md_audio::HannOscillator));
-    constexpr auto TOTAL_SIZE = MAX_DELAY_SIZE + OVERLAP_SIZE + sizeof(md_audio::ReverseDelay);
-
-    Pool<TOTAL_SIZE> pool;
+    // // Reverse Delay
+    // constexpr auto MAX_DELAY_TIME = static_cast<md_audio::MdFloat>(.02);
+    // constexpr auto SIZE_TIME = static_cast<md_audio::MdFloat>(.02);
+    // constexpr auto MAX_DELAY_SAMPLES = md_audio::utility::ceil(MAX_DELAY_TIME * md_audio::sample_rate) + 1;
+    // constexpr auto MAX_DELAY_SIZE = MAX_DELAY_SAMPLES * sizeof(md_audio::MdFloat);
+    // constexpr auto OVERLAP = 2;
+    // constexpr auto OVERLAP_SIZE = OVERLAP * (sizeof(std::uint32_t) + sizeof(md_audio::MdFloat) + sizeof(md_audio::Phasor) + sizeof(md_audio::HannOscillator));
+    // constexpr auto TOTAL_SIZE = MAX_DELAY_SIZE + OVERLAP_SIZE + sizeof(md_audio::ReverseDelay);
+    //
+    // Pool<TOTAL_SIZE> pool;
 
     // // Reversible Delay
     // constexpr auto MAX_DELAY_TIME = static_cast<md_audio::MdFloat>(.02);;
@@ -104,6 +104,20 @@ int main() {
     //
     // Pool<TOTAL_SIZE> pool;
 
+    // Reverb
+    constexpr auto TOTAL_SIZE = static_cast<std::uint32_t>(
+        md_audio::utility::seconds_to_samples(md_audio::ReverbConfig::max_pre_delay_time, static_cast<md_audio::MdFloat>(md_audio::sample_rate)) * sizeof(md_audio::MdFloat) // Reversible delay memory
+        + (sizeof(md_audio::Phasor) + sizeof(md_audio::HannOscillator)) * md_audio::ReverbConfig::overlap_pre_delay + (sizeof(std::uint32_t) + sizeof(md_audio::MdFloat)) * (md_audio::ReverbConfig::overlap_pre_delay + 1)
+        + (md_audio::utility::seconds_to_samples(md_audio::ReverbConfig::max_pitch_shift_window_time, static_cast<md_audio::MdFloat>(md_audio::sample_rate)) + 1) * md_audio::ReverbConfig::output_count * sizeof(md_audio::MdFloat) // Pitch shifter memory
+        + (sizeof(md_audio::Phasor) + sizeof(md_audio::HannOscillator) + sizeof(std::uint32_t) + sizeof(md_audio::MdFloat)) * md_audio::ReverbConfig::overlap_shifter * md_audio::ReverbConfig::output_count
+        + md_audio::utility::sum(md_audio::utility::seconds_to_samples(md_audio::ReverbConfig::max_allpass_times, static_cast<md_audio::MdFloat>(md_audio::sample_rate))) * sizeof(md_audio::MdFloat) // Allpass memory
+        + md_audio::utility::sum(md_audio::utility::seconds_to_samples(md_audio::ReverbConfig::max_delay_times, static_cast<md_audio::MdFloat>(md_audio::sample_rate), static_cast<md_audio::MdFloat>(1))) * md_audio::ReverbConfig::serial_stages * sizeof(md_audio::MdFloat) // Delay memory
+        + md_audio::utility::seconds_to_samples(md_audio::ReverbConfig::normaliser_duration_time, static_cast<md_audio::MdFloat>(md_audio::sample_rate)) * 3 * md_audio::ReverbConfig::delay_count * sizeof(md_audio::MdFloat) // Normaliser memory
+        + sizeof(md_audio::ReversibleDelay) + sizeof(md_audio::PitchShifter) * md_audio::ReverbConfig::output_count
+    );
+
+    Pool<TOTAL_SIZE> pool;
+
     // md_audio::AllpassStatic allpass(pool, MAX_DELAY_TIME, DELAY_TIME);
     // md_audio::DelayStatic delay(pool, MAX_DELAY_TIME, DELAY_TIME);
     // md_audio::DelayLinear delay(pool, MAX_DELAY_TIME, DELAY_TIME);
@@ -112,28 +126,32 @@ int main() {
     // md_audio::TapDelayLinear delay(pool, MAX_DELAY_TIME, TAPS);
     // md_audio::TapDelay delay(pool, MAX_DELAY, TAPS, static_cast<md_audio::InterpolationType>(0));
     // md_audio::TapDelayCubic delay(pool, MAX_DELAY_TIME, TAPS);
-    md_audio::ReverseDelay delay(pool, MAX_DELAY_TIME, SIZE_TIME, OVERLAP);
+    // md_audio::ReverseDelay delay(pool, MAX_DELAY_TIME, SIZE_TIME, OVERLAP);
     // md_audio::ReversibleDelay delay(pool, MAX_DELAY_TIME, SIZE_TIME, true, OVERLAP);
     // md_audio::Normaliser normaliser(pool, DURATION_TIME);
     // md_audio::PitchShifter shifter(pool, MAX_SIZE_TIME, SIZE_TIME, OVERLAP);
     // md_audio::VariableDelay delay(pool, MAX_DELAY_TIME, DELAY_TIME, DELAY_TIME, OVERLAP);
+    md_audio::Reverb reverb(pool);
     md_audio::WhiteNoise noise;
 
     // delay.set_delay(DELAY_TIMES);
+    reverb.set_mix(1.f);
 
-    for (std::size_t i = 0; i < 441; ++i) {
+    for (std::size_t i = 0; i < 44100; ++i) {
         // md_audio::MdFloat z[TAPS];
 
         const auto y = noise.perform();
         // const auto z = normaliser.perform(y);
         // delay.perform(y, z, TAPS);
         // delay.set_delay((y * .5 + .5) * ((.3 - .2) + .2) * md_audio::sample_rate);
-        const auto z = delay.perform(y);
+        // const auto z = delay.perform(y);
         // const auto z = allpass.perform(y);
         // const auto z = shifter.perform(y);
         // const auto z = 1;
+        const auto z = reverb.perform(y);
 
-        std::cout << i << "\t" << y << "\t" << z << std::endl;
+        // std::cout << i << "\t" << y << "\t" << z << std::endl;
+        std::cout << i << "\t" << y << "\t" << z[0] << "\t" << z[1] << std::endl;
 
         // std::cout << i << "\t";
         //

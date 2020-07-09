@@ -34,9 +34,9 @@ namespace md_audio {
         ~ReversibleDelay();
 
     private:
-        MdFloat m_max_delay;
+        const MdFloat m_max_delay;
         MdFloat m_size;
-        std::size_t m_overlap;
+        const std::size_t m_overlap;
         bool m_reverse;
         const MdFloat m_norm;
         memory::Poolable& m_pool;

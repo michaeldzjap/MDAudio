@@ -16,6 +16,7 @@
 #include "ReaderLinear.hpp"
 #include "ReverbConfig.hpp"
 #include "ReversibleDelay.hpp"
+#include "SampleRate.hpp"
 #include "SineOscillator.hpp"
 #include "SineShaper.hpp"
 #include "TapDelayLinear.hpp"
@@ -23,10 +24,14 @@
 #include "Writer.hpp"
 #include "interfaces/Processable.hpp"
 #include "types.hpp"
+#include "utility.hpp"
 
 namespace md_audio {
 
-    class Reverb : public Processable<std::array<MdFloat, ReverbConfig::output_count>, MdFloat> {
+    class Reverb :
+        public SampleRate,
+        public Processable<std::array<MdFloat, ReverbConfig::output_count>, MdFloat>
+    {
     public:
         explicit Reverb(memory::Poolable&);
 
@@ -53,6 +58,7 @@ namespace md_audio {
         std::array<MdFloat, ReverbConfig::output_count> perform(MdFloat) noexcept override final;
 
     private:
+        static std::array<MdFloat, ReverbConfig::delay_count> m_max_delay_samples;
         ReversibleDelay m_pre_delay;
         std::array<AllpassStatic, ReverbConfig::delay_count> m_allpass;
         std::array<LowpassFirstOrder, ReverbConfig::delay_count> m_lowpass;
@@ -73,7 +79,7 @@ namespace md_audio {
         std::array<LowshelfFirstOrder, ReverbConfig::output_count> m_lowshelf;
         std::array<HighshelfFirstOrder, ReverbConfig::output_count> m_highshelf;
         std::array<MdFloat, ReverbConfig::delay_count> m_late_delay;
-        std::array<std::array<MdFloat, ReverbConfig::early_reflections>, ReverbConfig::delay_count> m_early_delay;
+        std::array<std::array<MdFloat, ReverbConfig::output_count>, ReverbConfig::delay_count> m_early_delay;
         std::array<MdFloat, ReverbConfig::delay_count> m_feedback{};
         MdFloat m_decay;
         MdFloat m_shimmer;

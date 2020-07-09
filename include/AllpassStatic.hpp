@@ -25,7 +25,7 @@ namespace md_audio {
         MdFloat perform(MdFloat) noexcept override final;
 
     private:
-        MdFloat m_max_delay;
+        const MdFloat m_max_delay;
         std::uint32_t m_delay;
         MdFloat m_gain = static_cast<MdFloat>(0);
         Buffer m_buffer;
