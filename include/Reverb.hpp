@@ -28,6 +28,11 @@
 
 namespace md_audio {
 
+    /**
+     * A feedback delay network reverb that attempts to emulate the Erbe-Verb.
+     * No idea if it even comes close to it to be honest, but it sounds pretty
+     * damn awesome in its own way.
+     */
     class Reverb :
         public SampleRate,
         public Processable<std::array<MdFloat, ReverbConfig::output_count>, MdFloat>
