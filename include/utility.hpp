@@ -190,7 +190,7 @@ namespace md_audio::utility {
     }
 
     template <typename T>
-    inline constexpr IsFloat<T> seconds_to_samples(T delay_time, T sample_rate) noexcept {
+    inline constexpr double seconds_to_samples(const T delay_time, const T sample_rate) noexcept {
         return utility::ceil(delay_time * sample_rate);
     }
 
@@ -208,8 +208,8 @@ namespace md_audio::utility {
     template <typename T, std::size_t N, std::size_t M>
     constexpr std::array<std::array<IsFloat<T>, M>, N> seconds_to_samples(
         const std::array<std::array<T, M>, N>& in,
-        const MdFloat sample_rate,
-        const MdFloat margin = 0
+        const T sample_rate,
+        const T margin = 0
     ) noexcept {
         std::array<std::array<T, M>, N> out{};
 

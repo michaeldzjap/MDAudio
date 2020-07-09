@@ -38,8 +38,6 @@ void Delay::initialise(
     MdFloat delay,
     InterpolationType interpolation_type
 ) noexcept {
-    m_buffer.initialise();
-
     if (interpolation_type == InterpolationType::none)
         Delay::perform_function = &Delay::perform_static;
     else if (interpolation_type == InterpolationType::linear)

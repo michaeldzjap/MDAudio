@@ -15,7 +15,7 @@ namespace md_audio {
 
         explicit Reader(Buffer&, std::size_t, std::size_t);
 
-        MdFloat read(Writer&, std::size_t) noexcept;
+        MdFloat read(Writer&, std::size_t) const noexcept;
 
     private:
         Buffer& m_buffer;

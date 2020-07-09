@@ -15,8 +15,6 @@ TapDelayStatic::TapDelayStatic(memory::Poolable& pool, MdFloat max_delay, std::s
 }
 
 void TapDelayStatic::initialise() {
-    m_buffer.initialise();
-
     m_delay = static_cast<std::uint32_t*>(m_pool.allocate(m_taps * sizeof(std::uint32_t)));
 
     for (std::uint32_t i = 0; i < m_taps; ++i)

@@ -11,8 +11,6 @@ namespace md_audio {
     public:
         explicit Buffer(memory::Poolable&, std::size_t);
 
-        void initialise();
-
         MdFloat& operator[] (std::size_t) noexcept;
 
         const MdFloat& operator[] (std::size_t) const noexcept;
@@ -23,6 +21,8 @@ namespace md_audio {
         memory::Poolable& m_pool;
         MdFloat* m_memory = nullptr;
         const std::size_t m_size;
+
+        void initialise();
     };
 
 }

@@ -15,7 +15,7 @@ namespace md_audio {
 
         explicit ReaderLinear(Buffer&, std::size_t, std::size_t);
 
-        MdFloat read(Writer&, std::size_t, MdFloat) noexcept;
+        MdFloat read(Writer&, std::size_t, MdFloat) const noexcept;
 
     private:
         Buffer& m_buffer;

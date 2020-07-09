@@ -10,7 +10,9 @@ using md_audio::MdFloat;
 Buffer::Buffer(memory::Poolable& pool, std::size_t size) :
     m_pool(pool),
     m_size(size)
-{}
+{
+    initialise();
+}
 
 void Buffer::initialise() {
     m_memory = static_cast<MdFloat*>(m_pool.allocate(m_size * sizeof(MdFloat)));

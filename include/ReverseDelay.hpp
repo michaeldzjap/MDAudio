@@ -22,9 +22,9 @@ namespace md_audio {
         ~ReverseDelay();
 
     private:
-        MdFloat m_max_delay;
+        const MdFloat m_max_delay;
         MdFloat m_size;
-        std::size_t m_overlap;
+        const std::size_t m_overlap;
         const MdFloat m_norm;
         memory::Poolable& m_pool;
         TapDelayLinear m_delay;
