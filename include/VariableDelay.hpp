@@ -23,6 +23,8 @@ namespace md_audio {
 
         MdFloat perform(MdFloat) noexcept override final;
 
+        static void set_sample_rate(double) noexcept;
+
         ~VariableDelay();
 
     private:

@@ -79,6 +79,12 @@ MdFloat ReverseDelay::perform(MdFloat in) noexcept {
     return z * m_norm;
 }
 
+void ReverseDelay::set_sample_rate(double sample_rate) noexcept {
+    TapDelayLinear::set_sample_rate(sample_rate);
+    Phasor::set_sample_rate(sample_rate);
+    HannOscillator::set_sample_rate(sample_rate);
+}
+
 ReverseDelay::~ReverseDelay() {
     if (m_phasor) m_pool.deallocate(m_phasor);
     if (m_osc) m_pool.deallocate(m_osc);
