@@ -62,6 +62,8 @@ namespace md_audio {
 
         std::array<MdFloat, ReverbConfig::output_count> perform(MdFloat) noexcept override final;
 
+        static void set_sample_rate(double) noexcept;
+
     private:
         static std::array<MdFloat, ReverbConfig::delay_count> m_max_delay_samples;
         ReversibleDelay m_pre_delay;
