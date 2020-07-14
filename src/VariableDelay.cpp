@@ -100,9 +100,7 @@ MdFloat VariableDelay::perform(MdFloat in) noexcept {
 }
 
 void VariableDelay::set_sample_rate(double sample_rate) noexcept {
-    TapDelayStatic::set_sample_rate(sample_rate);
-    Phasor::set_sample_rate(sample_rate);
-    HannOscillator::set_sample_rate(sample_rate);
+    SampleRate::set_sample_rate(sample_rate);
 }
 
 VariableDelay::~VariableDelay() {

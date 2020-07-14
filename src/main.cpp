@@ -15,6 +15,7 @@
 #include "ReverbConfig.hpp"
 #include "ReverseDelay.hpp"
 #include "ReversibleDelay.hpp"
+#include "SampleRate.hpp"
 #include "StaticPool.hpp"
 #include "TapDelay.hpp"
 #include "TapDelayCubic.hpp"
@@ -33,6 +34,9 @@ using Pool = md_audio::memory::StaticPool<Size>;
 int main() {
     std::cout << std::fixed;
     std::cout << std::setprecision(9);
+
+    // md_audio::TapDelay::set_sample_rate(44100.);
+    // std::cout << md_audio::Reverb::get_sample_rate() << std::endl;
 
     // // Delay
     // constexpr auto MAX_DELAY_TIME = static_cast<md_audio::MdFloat>(.001);
@@ -133,11 +137,12 @@ int main() {
     // md_audio::VariableDelay delay(pool, MAX_DELAY_TIME, DELAY_TIME, DELAY_TIME, OVERLAP);
     md_audio::Reverb reverb(pool);
     md_audio::WhiteNoise noise;
+    md_audio::SineOscillator osc;
 
     // delay.set_delay(DELAY_TIMES);
-    reverb.set_mix(1.f);
+    // reverb.set_mix(1.f);
 
-    for (std::size_t i = 0; i < 44100; ++i) {
+    for (std::size_t i = 0; i < 441; ++i) {
         // md_audio::MdFloat z[TAPS];
 
         const auto y = noise.perform();

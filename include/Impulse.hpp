@@ -14,7 +14,7 @@ namespace md_audio {
 
         inline void set_frequency(MdFloat frequency) noexcept {
             m_rate = m_sample_duration * utility::clip(
-                frequency, static_cast<MdFloat>(0), static_cast<MdFloat>(sample_rate)
+                frequency, static_cast<MdFloat>(0), static_cast<MdFloat>(m_sample_rate)
             );
         }
 

@@ -101,11 +101,11 @@ std::uint32_t TapDelay::compute_max_delay(
 ) noexcept {
     switch (interpolation_type) {
         case InterpolationType::none:
-            return static_cast<std::uint32_t>(sample_rate * max_delay) + 1;
+            return static_cast<std::uint32_t>(m_sample_rate * max_delay) + 1;
         case InterpolationType::linear:
-            return static_cast<std::uint32_t>(sample_rate * max_delay) + 2;
+            return static_cast<std::uint32_t>(m_sample_rate * max_delay) + 2;
         default:
-            return static_cast<std::uint32_t>(sample_rate * max_delay) + 3;
+            return static_cast<std::uint32_t>(m_sample_rate * max_delay) + 3;
     }
 }
 

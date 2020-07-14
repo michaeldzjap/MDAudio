@@ -21,8 +21,6 @@ namespace md_audio {
 
         inline void set_delay(std::size_t, MdFloat) noexcept;
 
-        inline constexpr auto get_max_delay() const noexcept;
-
         MdFloat* perform(MdFloat, MdFloat*, std::size_t) noexcept override final;
 
         void write(MdFloat) noexcept;
@@ -73,10 +71,6 @@ namespace md_audio {
 
         m_delay[index] = static_cast<std::uint32_t>(delay);
         m_frac[index] = delay - static_cast<MdFloat>(m_delay[index]);
-    }
-
-    constexpr auto TapDelay::get_max_delay() const noexcept {
-        return m_max_delay;
     }
 
 }

@@ -80,9 +80,7 @@ MdFloat ReverseDelay::perform(MdFloat in) noexcept {
 }
 
 void ReverseDelay::set_sample_rate(double sample_rate) noexcept {
-    TapDelayLinear::set_sample_rate(sample_rate);
-    Phasor::set_sample_rate(sample_rate);
-    HannOscillator::set_sample_rate(sample_rate);
+    SampleRate::set_sample_rate(sample_rate);
 }
 
 ReverseDelay::~ReverseDelay() {
