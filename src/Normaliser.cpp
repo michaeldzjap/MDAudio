@@ -6,7 +6,7 @@ using md_audio::Normaliser;
 
 Normaliser::Normaliser(memory::Poolable& pool, MdFloat duration) :
     m_pool(pool),
-    m_duration(utility::ceil(sample_rate * duration)),
+    m_duration(utility::ceil(m_sample_rate * duration)),
     m_size(3 * m_duration),
     m_slope_factor(static_cast<MdFloat>(1) / static_cast<MdFloat>(m_duration))
 {
@@ -15,7 +15,7 @@ Normaliser::Normaliser(memory::Poolable& pool, MdFloat duration) :
 
 Normaliser::Normaliser(memory::Poolable& pool, MdFloat duration, MdFloat amplitude) :
     m_pool(pool),
-    m_duration(utility::ceil(sample_rate * duration)),
+    m_duration(utility::ceil(m_sample_rate * duration)),
     m_size(3 * m_duration),
     m_slope_factor(static_cast<MdFloat>(1) / static_cast<MdFloat>(m_duration))
 {

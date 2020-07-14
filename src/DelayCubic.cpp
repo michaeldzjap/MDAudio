@@ -4,7 +4,7 @@ using md_audio::DelayCubic;
 using md_audio::MdFloat;
 
 DelayCubic::DelayCubic(memory::Poolable& pool, MdFloat max_delay) :
-    m_max_delay(utility::ceil(sample_rate * max_delay) + 2),
+    m_max_delay(utility::ceil(m_sample_rate * max_delay) + 2),
     m_buffer(pool, m_max_delay),
     m_reader(m_buffer, m_max_delay - 1),
     m_writer(m_buffer, m_max_delay - 1)
@@ -13,7 +13,7 @@ DelayCubic::DelayCubic(memory::Poolable& pool, MdFloat max_delay) :
 }
 
 DelayCubic::DelayCubic(memory::Poolable& pool, MdFloat max_delay, MdFloat delay) :
-    m_max_delay(utility::ceil(sample_rate * max_delay) + 2),
+    m_max_delay(utility::ceil(m_sample_rate * max_delay) + 2),
     m_buffer(pool, m_max_delay),
     m_reader(m_buffer, m_max_delay - 1),
     m_writer(m_buffer, m_max_delay - 1)

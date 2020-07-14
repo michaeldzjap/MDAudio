@@ -4,7 +4,7 @@ using md_audio::MdFloat;
 using md_audio::TapDelayCubic;
 
 TapDelayCubic::TapDelayCubic(memory::Poolable& pool, MdFloat max_delay, std::size_t taps) :
-    m_max_delay(utility::ceil(sample_rate * max_delay) + 2),
+    m_max_delay(utility::ceil(m_sample_rate * max_delay) + 2),
     m_taps(taps),
     m_pool(pool),
     m_buffer(pool, m_max_delay),
