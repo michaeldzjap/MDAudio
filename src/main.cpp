@@ -137,15 +137,17 @@ int main() {
     // md_audio::VariableDelay delay(pool, MAX_DELAY_TIME, DELAY_TIME, DELAY_TIME, OVERLAP);
     md_audio::Reverb reverb(pool);
     md_audio::WhiteNoise noise;
-    md_audio::SineOscillator osc;
 
     // delay.set_delay(DELAY_TIMES);
-    // reverb.set_mix(1.f);
+    reverb.set_mix(1.f);
+    reverb.set_absorb(0.f);
+    // reverb.set_shimmer(1.f);
 
-    for (std::size_t i = 0; i < 441; ++i) {
+    for (std::size_t i = 0; i < 44100; ++i) {
         // md_audio::MdFloat z[TAPS];
 
-        const auto y = noise.perform();
+        // const auto y = noise.perform();
+        const auto y = 1.f;
         // const auto z = normaliser.perform(y);
         // delay.perform(y, z, TAPS);
         // delay.set_delay((y * .5 + .5) * ((.3 - .2) + .2) * md_audio::sample_rate);
