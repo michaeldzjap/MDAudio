@@ -3,7 +3,6 @@
 
 #include "interfaces/Poolable.hpp"
 #include "interfaces/Uncopyable.hpp"
-#include <algorithm>
 #include <cstdint>
 
 namespace md_audio::memory {
@@ -28,7 +27,7 @@ namespace md_audio::memory {
     template <std::size_t TOTAL_SIZE>
     void* StaticPool<TOTAL_SIZE>::allocate(std::size_t size) {
         if (static_cast<std::uint32_t>(m_ptr + size - &m_buffer[0]) > TOTAL_SIZE)
-            throw std::bad_alloc();
+            return nullptr;
 
         auto ret = m_ptr;
 
