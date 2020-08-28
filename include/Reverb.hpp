@@ -73,8 +73,8 @@ namespace md_audio {
         std::array<Phasor, ReverbConfig::modulation_stages> m_phasor;
         std::array<Latch, ReverbConfig::modulation_stages> m_latch;
         WhiteNoise m_noise;
-        std::array<HannOscillator, ReverbConfig::modulation_stages> m_window;
-        std::array<SineOscillator, ReverbConfig::modulation_stages> m_osc;
+        std::array<HannOscillator, ReverbConfig::modulation_stages> m_hann;
+        std::array<SineOscillator, ReverbConfig::modulation_stages> m_sine;
         std::array<std::array<Buffer, ReverbConfig::delay_count>, ReverbConfig::serial_stages> m_buffer;
         std::array<std::array<Writer, ReverbConfig::delay_count>, ReverbConfig::serial_stages> m_writer;
         std::array<Reader, ReverbConfig::delay_count> m_early_reader;

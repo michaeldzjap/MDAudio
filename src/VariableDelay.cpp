@@ -1,5 +1,5 @@
 #include "VariableDelay.hpp"
-#include <cassert>
+#include "utility.hpp"
 
 using md_audio::MdFloat;
 using md_audio::VariableDelay;
@@ -10,13 +10,11 @@ VariableDelay::VariableDelay(
     std::size_t overlap
 ) :
     m_max_delay(max_delay),
-    m_overlap(overlap),
+    m_overlap(utility::max<size_t>(overlap, 2)),
     m_norm(static_cast<MdFloat>(2) / m_overlap),
     m_pool(pool),
     m_delay(pool, max_delay, m_overlap)
 {
-    assert(m_overlap > 1);
-
     initialise(static_cast<MdFloat>(1), static_cast<MdFloat>(1));
 }
 
@@ -27,13 +25,11 @@ VariableDelay::VariableDelay(
     std::size_t overlap
 ) :
     m_max_delay(max_delay),
-    m_overlap(overlap),
+    m_overlap(utility::max<size_t>(overlap, 2)),
     m_norm(static_cast<MdFloat>(2) / m_overlap),
     m_pool(pool),
     m_delay(pool, max_delay, m_overlap)
 {
-    assert(m_overlap > 1);
-
     initialise(delay, static_cast<MdFloat>(1));
 }
 
@@ -45,13 +41,11 @@ VariableDelay::VariableDelay(
     std::size_t overlap
 ) :
     m_max_delay(max_delay),
-    m_overlap(overlap),
+    m_overlap(utility::max<size_t>(overlap, 2)),
     m_norm(static_cast<MdFloat>(2) / m_overlap),
     m_pool(pool),
     m_delay(pool, max_delay, m_overlap)
 {
-    assert(m_overlap > 1);
-
     initialise(delay, size);
 }
 

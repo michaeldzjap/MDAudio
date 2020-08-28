@@ -1,8 +1,6 @@
 #include "Buffer.hpp"
 #include "utility.hpp"
-#include <cassert>
 #include <cstring>
-#include <new>
 
 using md_audio::Buffer;
 using md_audio::MdFloat;
@@ -21,15 +19,11 @@ void Buffer::initialise() {
 }
 
 MdFloat& Buffer::operator[] (std::size_t index) noexcept {
-    assert(index >= 0 && index < m_size);
-
-    return m_memory[index];
+    return m_memory[utility::clip<std::size_t>(index, 0, m_size)];
 }
 
 const MdFloat& Buffer::operator[] (std::size_t index) const noexcept {
-    assert(index >= 0 && index < m_size);
-
-    return m_memory[index];
+    return m_memory[utility::clip<std::size_t>(index, 0, m_size)];
 }
 
 Buffer::~Buffer() {

@@ -1,5 +1,5 @@
 #include "ReversibleDelay.hpp"
-#include <cassert>
+#include "utility.hpp"
 
 using md_audio::MdFloat;
 using md_audio::ReversibleDelay;
@@ -10,14 +10,12 @@ ReversibleDelay::ReversibleDelay(
     std::size_t overlap
 ) :
     m_max_delay(max_delay),
-    m_overlap(overlap),
+    m_overlap(utility::max<size_t>(overlap, 2)),
     m_reverse(false),
     m_norm(static_cast<MdFloat>(2) / m_overlap),
     m_pool(pool),
     m_delay(pool, max_delay, m_overlap + 1)
 {
-    assert(m_overlap > 1);
-
     initialise(static_cast<MdFloat>(0));
 }
 
@@ -28,14 +26,12 @@ ReversibleDelay::ReversibleDelay(
     std::size_t overlap
 ) :
     m_max_delay(max_delay),
-    m_overlap(overlap),
+    m_overlap(utility::max<size_t>(overlap, 2)),
     m_reverse(false),
     m_norm(static_cast<MdFloat>(2) / m_overlap),
     m_pool(pool),
     m_delay(pool, max_delay, m_overlap + 1)
 {
-    assert(m_overlap > 1);
-
     initialise(size);
 }
 
@@ -46,14 +42,12 @@ ReversibleDelay::ReversibleDelay(
     std::size_t overlap
 ) :
     m_max_delay(max_delay),
-    m_overlap(overlap),
+    m_overlap(utility::max<size_t>(overlap, 2)),
     m_reverse(reverse),
     m_norm(static_cast<MdFloat>(2) / m_overlap),
     m_pool(pool),
     m_delay(pool, max_delay, m_overlap + 1)
 {
-    assert(m_overlap > 1);
-
     initialise(static_cast<MdFloat>(0));
 }
 
@@ -65,14 +59,12 @@ ReversibleDelay::ReversibleDelay(
     std::size_t overlap
 ) :
     m_max_delay(max_delay),
-    m_overlap(overlap),
+    m_overlap(utility::max<size_t>(overlap, 2)),
     m_reverse(reverse),
     m_norm(static_cast<MdFloat>(2) / m_overlap),
     m_pool(pool),
     m_delay(pool, max_delay, m_overlap + 1)
 {
-    assert(m_overlap > 1);
-
     initialise(size);
 }
 
