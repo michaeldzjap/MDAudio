@@ -1,5 +1,5 @@
 #include "PitchShifter.hpp"
-#include <cassert>
+#include "utility"
 
 using md_audio::MdFloat;
 using md_audio::PitchShifter;
@@ -11,13 +11,11 @@ PitchShifter::PitchShifter(
     std::size_t overlap
 ) :
     m_max_size(max_size),
-    m_overlap(overlap),
+    m_overlap(utility::max<size_t>(overlap, 2)),
     m_norm(static_cast<MdFloat>(2) / m_overlap),
     m_pool(pool),
     m_delay(pool, max_size, m_overlap)
 {
-    assert(m_overlap > 1);
-
     initialise(size, static_cast<MdFloat>(0));
 }
 
@@ -29,13 +27,11 @@ PitchShifter::PitchShifter(
     std::size_t overlap
 ) :
     m_max_size(max_size),
-    m_overlap(overlap),
+    m_overlap(utility::max<size_t>(overlap, 2)),
     m_norm(static_cast<MdFloat>(2) / m_overlap),
     m_pool(pool),
     m_delay(pool, m_max_size, m_overlap)
 {
-    assert(m_overlap > 1);
-
     initialise(size, transposition);
 }
 

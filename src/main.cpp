@@ -16,7 +16,6 @@
 #include "ReverseDelay.hpp"
 #include "ReversibleDelay.hpp"
 #include "SampleRate.hpp"
-#include "StaticPool.hpp"
 #include "TapDelay.hpp"
 #include "TapDelayCubic.hpp"
 #include "TapDelayLinear.hpp"
@@ -24,6 +23,7 @@
 #include "VariableDelay.hpp"
 #include "WhiteNoise.hpp"
 #include "constants.hpp"
+#include "memory/StaticPool.hpp"
 #include "types.hpp"
 #include <iomanip>
 #include <iostream>

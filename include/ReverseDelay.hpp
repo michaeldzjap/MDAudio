@@ -5,7 +5,6 @@
 #include "Phasor.hpp"
 #include "TapDelayLinear.hpp"
 #include "interfaces/Processable.hpp"
-#include "types.hpp"
 
 namespace md_audio {
 
