@@ -54,13 +54,11 @@ namespace md_audio {
     }
 
     MdFloat PitchShifter::check_transposition(MdFloat transposition) noexcept {
-        return utility::clip(
-            transposition, static_cast<MdFloat>(-24), static_cast<MdFloat>(24)
-        );
+        return utility::clip<MdFloat>(transposition, -24, 24);
     }
 
     MdFloat PitchShifter::check_size(MdFloat size) noexcept {
-        return utility::clip(size, static_cast<MdFloat>(.01), m_max_size);
+        return utility::clip<MdFloat>(size, .01, m_max_size);
     }
 
     constexpr MdFloat PitchShifter::compute_frequency(MdFloat transposition, MdFloat size) noexcept {

@@ -36,17 +36,13 @@ namespace md_audio {
     };
 
     void Phasor::set_frequency(MdFloat frequency) noexcept {
-        m_rate = static_cast<double>(
-            utility::clip(
-                frequency,
-                static_cast<MdFloat>(-m_half_sample_rate),
-                static_cast<MdFloat>(m_half_sample_rate)
-            )
+        m_rate = utility::clip<double>(
+            frequency, -m_half_sample_rate, m_half_sample_rate
         ) * m_sample_duration;
     }
 
     void Phasor::set_phase(MdFloat phase) noexcept {
-        m_level = utility::clip(phase, static_cast<MdFloat>(0), static_cast<MdFloat>(1));
+        m_level = utility::clip<MdFloat>(phase, 0, 1);
     }
 
 }

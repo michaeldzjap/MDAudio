@@ -44,7 +44,7 @@ namespace md_audio {
     };
 
     void VariableDelay::set_delay(MdFloat delay) noexcept {
-        m_delay_time = utility::clip(delay, static_cast<MdFloat>(.01), m_max_delay);
+        m_delay_time = utility::clip<MdFloat>(delay, .01, m_max_delay);
     }
 
     constexpr MdFloat VariableDelay::compute_frequency(MdFloat size) noexcept {

@@ -30,11 +30,7 @@ namespace md_audio {
     };
 
     void DelayLinear::set_delay(MdFloat delay) noexcept {
-        delay = utility::clip(
-            static_cast<MdFloat>(m_sample_rate * delay),
-            static_cast<MdFloat>(1),
-            static_cast<MdFloat>(m_max_delay)
-        );
+        delay = utility::clip<MdFloat>(m_sample_rate * delay, 1, m_max_delay);
 
         m_delay = static_cast<std::uint32_t>(delay);
         m_frac = delay - static_cast<MdFloat>(m_delay);

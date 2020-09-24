@@ -13,9 +13,7 @@ namespace md_audio {
         explicit Impulse(MdFloat);
 
         inline void set_frequency(MdFloat frequency) noexcept {
-            m_rate = m_sample_duration * utility::clip(
-                frequency, static_cast<MdFloat>(0), static_cast<MdFloat>(m_sample_rate)
-            );
+            m_rate = m_sample_duration * utility::clip<MdFloat>(frequency, 0, m_sample_rate);
         }
 
         MdFloat perform(void) noexcept override final;

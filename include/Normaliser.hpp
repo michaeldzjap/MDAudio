@@ -44,9 +44,7 @@ namespace md_audio {
     };
 
     void Normaliser::set_amplitude(MdFloat amplitude) noexcept {
-        m_amplitude = utility::clip(
-            amplitude, static_cast<MdFloat>(0), static_cast<MdFloat>(1)
-        );
+        m_amplitude = utility::clip<MdFloat>(amplitude, 0, 1);
     }
 
 }

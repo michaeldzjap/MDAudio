@@ -31,8 +31,8 @@ namespace md_audio {
     };
 
     void Oscillator::set_frequency(MdFloat frequency) noexcept {
-        m_frequency_rate = m_cycles_to_increment * utility::clip(
-            static_cast<double>(frequency), -m_half_sample_rate, m_half_sample_rate
+        m_frequency_rate = m_cycles_to_increment * utility::clip<double>(
+            frequency, -m_half_sample_rate, m_half_sample_rate
         );
     }
 
