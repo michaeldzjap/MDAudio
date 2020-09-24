@@ -9,7 +9,7 @@ TapDelay::TapDelay(
     std::size_t taps,
     InterpolationType interpolation_type
 ) :
-    m_max_delay(compute_max_delay(max_delay, interpolation_type)),
+    m_max_delay(utility::ceil(m_sample_rate * max_delay)),
     m_taps(taps),
     m_pool(pool),
     m_buffer(pool, m_max_delay),
@@ -93,20 +93,6 @@ MdFloat TapDelay::read_linear(std::size_t index) noexcept {
 
 MdFloat TapDelay::read_cubic(std::size_t index) noexcept {
     return m_reader_cubic.read(m_writer, m_delay[index], m_frac[index]);
-}
-
-std::uint32_t TapDelay::compute_max_delay(
-    MdFloat max_delay,
-    InterpolationType interpolation_type
-) noexcept {
-    switch (interpolation_type) {
-        case InterpolationType::none:
-            return static_cast<std::uint32_t>(m_sample_rate * max_delay) + 1;
-        case InterpolationType::linear:
-            return static_cast<std::uint32_t>(m_sample_rate * max_delay) + 2;
-        default:
-            return static_cast<std::uint32_t>(m_sample_rate * max_delay) + 3;
-    }
 }
 
 TapDelay::~TapDelay() {

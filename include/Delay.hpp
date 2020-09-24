@@ -42,8 +42,6 @@ namespace md_audio {
         MdFloat perform_linear(MdFloat) noexcept;
 
         MdFloat perform_cubic(MdFloat) noexcept;
-
-        std::uint32_t compute_max_delay(MdFloat, InterpolationType) noexcept;
     };
 
     void Delay::set_delay(MdFloat delay) noexcept {

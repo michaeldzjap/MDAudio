@@ -1,5 +1,4 @@
 #include "Buffer.hpp"
-#include "utility.hpp"
 #include <cstring>
 
 using md_audio::Buffer;
@@ -19,11 +18,11 @@ void Buffer::initialise() {
 }
 
 MdFloat& Buffer::operator[] (std::size_t index) noexcept {
-    return m_memory[utility::clip<std::size_t>(index, 0, m_size)];
+    return m_memory[index];
 }
 
 const MdFloat& Buffer::operator[] (std::size_t index) const noexcept {
-    return m_memory[utility::clip<std::size_t>(index, 0, m_size)];
+    return m_memory[index];
 }
 
 Buffer::~Buffer() {

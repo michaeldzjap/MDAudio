@@ -8,7 +8,7 @@ Delay::Delay(
     MdFloat max_delay,
     InterpolationType interpolation_type
 ) :
-    m_max_delay(compute_max_delay(max_delay, interpolation_type)),
+    m_max_delay(utility::ceil(m_sample_rate * max_delay)),
     m_buffer(pool, m_max_delay),
     m_reader(m_buffer, m_max_delay - 1),
     m_reader_linear(m_buffer, m_max_delay - 1),
@@ -24,7 +24,7 @@ Delay::Delay(
     MdFloat delay,
     InterpolationType interpolation_type
 ) :
-    m_max_delay(compute_max_delay(max_delay, interpolation_type)),
+    m_max_delay(utility::ceil(m_sample_rate * max_delay)),
     m_buffer(pool, m_max_delay),
     m_reader(m_buffer, m_max_delay - 1),
     m_reader_linear(m_buffer, m_max_delay - 1),
@@ -74,18 +74,4 @@ MdFloat Delay::perform_cubic(MdFloat in) noexcept {
     m_writer.write(in);
 
     return z;
-}
-
-std::uint32_t Delay::compute_max_delay(
-    MdFloat max_delay,
-    InterpolationType interpolation_type
-) noexcept {
-    switch (interpolation_type) {
-        case InterpolationType::none:
-            return utility::ceil(m_sample_rate * max_delay);
-        case InterpolationType::linear:
-            return utility::ceil(m_sample_rate * max_delay) + 1;
-        default:
-            return utility::ceil(m_sample_rate * max_delay) + 2;
-    }
 }

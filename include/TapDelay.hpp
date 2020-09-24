@@ -58,8 +58,6 @@ namespace md_audio {
         MdFloat read_linear(std::size_t) noexcept;
 
         MdFloat read_cubic(std::size_t) noexcept;
-
-        std::uint32_t compute_max_delay(MdFloat, InterpolationType) noexcept;
     };
 
     void TapDelay::set_delay(std::size_t index, MdFloat delay) noexcept {
