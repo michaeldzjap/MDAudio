@@ -2,34 +2,30 @@
 #define MD_AUDIO_WRITER_HPP
 
 #include "Buffer.hpp"
-#include "types.hpp"
-#include <cstdint>
 
 namespace md_audio {
 
-    class Reader;
-
-    class ReaderCubic;
-
-    class ReaderLinear;
-
+    template <class Allocator>
     class Writer {
     public:
-        explicit Writer(Buffer&, std::size_t);
+        explicit Writer(Buffer<Allocator>& buffer) :
+            m_buffer(buffer),
+            m_mask(buffer.m_size - 1),
+            m_write_index(0)
+        {}
 
-        explicit Writer(Buffer&, std::size_t, std::size_t);
+        void write(MdFloat in) noexcept {
+            m_buffer[m_write_index] = in;
 
-        void write(MdFloat) noexcept;
+            m_write_index = (m_write_index + 1) & m_mask;
+        }
 
     private:
-        Buffer& m_buffer;
-        std::size_t m_lower_bound = 0;
-        std::size_t m_upper_bound;
-        std::size_t m_write_index = 0;
+        Buffer<Allocator>& m_buffer;
+        std::size_t m_mask;
+        std::size_t m_write_index;
 
-        friend class Reader;
-        friend class ReaderCubic;
-        friend class ReaderLinear;
+        template <class> friend class Delay;
     };
 
 }

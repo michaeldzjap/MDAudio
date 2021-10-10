@@ -1,3 +1,6 @@
 [submodule "vendor/catch2"]
 	path = vendor/catch2
 	url = https://github.com/catchorg/Catch2.git
+[submodule "vendor/fakeit"]
+	path = vendor/fakeit
+	url = https://github.com/eranpeer/FakeIt.git

@@ -13,6 +13,9 @@ namespace md_audio::utility {
     using IsFloat = std::enable_if_t<std::is_floating_point<T>::value, T>;
 
     template <typename T>
+    using IsInt = std::enable_if_t<std::is_integral<T>::value, T>;
+
+    template <typename T>
     using IsFloatOrInt = std::enable_if_t<std::is_floating_point<T>::value || std::is_integral<T>::value, T>;
 
     template <typename T>
@@ -168,19 +171,20 @@ namespace md_audio::utility {
         return ((c3 * x + c2) * x + c1) * x + c0;
     }
 
-    inline constexpr int next_power_of_two(int n) noexcept {
-        n--;
+    template <typename T>
+    inline constexpr IsInt<T> next_power_of_two(T n) noexcept {
+        if (n < 2) return 2;
 
-        const std::size_t bitspace = sizeof(int) * 8 / 2;
+        std::size_t i = 1;
 
-        for (std::size_t i = 1; i != bitspace; i *= 2)
-            n = n | (n >> i);
+        for (n--; i < sizeof(n) * 8; i <<= 1)
+            n |= n >> i;
 
-        return n + 1;
+        return ++n;
     }
 
     template <typename T>
-    inline constexpr IsFloat<T> lookup(const std::array<T, table_size + 1> &table, double phase) noexcept {
+    inline constexpr IsFloat<T> lookup(const std::array<T, TABLE_SIZE + 1> &table, double phase) noexcept {
         auto index = static_cast<std::uint32_t>(phase);
         double frac = phase - static_cast<double>(index);
         auto y0 = table[index];

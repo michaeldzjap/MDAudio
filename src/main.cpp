@@ -1,39 +1,39 @@
-#include "AllpassCubic.hpp"
-#include "AllpassLinear.hpp"
-#include "AllpassStatic.hpp"
+// #include "AllpassCubic.hpp"
+// #include "AllpassLinear.hpp"
+// #include "AllpassStatic.hpp"
 #include "Delay.hpp"
-#include "DelayCubic.hpp"
-#include "DelayLinear.hpp"
-#include "DelayStatic.hpp"
-#include "HannOscillator.hpp"
-#include "InterpolationType.hpp"
-#include "Latch.hpp"
-#include "Normaliser.hpp"
-#include "Phasor.hpp"
-#include "PitchShifter.hpp"
-#include "Reverb.hpp"
-#include "ReverbConfig.hpp"
-#include "ReverseDelay.hpp"
-#include "ReversibleDelay.hpp"
-#include "SampleRate.hpp"
-#include "TapDelay.hpp"
-#include "TapDelayCubic.hpp"
-#include "TapDelayLinear.hpp"
-#include "TapDelayStatic.hpp"
-#include "VariableDelay.hpp"
-#include "WhiteNoise.hpp"
-#include "constants.hpp"
-#include "memory/StaticPool.hpp"
-#include "types.hpp"
-#include <iomanip>
-#include <iostream>
-
-template <std::size_t Size>
-using Pool = md_audio::memory::StaticPool<Size>;
+// #include "DelayCubic.hpp"
+// #include "DelayLinear.hpp"
+// #include "DelayStatic.hpp"
+// #include "HannOscillator.hpp"
+// #include "InterpolationType.hpp"
+// #include "Latch.hpp"
+// #include "Normaliser.hpp"
+// #include "Phasor.hpp"
+// #include "PitchShifter.hpp"
+// #include "Reverb.hpp"
+// #include "ReverbConfig.hpp"
+// #include "ReverseDelay.hpp"
+// #include "ReversibleDelay.hpp"
+// #include "SampleRate.hpp"
+// #include "TapDelay.hpp"
+// #include "TapDelayCubic.hpp"
+// #include "TapDelayLinear.hpp"
+// #include "TapDelayStatic.hpp"
+// #include "VariableDelay.hpp"
+// #include "WhiteNoise.hpp"
+// #include "constants.hpp"
+// #include "memory/StaticPool.hpp"
+// #include "types.hpp"
+// #include <iomanip>
+// #include <iostream>
+//
+// template <std::size_t Size>
+// using Pool = md_audio::memory::StaticPool<Size>;
 
 int main() {
-    std::cout << std::fixed;
-    std::cout << std::setprecision(9);
+    // std::cout << std::fixed;
+    // std::cout << std::setprecision(9);
 
     // md_audio::TapDelay::set_sample_rate(44100.);
     // std::cout << md_audio::Reverb::get_sample_rate() << std::endl;
@@ -47,15 +47,15 @@ int main() {
     // Pool<TOTAL_SIZE> pool;
 
     // Tap Delay
-    constexpr auto MAX_DELAY_TIME = static_cast<md_audio::MdFloat>(.001);
-    constexpr auto MAX_DELAY_SAMPLES = static_cast<std::uint32_t>(MAX_DELAY_TIME * md_audio::sample_rate) + 2;
-    constexpr auto MAX_DELAY_SIZE = MAX_DELAY_SAMPLES * sizeof(md_audio::MdFloat);
-    constexpr auto TAPS = 4;
-    constexpr auto TAPS_SIZE = TAPS * (sizeof(std::uint32_t) + sizeof(md_audio::MdFloat));
-    constexpr auto TOTAL_SIZE = MAX_DELAY_SIZE + TAPS_SIZE;
-    constexpr md_audio::MdFloat DELAY_TIMES[TAPS] = {0.002, 0.0005, 0.00007, 0.000251};
-
-    Pool<TOTAL_SIZE> pool;
+    // constexpr auto MAX_DELAY_TIME = static_cast<md_audio::MdFloat>(.001);
+    // constexpr auto MAX_DELAY_SAMPLES = static_cast<std::uint32_t>(MAX_DELAY_TIME * md_audio::sample_rate) + 2;
+    // constexpr auto MAX_DELAY_SIZE = MAX_DELAY_SAMPLES * sizeof(md_audio::MdFloat);
+    // constexpr auto TAPS = 4;
+    // constexpr auto TAPS_SIZE = TAPS * (sizeof(std::uint32_t) + sizeof(md_audio::MdFloat));
+    // constexpr auto TOTAL_SIZE = MAX_DELAY_SIZE + TAPS_SIZE;
+    // constexpr md_audio::MdFloat DELAY_TIMES[TAPS] = {0.002, 0.0005, 0.00007, 0.000251};
+    //
+    // Pool<TOTAL_SIZE> pool;
 
     // // Normaliser
     // constexpr auto DURATION_TIME = static_cast<md_audio::MdFloat>(.1);
@@ -130,7 +130,7 @@ int main() {
     // md_audio::DelayCubic delay(pool, MAX_DELAY_TIME, DELAY_TIME);
     // md_audio::Delay delay(pool, MAX_DELAY_TIME, DELAY_TIME, md_audio::InterpolationType::cubic);
     // md_audio::TapDelayLinear delay(pool, MAX_DELAY_TIME, TAPS);
-    md_audio::TapDelay delay(pool, MAX_DELAY_TIME, TAPS, static_cast<md_audio::InterpolationType>(0));
+    // md_audio::TapDelay delay(pool, MAX_DELAY_TIME, TAPS, static_cast<md_audio::InterpolationType>(0));
     // md_audio::TapDelayCubic delay(pool, MAX_DELAY_TIME, TAPS);
     // md_audio::ReverseDelay delay(pool, MAX_DELAY_TIME, SIZE_TIME, OVERLAP);
     // md_audio::ReversibleDelay delay(pool, MAX_DELAY_TIME, SIZE_TIME, true, OVERLAP);
@@ -138,38 +138,40 @@ int main() {
     // md_audio::PitchShifter shifter(pool, MAX_SIZE_TIME, SIZE_TIME, OVERLAP);
     // md_audio::VariableDelay delay(pool, MAX_DELAY_TIME, DELAY_TIME, DELAY_TIME, OVERLAP);
     // md_audio::Reverb reverb(pool);
-    md_audio::WhiteNoise noise;
+    // md_audio::WhiteNoise noise;
 
-    delay.set_delay(DELAY_TIMES);
+    // delay.set_delay(DELAY_TIMES);
     // reverb.set_mix(1.f);
     // reverb.set_absorb(0.f);
     // reverb.set_shimmer(1.f);
 
-    for (std::size_t i = 0; i < 441; ++i) {
-        md_audio::MdFloat z[TAPS];
+    // for (std::size_t i = 0; i < 441; ++i) {
+    //     md_audio::MdFloat z[TAPS];
+    //
+    //     // const auto y = noise.perform();
+    //     const auto y = 1.f;
+    //     // const auto z = normaliser.perform(y);
+    //     delay.perform(y, z, TAPS);
+    //     // delay.set_delay((y * .5 + .5) * ((.3 - .2) + .2) * md_audio::sample_rate);
+    //     // const auto z = delay.perform(y);
+    //     // const auto z = allpass.perform(y);
+    //     // const auto z = shifter.perform(y);
+    //     // const auto z = 1;
+    //     // const auto z = reverb.perform(y);
+    //
+    //     // std::cout << i << "\t" << y << "\t" << z << std::endl;
+    //     // std::cout << i << "\t" << y << "\t" << z[0] << "\t" << z[1] << std::endl;
+    //
+    //     std::cout << i << "\t";
+    //
+    //     for (auto i = 0; i < TAPS; ++i)
+    //         // std::cout << delay.read(i) << ", ";
+    //         std::cout << z[i] << ", ";
+    //
+    //     std::cout << std::endl;
+    //
+    //     // delay.write(y);
+    // }
 
-        // const auto y = noise.perform();
-        const auto y = 1.f;
-        // const auto z = normaliser.perform(y);
-        delay.perform(y, z, TAPS);
-        // delay.set_delay((y * .5 + .5) * ((.3 - .2) + .2) * md_audio::sample_rate);
-        // const auto z = delay.perform(y);
-        // const auto z = allpass.perform(y);
-        // const auto z = shifter.perform(y);
-        // const auto z = 1;
-        // const auto z = reverb.perform(y);
-
-        // std::cout << i << "\t" << y << "\t" << z << std::endl;
-        // std::cout << i << "\t" << y << "\t" << z[0] << "\t" << z[1] << std::endl;
-
-        std::cout << i << "\t";
-
-        for (auto i = 0; i < TAPS; ++i)
-            // std::cout << delay.read(i) << ", ";
-            std::cout << z[i] << ", ";
-
-        std::cout << std::endl;
-
-        // delay.write(y);
-    }
+    return 0;
 }

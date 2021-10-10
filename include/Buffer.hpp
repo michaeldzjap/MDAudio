@@ -1,28 +1,51 @@
 #ifndef MD_AUDIO_BUFFER_HPP
 #define MD_AUDIO_BUFFER_HPP
 
-#include "interfaces/Poolable.hpp"
+#include <cstddef>
+#include <cstring>
 #include "types.hpp"
-#include <cstdint>
 
 namespace md_audio {
 
+    template <class Allocator>
     class Buffer {
     public:
-        explicit Buffer(memory::Poolable&, std::size_t);
+        explicit Buffer(Allocator& allocator, std::size_t size) :
+            m_allocator(allocator),
+            m_size(size)
+        {}
 
-        MdFloat& operator[] (std::size_t) noexcept;
+        bool initialise() noexcept {
+            m_memory = m_allocator.allocate(m_size);
 
-        const MdFloat& operator[] (std::size_t) const noexcept;
+            if (!m_memory)
+                return false;
 
-        ~Buffer();
+            std::memset(m_memory, 0, m_size * sizeof(MdFloat));
+
+            return true;
+        }
+
+        MdFloat& operator[] (std::size_t index) noexcept {
+            return m_memory[index];
+        }
+
+        const MdFloat& operator[] (std::size_t index) const noexcept {
+            return m_memory[index];
+        }
+
+        ~Buffer() {
+            if (m_memory)
+                m_allocator.deallocate(m_memory);
+        }
 
     private:
-        memory::Poolable& m_pool;
-        MdFloat* m_memory = nullptr;
+        Allocator& m_allocator;
         const std::size_t m_size;
+        MdFloat* m_memory = nullptr;
 
-        void initialise();
+        template <class> friend class Reader;
+        template <class> friend class Writer;
     };
 
 }

@@ -1,55 +1,64 @@
 #ifndef MD_AUDIO_DELAY_HPP
 #define MD_AUDIO_DELAY_HPP
 
+#include <cstddef>
 #include "Buffer.hpp"
-#include "InterpolationType.hpp"
 #include "Reader.hpp"
-#include "ReaderCubic.hpp"
-#include "ReaderLinear.hpp"
-#include "SampleRate.hpp"
-#include "Writer.hpp"
-#include "interfaces/Processable.hpp"
+#include "Unit.hpp"
 #include "utility.hpp"
+#include "Writer.hpp"
+
+using md_audio::utility::clip;
+using md_audio::utility::next_power_of_two;
 
 namespace md_audio {
 
-    class Delay : public SampleRate, public Processable<MdFloat, MdFloat> {
+    template <class Allocator>
+    class Delay : public Unit {
     public:
-        explicit Delay(memory::Poolable&, MdFloat, InterpolationType = InterpolationType::none);
+        explicit Delay(Allocator &allocator, MdFloat max_delay) :
+            m_max_delay(m_sample_rate * max_delay),
+            m_buffer(allocator, next_power_of_two(m_max_delay)),
+            m_reader(m_buffer),
+            m_writer(m_buffer)
+        {
+            set_delay(.0);
+        }
 
-        explicit Delay(memory::Poolable&, MdFloat, MdFloat, InterpolationType = InterpolationType::none);
+        explicit Delay(Allocator &allocator, MdFloat max_delay, MdFloat delay) :
+            m_max_delay(m_sample_rate * max_delay),
+            m_buffer(allocator, next_power_of_two(m_max_delay)),
+            m_reader(m_buffer),
+            m_writer(m_buffer)
+        {
+            set_delay(delay);
+        }
 
-        inline void set_delay(MdFloat) noexcept;
+        bool initialise() noexcept {
+            return m_buffer.initialise();
+        }
 
-        MdFloat perform(MdFloat) noexcept override final;
+        void set_delay(MdFloat delay) noexcept {
+            delay = clip<MdFloat>(m_sample_rate * delay, 1, m_max_delay);
+
+            m_delay = static_cast<std::uint32_t>(delay);
+        }
+
+        MdFloat process(MdFloat in) noexcept {
+            auto z = m_reader.read(m_writer.m_write_index - m_delay);
+
+            m_writer.write(in);
+
+            return z;
+        }
 
     private:
-        const std::uint32_t m_max_delay;
+        std::uint32_t m_max_delay;
         std::uint32_t m_delay;
-        MdFloat m_frac;
-        Buffer m_buffer;
-        Reader m_reader;
-        ReaderLinear m_reader_linear;
-        ReaderCubic m_reader_cubic;
-        Writer m_writer;
-
-        void initialise(MdFloat, InterpolationType) noexcept;
-
-        MdFloat (Delay::*perform_function)(MdFloat) noexcept;
-
-        MdFloat perform_static(MdFloat) noexcept;
-
-        MdFloat perform_linear(MdFloat) noexcept;
-
-        MdFloat perform_cubic(MdFloat) noexcept;
+        Buffer<Allocator> m_buffer;
+        Reader<Allocator> m_reader;
+        Writer<Allocator> m_writer;
     };
-
-    void Delay::set_delay(MdFloat delay) noexcept {
-        delay = utility::clip<MdFloat>(m_sample_rate * delay, 1, m_max_delay);
-
-        m_delay = static_cast<std::uint32_t>(delay);
-        m_frac = delay - static_cast<MdFloat>(m_delay);
-    }
 
 }
 

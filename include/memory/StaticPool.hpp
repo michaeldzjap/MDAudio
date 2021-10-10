@@ -1,18 +1,17 @@
 #ifndef MD_AUDIO_STATIC_POOL_HPP
 #define MD_AUDIO_STATIC_POOL_HPP
 
-#include "interfaces/Poolable.hpp"
-#include "interfaces/Uncopyable.hpp"
+#include <cstddef>
 #include <cstdint>
 
 namespace md_audio::memory {
 
     template <std::size_t TOTAL_SIZE>
-    class StaticPool : private util::Uncopyable, public Poolable {
+    class StaticPool {
     public:
         explicit StaticPool();
 
-        void* allocate(std::size_t size);
+        void* allocate(std::size_t size) noexcept;
 
         void deallocate(void* ptr) noexcept;
 
@@ -25,7 +24,7 @@ namespace md_audio::memory {
     StaticPool<TOTAL_SIZE>::StaticPool() : m_ptr(&m_buffer[0]) {}
 
     template <std::size_t TOTAL_SIZE>
-    void* StaticPool<TOTAL_SIZE>::allocate(std::size_t size) {
+    void* StaticPool<TOTAL_SIZE>::allocate(std::size_t size) noexcept {
         if (static_cast<std::uint32_t>(m_ptr + size - &m_buffer[0]) > TOTAL_SIZE)
             return nullptr;
 
