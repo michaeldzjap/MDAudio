@@ -21,7 +21,8 @@ TEST_CASE("readers can read the contents of a buffer", "[Reader]") {
 
     Reader<StaticAllocator<MdFloat, StaticPool<POOL_SIZE>>> reader(buffer);
 
-    buffer.initialise();
+    REQUIRE(buffer.initialise());
+
     buffer[0] = 1.;
 
     REQUIRE(reader.read(0) == 1.);

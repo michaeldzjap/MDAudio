@@ -37,32 +37,6 @@ namespace md_audio::utility {
         return value;
     }
 
-    inline constexpr std::int32_t ceil(const float value) noexcept {
-        return static_cast<float>(static_cast<std::int32_t>(value)) == value
-            ? static_cast<std::int32_t>(value)
-            : static_cast<std::int32_t>(value) + (value > 0 ? 1 : 0);
-    }
-
-    inline constexpr std::int32_t ceil(const double value) noexcept {
-        return static_cast<double>(static_cast<std::int32_t>(value)) == value
-            ? static_cast<std::int32_t>(value)
-            : static_cast<std::int32_t>(value) + (value > 0 ? 1 : 0);
-    }
-
-    template <typename T>
-    inline constexpr IsFloat<T> ceil(const float value) noexcept {
-        return static_cast<float>(static_cast<std::int32_t>(value)) == value
-            ? static_cast<T>(value)
-            : static_cast<T>(value) + static_cast<T>(value > 0 ? 1 : 0);
-    }
-
-    template <typename T>
-    inline constexpr IsFloat<T> ceil(const double value) noexcept {
-        return static_cast<double>(static_cast<std::int32_t>(value)) == value
-            ? static_cast<T>(value)
-            : static_cast<T>(value) + static_cast<T>(value > 0 ? 1 : 0);
-    }
-
     inline constexpr auto wrap(std::int32_t value, const std::int32_t lo, const std::int32_t hi) noexcept {
         auto range = hi - lo + 1;
 
@@ -195,7 +169,7 @@ namespace md_audio::utility {
 
     template <typename T>
     inline constexpr double seconds_to_samples(const T delay_time, const T sample_rate) noexcept {
-        return utility::ceil(delay_time * sample_rate);
+        return static_cast<T>(ceil(delay_time * sample_rate));
     }
 
     template <typename T, std::size_t N>

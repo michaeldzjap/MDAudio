@@ -1,9 +1,16 @@
 #include <catch2/catch_test_macros.hpp>
 #include "utility.hpp"
 
+using md_audio::utility::clip;
 using md_audio::utility::next_power_of_two;
 
-TEST_CASE("next power of two is computed", "[next_power_of_two]") {
+TEST_CASE("clipped values are computed", "[clip]") {
+    REQUIRE(clip(0, 1, 2) == 1);
+    REQUIRE(clip(3, 1, 2) == 2);
+    REQUIRE(clip(1.5, 1.6, 1.8) == 1.6);
+    REQUIRE(clip<double>(3.4, 2, 3) == 3.);
+}
+TEST_CASE("next powers of two are computed", "[next_power_of_two]") {
     REQUIRE(next_power_of_two(0) == 2);
     REQUIRE(next_power_of_two(1) == 2);
     REQUIRE(next_power_of_two(2) == 2);

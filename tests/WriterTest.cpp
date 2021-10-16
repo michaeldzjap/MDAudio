@@ -21,7 +21,7 @@ TEST_CASE("writers can write content to a buffer", "[Writer]") {
 
     Writer<StaticAllocator<MdFloat, StaticPool<POOL_SIZE>>> writer(buffer);
 
-    buffer.initialise();
+    REQUIRE(buffer.initialise());
 
     for (auto i = 0; i < SIZE; i++) {
         writer.write(i);
