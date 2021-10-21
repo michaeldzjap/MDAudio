@@ -45,6 +45,7 @@ namespace md_audio {
         MdFloat* m_memory = nullptr;
 
         template <class> friend class Reader;
+        template <class> friend class ReaderLinear;
         template <class> friend class Writer;
     };
 

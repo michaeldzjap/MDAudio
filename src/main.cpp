@@ -1,39 +1,54 @@
-// #include "AllpassCubic.hpp"
-// #include "AllpassLinear.hpp"
-// #include "AllpassStatic.hpp"
-#include "Delay.hpp"
-// #include "DelayCubic.hpp"
-// #include "DelayLinear.hpp"
-// #include "DelayStatic.hpp"
-// #include "HannOscillator.hpp"
-// #include "InterpolationType.hpp"
-// #include "Latch.hpp"
-// #include "Normaliser.hpp"
-// #include "Phasor.hpp"
-// #include "PitchShifter.hpp"
-// #include "Reverb.hpp"
-// #include "ReverbConfig.hpp"
-// #include "ReverseDelay.hpp"
-// #include "ReversibleDelay.hpp"
-// #include "SampleRate.hpp"
-// #include "TapDelay.hpp"
-// #include "TapDelayCubic.hpp"
-// #include "TapDelayLinear.hpp"
-// #include "TapDelayStatic.hpp"
-// #include "VariableDelay.hpp"
-// #include "WhiteNoise.hpp"
-// #include "constants.hpp"
-// #include "memory/StaticPool.hpp"
-// #include "types.hpp"
-// #include <iomanip>
-// #include <iostream>
-//
-// template <std::size_t Size>
-// using Pool = md_audio::memory::StaticPool<Size>;
+#include "DelayLinear.hpp"
+#include "memory/StaticAllocator.hpp"
+#include "memory/StaticPool.hpp"
+#include "types.hpp"
+#include "utility.hpp"
+#include <iomanip>
+#include <iostream>
+
+using md_audio::DelayLinear;
+using md_audio::MdFloat;
+using md_audio::memory::StaticAllocator;
+using md_audio::memory::StaticPool;
+using md_audio::utility::next_power_of_two;
+
+template <std::size_t SIZE>
+using Pool = md_audio::memory::StaticPool<SIZE>;
+
+template <typename Pool>
+using Allocator = md_audio::memory::StaticAllocator<MdFloat, Pool>;
 
 int main() {
-    // std::cout << std::fixed;
-    // std::cout << std::setprecision(9);
+    std::cout << std::fixed;
+    std::cout << std::setprecision(9);
+
+    constexpr auto SAMPLE_RATE = 44100;
+    constexpr auto MAX_DELAY_TIME = 1.;
+    constexpr auto POOL_SIZE = next_power_of_two(
+        static_cast<std::uint32_t>(SAMPLE_RATE * MAX_DELAY_TIME * sizeof(MdFloat))
+    );
+
+    Pool<POOL_SIZE> pool;
+    Allocator<Pool<POOL_SIZE>> allocator(&pool);
+
+    auto delay_time = .001;
+
+    DelayLinear<Allocator<Pool<POOL_SIZE>>> delay(allocator, MAX_DELAY_TIME, delay_time);
+
+    delay.initialise();
+
+    for (std::size_t i = 0; i < 44; ++i)
+        std::cout << i << "\t" << delay.process(1.) << std::endl;
+
+    std::cout << 44 << "\t" << delay.process(1.) << std::endl;
+
+    delay.set_delay_time(.0005);
+
+    for (std::size_t i = 0; i < 22; ++i)
+        std::cout << 45 + i << "\t" << delay.process(.5) << std::endl;
+
+    std::cout << 67 << "\t" << delay.process(.5) << std::endl;
+    std::cout << 68 << "\t" << delay.process(.5) << std::endl;
 
     // md_audio::TapDelay::set_sample_rate(44100.);
     // std::cout << md_audio::Reverb::get_sample_rate() << std::endl;

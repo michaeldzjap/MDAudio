@@ -3,7 +3,6 @@
 
 #include <cstddef>
 #include "Buffer.hpp"
-#include "types.hpp"
 
 using md_audio::Buffer;
 
