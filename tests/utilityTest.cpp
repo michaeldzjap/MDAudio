@@ -4,6 +4,7 @@
 
 using Catch::Approx;
 using md_audio::utility::clip;
+using md_audio::utility::cubic_interp;
 using md_audio::utility::linear_interp;
 using md_audio::utility::next_power_of_two;
 
@@ -12,6 +13,11 @@ TEST_CASE("clipped values are computed", "[clip]") {
     REQUIRE(clip(3, 1, 2) == 2);
     REQUIRE(clip(1.5, 1.6, 1.8) == 1.6);
     REQUIRE(clip<double>(3.4, 2, 3) == 3.);
+}
+TEST_CASE("cubic interpolated values are computed", "[cubic_interp]") {
+    REQUIRE(cubic_interp(.0, .1, .2, .3, .4) == .2);
+    REQUIRE(cubic_interp(.5, .1, .2, .3, .4) == .25);
+    REQUIRE(cubic_interp(.5, .4, .3, .2, .1) == .25);
 }
 TEST_CASE("linear interpolated values are computed", "[linear_interp]") {
     REQUIRE(linear_interp(.0, .1, .2) == .1);

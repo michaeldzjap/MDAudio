@@ -138,9 +138,9 @@ namespace md_audio::utility {
     template <typename T>
     inline constexpr IsFloat<T> cubic_interp(const T x, const T y0, const T y1, const T y2, const T y3) noexcept {
         auto c0 = y1;
-        auto c1 = static_cast<T>(.5) * (y2 - y0);
-        auto c2 = y0 - static_cast<T>(2.5) * y1 + static_cast<T>(2.) * y2 - static_cast<T>(.5) * y3;
-        auto c3 = static_cast<T>(.5) * (y3 - y0) + static_cast<T>(1.5) * (y1 - y2);
+        auto c1 = .5 * (y2 - y0);
+        auto c2 = y0 - 2.5 * y1 + 2. * y2 - .5 * y3;
+        auto c3 = .5 * (y3 - y0) + 1.5 * (y1 - y2);
 
         return ((c3 * x + c2) * x + c1) * x + c0;
     }

@@ -1,4 +1,4 @@
-#include "DelayLinear.hpp"
+#include "DelayCubic.hpp"
 #include "memory/StaticAllocator.hpp"
 #include "memory/StaticPool.hpp"
 #include "types.hpp"
@@ -6,7 +6,7 @@
 #include <iomanip>
 #include <iostream>
 
-using md_audio::DelayLinear;
+using md_audio::DelayCubic;
 using md_audio::MdFloat;
 using md_audio::memory::StaticAllocator;
 using md_audio::memory::StaticPool;
@@ -33,7 +33,7 @@ int main() {
 
     auto delay_time = .001;
 
-    DelayLinear<Allocator<Pool<POOL_SIZE>>> delay(allocator, MAX_DELAY_TIME, delay_time);
+    DelayCubic<Allocator<Pool<POOL_SIZE>>> delay(allocator, MAX_DELAY_TIME, delay_time);
 
     delay.initialise();
 
@@ -49,6 +49,7 @@ int main() {
 
     std::cout << 67 << "\t" << delay.process(.5) << std::endl;
     std::cout << 68 << "\t" << delay.process(.5) << std::endl;
+    std::cout << 69 << "\t" << delay.process(.5) << std::endl;
 
     // md_audio::TapDelay::set_sample_rate(44100.);
     // std::cout << md_audio::Reverb::get_sample_rate() << std::endl;

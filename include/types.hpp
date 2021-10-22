@@ -3,7 +3,7 @@
 
 namespace md_audio {
 
-    using MdFloat = float;
+    using MdFloat = double;
 
 }
 

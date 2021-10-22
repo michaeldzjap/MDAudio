@@ -26,6 +26,7 @@ namespace md_audio {
         std::size_t m_write_index;
 
         template <class> friend class Delay;
+        template <class> friend class DelayCubic;
         template <class> friend class DelayLinear;
     };
 
