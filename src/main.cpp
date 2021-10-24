@@ -1,13 +1,11 @@
 #include "DelayCubic.hpp"
 #include "memory/StaticAllocator.hpp"
 #include "memory/StaticPool.hpp"
-#include "types.hpp"
 #include "utility.hpp"
 #include <iomanip>
 #include <iostream>
 
 using md_audio::DelayCubic;
-using md_audio::MdFloat;
 using md_audio::memory::StaticAllocator;
 using md_audio::memory::StaticPool;
 using md_audio::utility::next_power_of_two;
@@ -16,7 +14,7 @@ template <std::size_t SIZE>
 using Pool = md_audio::memory::StaticPool<SIZE>;
 
 template <typename Pool>
-using Allocator = md_audio::memory::StaticAllocator<MdFloat, Pool>;
+using Allocator = md_audio::memory::StaticAllocator<double, Pool>;
 
 int main() {
     std::cout << std::fixed;
@@ -25,7 +23,7 @@ int main() {
     constexpr auto SAMPLE_RATE = 44100;
     constexpr auto MAX_DELAY_TIME = 1.;
     constexpr auto POOL_SIZE = next_power_of_two(
-        static_cast<std::uint32_t>(SAMPLE_RATE * MAX_DELAY_TIME * sizeof(MdFloat))
+        static_cast<std::uint32_t>(SAMPLE_RATE * MAX_DELAY_TIME * sizeof(double))
     );
 
     Pool<POOL_SIZE> pool;

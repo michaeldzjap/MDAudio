@@ -3,7 +3,6 @@
 
 #include <cstddef>
 #include "Buffer.hpp"
-#include "types.hpp"
 #include "utility.hpp"
 
 using md_audio::Buffer;
@@ -19,7 +18,7 @@ namespace md_audio {
             m_mask(m_buffer.m_size - 1)
         {}
 
-        MdFloat read(std::size_t read_index, MdFloat frac) const noexcept {
+        double read(std::size_t read_index, double frac) const noexcept {
             auto phase_a = read_index & m_mask;
             auto phase_b = (phase_a - 1) & m_mask;
 

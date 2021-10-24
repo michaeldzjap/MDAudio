@@ -4,7 +4,7 @@
 using md_audio::memory::StaticPool;
 
 TEST_CASE("static pools can allocate and deallocate memory", "[StaticPool]") {
-    constexpr auto SIZE = 1024 * sizeof(float);
+    constexpr auto SIZE = 1024 * sizeof(double);
 
     StaticPool<SIZE> pool;
 

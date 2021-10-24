@@ -7,10 +7,10 @@ using md_audio::memory::StaticPool;
 
 TEST_CASE("static allocators can allocate and deallocate memory", "[StaticAllocator]") {
     constexpr auto SIZE = 1024;
-    constexpr auto POOL_SIZE = SIZE * sizeof(float);
+    constexpr auto POOL_SIZE = SIZE * sizeof(double);
 
     StaticPool<POOL_SIZE> pool;
-    StaticAllocator<float, StaticPool<POOL_SIZE>> allocator(&pool);
+    StaticAllocator<double, StaticPool<POOL_SIZE>> allocator(&pool);
 
     auto block_a = allocator.allocate(SIZE);
 

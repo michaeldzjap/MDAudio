@@ -3,23 +3,21 @@
 #include "memory/StaticAllocator.hpp"
 #include "memory/StaticPool.hpp"
 #include "ReaderCubic.hpp"
-#include "types.hpp"
 
 using md_audio::Buffer;
-using md_audio::MdFloat;
 using md_audio::ReaderCubic;
 using md_audio::memory::StaticAllocator;
 using md_audio::memory::StaticPool;
 
 TEST_CASE("cubicly interpolated readers can read the contents of a buffer", "[ReaderCubic]") {
     constexpr auto SIZE = 1024;
-    constexpr auto POOL_SIZE = SIZE * sizeof(MdFloat);
+    constexpr auto POOL_SIZE = SIZE * sizeof(double);
 
     StaticPool<POOL_SIZE> pool;
-    StaticAllocator<MdFloat, StaticPool<POOL_SIZE>> allocator(&pool);
-    Buffer<StaticAllocator<MdFloat, StaticPool<POOL_SIZE>>> buffer(allocator, SIZE);
+    StaticAllocator<double, StaticPool<POOL_SIZE>> allocator(&pool);
+    Buffer<StaticAllocator<double, StaticPool<POOL_SIZE>>> buffer(allocator, SIZE);
 
-    ReaderCubic<StaticAllocator<MdFloat, StaticPool<POOL_SIZE>>> reader(buffer);
+    ReaderCubic<StaticAllocator<double, StaticPool<POOL_SIZE>>> reader(buffer);
 
     REQUIRE(buffer.initialise());
 

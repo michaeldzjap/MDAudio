@@ -16,7 +16,7 @@ namespace md_audio {
             m_mask(m_buffer.m_size - 1)
         {}
 
-        MdFloat read(std::size_t read_index) const noexcept {
+        double read(std::size_t read_index) const noexcept {
             return m_buffer[read_index & m_mask];
         }
 

@@ -1,9 +1,8 @@
-#ifndef MD_AUDIO_BASE_DELAY_HPP
-#define MD_AUDIO_BASE_DELAY_HPP
+#ifndef MD_AUDIO_DELAY_INTERPOLATED_HPP
+#define MD_AUDIO_DELAY_INTERPOLATED_HPP
 
 #include <cstddef>
 #include "Buffer.hpp"
-#include "types.hpp"
 #include "Unit.hpp"
 #include "utility.hpp"
 #include "Writer.hpp"
@@ -14,9 +13,9 @@ using md_audio::utility::next_power_of_two;
 namespace md_audio {
 
     template <class Allocator>
-    class BaseDelay : public Unit {
+    class DelayInterpolated : public Unit {
     public:
-        explicit BaseDelay(Allocator &allocator, MdFloat max_delay_time) :
+        explicit DelayInterpolated(Allocator &allocator, double max_delay_time) :
             m_max_delay_samples(m_sample_rate * max_delay_time),
             m_buffer(allocator, next_power_of_two(m_max_delay_samples)),
             m_writer(m_buffer)
@@ -24,7 +23,7 @@ namespace md_audio {
             set_delay_time(.0);
         }
 
-        explicit BaseDelay(Allocator &allocator, MdFloat max_delay_time, MdFloat delay_time) :
+        explicit DelayInterpolated(Allocator &allocator, double max_delay_time, double delay_time) :
             m_max_delay_samples(m_sample_rate * max_delay_time),
             m_buffer(allocator, next_power_of_two(m_max_delay_samples)),
             m_writer(m_buffer)
@@ -36,10 +35,11 @@ namespace md_audio {
             return m_buffer.initialise();
         }
 
-        void set_delay_time(MdFloat delay_time) noexcept {
-            auto delay_samples = clip<MdFloat>(m_sample_rate * delay_time, 1, m_max_delay_samples);
+        void set_delay_time(double delay_time) noexcept {
+            auto delay_samples = clip<double>(m_sample_rate * delay_time, 1, m_max_delay_samples);
 
             m_delay_samples = static_cast<std::uint32_t>(delay_samples);
+            m_frac = delay_samples - m_delay_samples;
         }
 
     private:
@@ -47,10 +47,11 @@ namespace md_audio {
 
     protected:
         std::uint32_t m_delay_samples;
+        double m_frac;
         Buffer<Allocator> m_buffer;
         Writer<Allocator> m_writer;
     };
 
 }
 
-#endif /* MD_AUDIO_BASE_DELAY_HPP */
+#endif /* MD_AUDIO_DELAY_INTERPOLATED_HPP */

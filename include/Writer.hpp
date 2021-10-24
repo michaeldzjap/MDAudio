@@ -14,7 +14,7 @@ namespace md_audio {
             m_write_index(0)
         {}
 
-        void write(MdFloat in) noexcept {
+        void write(double in) noexcept {
             m_buffer[m_write_index] = in;
 
             m_write_index = (m_write_index + 1) & m_mask;
@@ -25,9 +25,9 @@ namespace md_audio {
         std::size_t m_mask;
         std::size_t m_write_index;
 
-        template <class> friend class Delay;
         template <class> friend class DelayCubic;
         template <class> friend class DelayLinear;
+        template <class> friend class DelayStatic;
     };
 
 }

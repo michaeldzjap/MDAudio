@@ -3,7 +3,6 @@
 
 #include <cstddef>
 #include <cstring>
-#include "types.hpp"
 
 namespace md_audio {
 
@@ -21,16 +20,16 @@ namespace md_audio {
             if (!m_memory)
                 return false;
 
-            std::memset(m_memory, 0, m_size * sizeof(MdFloat));
+            std::memset(m_memory, 0, m_size * sizeof(double));
 
             return true;
         }
 
-        MdFloat& operator[] (std::size_t index) noexcept {
+        double& operator[] (std::size_t index) noexcept {
             return m_memory[index];
         }
 
-        const MdFloat& operator[] (std::size_t index) const noexcept {
+        const double& operator[] (std::size_t index) const noexcept {
             return m_memory[index];
         }
 
@@ -42,7 +41,7 @@ namespace md_audio {
     private:
         Allocator& m_allocator;
         const std::size_t m_size;
-        MdFloat* m_memory = nullptr;
+        double* m_memory = nullptr;
 
         template <class> friend class Reader;
         template <class> friend class ReaderCubic;
