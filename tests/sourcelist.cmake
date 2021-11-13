@@ -1,4 +1,7 @@
 set(TESTS_SOURCES ${TESTS_SOURCES}
+    AllpassCubicTest.cpp
+    AllpassLinearTest.cpp
+    AllpassStaticTest.cpp
     BufferTest.cpp
     DelayCubicTest.cpp
     DelayLinearTest.cpp

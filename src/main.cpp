@@ -1,3 +1,4 @@
+#include "AllpassCubic.hpp"
 #include "DelayCubic.hpp"
 #include "memory/StaticAllocator.hpp"
 #include "memory/StaticPool.hpp"
@@ -5,6 +6,7 @@
 #include <iomanip>
 #include <iostream>
 
+using md_audio::AllpassCubic;
 using md_audio::DelayCubic;
 using md_audio::memory::StaticAllocator;
 using md_audio::memory::StaticPool;
@@ -31,23 +33,34 @@ int main() {
 
     auto delay_time = .001;
 
-    DelayCubic<Allocator<Pool<POOL_SIZE>>> delay(allocator, MAX_DELAY_TIME, delay_time);
+    // DelayCubic<Allocator<Pool<POOL_SIZE>>> delay(allocator, MAX_DELAY_TIME, delay_time);
+    AllpassCubic<Allocator<Pool<POOL_SIZE>>> allpass(allocator, MAX_DELAY_TIME, delay_time);
 
-    delay.initialise();
+    // delay.initialise();
+    allpass.initialise();
+    allpass.set_gain(.5);
 
     for (std::size_t i = 0; i < 44; ++i)
-        std::cout << i << "\t" << delay.process(1.) << std::endl;
+        // std::cout << i << "\t" << delay.process(1.) << std::endl;
+        std::cout << i << "\t" << allpass.process(1.) << std::endl;
 
-    std::cout << 44 << "\t" << delay.process(1.) << std::endl;
+    // std::cout << 44 << "\t" << delay.process(1.) << std::endl;
+    std::cout << 44 << "\t" << allpass.process(1.) << std::endl;
 
-    delay.set_delay_time(.0005);
+    // delay.set_delay_time(.0005);
+    allpass.set_delay_time(.0005);
 
     for (std::size_t i = 0; i < 22; ++i)
-        std::cout << 45 + i << "\t" << delay.process(.5) << std::endl;
+        // std::cout << 45 + i << "\t" << delay.process(.5) << std::endl;
+        std::cout << 45 + i << "\t" << allpass.process(.5) << std::endl;
 
-    std::cout << 67 << "\t" << delay.process(.5) << std::endl;
-    std::cout << 68 << "\t" << delay.process(.5) << std::endl;
-    std::cout << 69 << "\t" << delay.process(.5) << std::endl;
+    // std::cout << 67 << "\t" << delay.process(.5) << std::endl;
+    // std::cout << 68 << "\t" << delay.process(.5) << std::endl;
+    // std::cout << 69 << "\t" << delay.process(.5) << std::endl;
+
+    std::cout << 67 << "\t" << allpass.process(.5) << std::endl;
+    std::cout << 68 << "\t" << allpass.process(.5) << std::endl;
+    std::cout << 69 << "\t" << allpass.process(.5) << std::endl;
 
     // md_audio::TapDelay::set_sample_rate(44100.);
     // std::cout << md_audio::Reverb::get_sample_rate() << std::endl;

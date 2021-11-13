@@ -25,9 +25,10 @@ namespace md_audio {
         std::size_t m_mask;
         std::size_t m_write_index;
 
-        template <class> friend class DelayCubic;
-        template <class> friend class DelayLinear;
-        template <class> friend class DelayStatic;
+        template <class, class> friend class AllpassInterpolated;
+        template <class, class> friend class AllpassUninterpolated;
+        template <class, class> friend class DelayInterpolated;
+        template <class, class> friend class DelayUninterpolated;
     };
 
 }

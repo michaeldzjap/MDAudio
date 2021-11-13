@@ -1,5 +1,5 @@
-#ifndef MD_AUDIO_DELAY_HPP
-#define MD_AUDIO_DELAY_HPP
+#ifndef MD_AUDIO_DELAY_UNINTERPOLATED_HPP
+#define MD_AUDIO_DELAY_UNINTERPOLATED_HPP
 
 #include <cstddef>
 #include "Buffer.hpp"
@@ -12,21 +12,23 @@ using md_audio::utility::next_power_of_two;
 
 namespace md_audio {
 
-    template <class Allocator>
-    class Delay : public Unit {
+    template <class Allocator, class Reader>
+    class DelayUninterpolated : public Unit {
     public:
-        explicit Delay(Allocator &allocator, double max_delay_time) :
+        explicit DelayUninterpolated(Allocator& allocator, double max_delay_time) :
             m_max_delay_samples(m_sample_rate * max_delay_time),
             m_buffer(allocator, next_power_of_two(m_max_delay_samples)),
-            m_writer(m_buffer)
+            m_writer(m_buffer),
+            m_reader(m_buffer)
         {
-            set_delay_time(.0);
+            set_delay_time(0.);
         }
 
-        explicit Delay(Allocator &allocator, double max_delay_time, double delay_time) :
+        explicit DelayUninterpolated(Allocator& allocator, double max_delay_time, double delay_time) :
             m_max_delay_samples(m_sample_rate * max_delay_time),
             m_buffer(allocator, next_power_of_two(m_max_delay_samples)),
-            m_writer(m_buffer)
+            m_writer(m_buffer),
+            m_reader(m_buffer)
         {
             set_delay_time(delay_time);
         }
@@ -41,6 +43,14 @@ namespace md_audio {
             m_delay_samples = static_cast<std::uint32_t>(delay_samples);
         }
 
+        virtual double process(double in) noexcept {
+            auto z = m_reader.read(m_writer.m_write_index - m_delay_samples);
+
+            m_writer.write(in);
+
+            return z;
+        }
+
     private:
         std::uint32_t m_max_delay_samples;
 
@@ -48,8 +58,9 @@ namespace md_audio {
         std::uint32_t m_delay_samples;
         Buffer<Allocator> m_buffer;
         Writer<Allocator> m_writer;
+        Reader m_reader;
     };
 
 }
 
-#endif /* MD_AUDIO_DELAY_HPP */
+#endif /* MD_AUDIO_DELAY_UNINTERPOLATED_HPP */
