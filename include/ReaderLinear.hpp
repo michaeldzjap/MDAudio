@@ -6,7 +6,7 @@
 #include "utility.hpp"
 
 using md_audio::Buffer;
-using md_audio::utility::linear_interp;
+using md_audio::utility::interpolate_linear;
 
 namespace md_audio {
 
@@ -22,7 +22,7 @@ namespace md_audio {
             auto phase_a = read_index & m_mask;
             auto phase_b = (phase_a - 1) & m_mask;
 
-            return linear_interp(frac, m_buffer[phase_a], m_buffer[phase_b]);
+            return interpolate_linear(frac, m_buffer[phase_a], m_buffer[phase_b]);
         }
 
     private:

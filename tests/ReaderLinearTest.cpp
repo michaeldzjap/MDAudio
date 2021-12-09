@@ -1,8 +1,8 @@
 #include <catch2/catch_test_macros.hpp>
 #include "Buffer.hpp"
+#include "ReaderLinear.hpp"
 #include "memory/StaticAllocator.hpp"
 #include "memory/StaticPool.hpp"
-#include "ReaderLinear.hpp"
 
 using md_audio::Buffer;
 using md_audio::ReaderLinear;

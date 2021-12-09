@@ -6,12 +6,14 @@ set(TESTS_SOURCES ${TESTS_SOURCES}
     DelayCubicTest.cpp
     DelayLinearTest.cpp
     DelayStaticTest.cpp
+    HannOscillatorTest.cpp
     ReaderCubicTest.cpp
     ReaderLinearTest.cpp
     ReaderTest.cpp
+    SineOscillatorTest.cpp
     StaticPoolTest.cpp
     StaticAllocatorTest.cpp
     UnitTest.cpp
-    utilityTest.cpp
     WriterTest.cpp
+    utilityTest.cpp
 )

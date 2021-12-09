@@ -6,7 +6,7 @@
 #include "utility.hpp"
 
 using md_audio::Buffer;
-using md_audio::utility::cubic_interp;
+using md_audio::utility::interpolate_cubic;
 
 namespace md_audio {
 
@@ -24,7 +24,7 @@ namespace md_audio {
             auto phase_3 = (phase_1 - 2) & m_mask;
             auto phase_0 = (phase_1 + 1) & m_mask;
 
-            return cubic_interp(
+            return interpolate_cubic(
                 frac,
                 m_buffer[phase_0],
                 m_buffer[phase_1],

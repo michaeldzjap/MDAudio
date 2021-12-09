@@ -1,8 +1,8 @@
 #include <catch2/catch_test_macros.hpp>
 #include "Buffer.hpp"
+#include "Writer.hpp"
 #include "memory/StaticAllocator.hpp"
 #include "memory/StaticPool.hpp"
-#include "Writer.hpp"
 
 using md_audio::Buffer;
 using md_audio::memory::StaticAllocator;

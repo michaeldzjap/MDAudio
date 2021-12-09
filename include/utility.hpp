@@ -1,11 +1,11 @@
 #ifndef MD_AUDIO_UTILITY_HPP
 #define MD_AUDIO_UTILITY_HPP
 
-#include "tables.hpp"
 #include <array>
 #include <cmath>
 #include <cstdint>
 #include <type_traits>
+#include "tables.hpp"
 
 namespace md_audio::utility {
 
@@ -128,7 +128,7 @@ namespace md_audio::utility {
     }
 
     template <typename T>
-    inline constexpr IsFloat<T> linear_interp(const T x, const T a, const T b) noexcept {
+    inline constexpr IsFloat<T> interpolate_linear(const T x, const T a, const T b) noexcept {
         return a + x * (b - a);
     }
 
@@ -136,7 +136,7 @@ namespace md_audio::utility {
      * Cubic interpolation using 3rd order Hermite polynomial.
      */
     template <typename T>
-    inline constexpr IsFloat<T> cubic_interp(const T x, const T y0, const T y1, const T y2, const T y3) noexcept {
+    inline constexpr IsFloat<T> interpolate_cubic(const T x, const T y0, const T y1, const T y2, const T y3) noexcept {
         auto c0 = y1;
         auto c1 = .5 * (y2 - y0);
         auto c2 = y0 - 2.5 * y1 + 2. * y2 - .5 * y3;

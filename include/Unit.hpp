@@ -13,6 +13,7 @@ namespace md_audio {
 
     protected:
         static double m_sample_rate;
+        static double m_half_sample_rate;
         static double m_sample_duration;
     };
 

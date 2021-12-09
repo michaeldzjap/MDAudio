@@ -4,8 +4,8 @@
 #include <cstddef>
 #include "Buffer.hpp"
 #include "Unit.hpp"
-#include "utility.hpp"
 #include "Writer.hpp"
+#include "utility.hpp"
 
 using md_audio::utility::clip;
 using md_audio::utility::next_power_of_two;
