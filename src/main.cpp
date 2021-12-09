@@ -2,6 +2,7 @@
 #include "DelayCubic.hpp"
 #include "HannOscillator.hpp"
 #include "SineOscillator.hpp"
+#include "WhiteNoise.hpp"
 #include "memory/StaticAllocator.hpp"
 #include "memory/StaticPool.hpp"
 #include "tables.hpp"
@@ -13,6 +14,7 @@ using md_audio::AllpassCubic;
 using md_audio::DelayCubic;
 using md_audio::HannOscillator;
 using md_audio::SineOscillator;
+using md_audio::WhiteNoise;
 using md_audio::hann_period;
 using md_audio::memory::StaticAllocator;
 using md_audio::memory::StaticPool;
@@ -31,20 +33,20 @@ int main() {
     std::cout << std::fixed;
     std::cout << std::setprecision(20);
 
-    constexpr auto SAMPLE_RATE = 44100.;
+    // constexpr auto SAMPLE_RATE = 44100.;
 
     // HannOscillator::set_sample_rate(SAMPLE_RATE);
     // HannOscillator osc(2. * SAMPLE_RATE / TABLE_SIZE);
 
-    SineOscillator::set_sample_rate(SAMPLE_RATE);
-    SineOscillator osc(2. * SAMPLE_RATE / TABLE_SIZE);
+    // SineOscillator::set_sample_rate(SAMPLE_RATE);
+    // SineOscillator osc(2. * SAMPLE_RATE / TABLE_SIZE);
 
-    for (std::size_t i = 0; i < TABLE_SIZE / 2 + 1; ++i)
-        // std::cout << i << "\t" << osc.process() << std::endl;
-        // std::cout << i << "\t" << hann_period(i) << std::endl;
-        std::cout << osc.process() << ", ";
+    // for (std::size_t i = 0; i < TABLE_SIZE / 2 + 1; ++i)
+    //     // std::cout << i << "\t" << osc.process() << std::endl;
+    //     // std::cout << i << "\t" << hann_period(i) << std::endl;
+    //     std::cout << osc.process() << ", ";
 
-    std::cout << std::endl;
+    // std::cout << std::endl;
 
     // constexpr auto MAX_DELAY_TIME = 1.;
     // constexpr auto POOL_SIZE = next_power_of_two(
@@ -89,7 +91,10 @@ int main() {
         // std::cout << i << "\t" << i / static_cast<double>(TABLE_SIZE) << std::endl;
         // std::cout << i / static_cast<double>(TABLE_SIZE) << ", ";
 
+    WhiteNoise unit;
 
+    for (auto i = 0; i < 99; i++)
+        std::cout << unit.process() << std::endl;
 
     return 0;
 }

@@ -3,4 +3,5 @@ set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
     Oscillator.cpp
     SineOscillator.cpp
     Unit.cpp
+    WhiteNoise.cpp
 )
