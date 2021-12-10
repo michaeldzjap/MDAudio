@@ -14,6 +14,7 @@ set(TESTS_SOURCES ${TESTS_SOURCES}
     StaticPoolTest.cpp
     StaticAllocatorTest.cpp
     UnitTest.cpp
+    WhiteNoiseTest.cpp
     WriterTest.cpp
     utilityTest.cpp
 )
