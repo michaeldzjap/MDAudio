@@ -1,7 +1,12 @@
 #include "AllpassCubic.hpp"
 #include "DelayCubic.hpp"
 #include "HannOscillator.hpp"
+#include "HighpassFirstOrder.hpp"
+#include "HighshelfFirstOrder.hpp"
+#include "LowpassFirstOrder.hpp"
+#include "LowshelfFirstOrder.hpp"
 #include "SineOscillator.hpp"
+#include "TiltFirstOrder.hpp"
 #include "WhiteNoise.hpp"
 #include "memory/StaticAllocator.hpp"
 #include "memory/StaticPool.hpp"
@@ -13,7 +18,12 @@
 using md_audio::AllpassCubic;
 using md_audio::DelayCubic;
 using md_audio::HannOscillator;
+using md_audio::HighpassFirstOrder;
+using md_audio::HighshelfFirstOrder;
+using md_audio::LowpassFirstOrder;
+using md_audio::LowshelfFirstOrder;
 using md_audio::SineOscillator;
+using md_audio::TiltFirstOrder;
 using md_audio::WhiteNoise;
 using md_audio::hann_period;
 using md_audio::memory::StaticAllocator;
@@ -33,7 +43,18 @@ int main() {
     std::cout << std::fixed;
     std::cout << std::setprecision(20);
 
-    // constexpr auto SAMPLE_RATE = 44100.;
+    constexpr auto SAMPLE_RATE = 44100.;
+
+    HighpassFirstOrder::set_sample_rate(SAMPLE_RATE);
+    HighshelfFirstOrder::set_sample_rate(SAMPLE_RATE);
+    LowpassFirstOrder::set_sample_rate(SAMPLE_RATE);
+    LowshelfFirstOrder::set_sample_rate(SAMPLE_RATE);
+    TiltFirstOrder::set_sample_rate(SAMPLE_RATE);
+    HighpassFirstOrder highpass(10.);
+    HighshelfFirstOrder highshelf(10.);
+    LowpassFirstOrder lowpass(10.);
+    LowshelfFirstOrder lowshelf(10.);
+    TiltFirstOrder tilt(10.);
 
     // HannOscillator::set_sample_rate(SAMPLE_RATE);
     // HannOscillator osc(2. * SAMPLE_RATE / TABLE_SIZE);
@@ -93,8 +114,15 @@ int main() {
 
     WhiteNoise unit;
 
-    for (auto i = 0; i < 99; i++)
-        std::cout << unit.process() << std::endl;
+    for (auto i = 0; i < 4410; i++)
+        // std::cout << i << "\t" << lowpass.process(i == 0 ? 1. : 0.) << std::endl;
+        // std::cout << lowpass.process(i == 0 ? 1. : 0.) << ",";
+        // std::cout << highpass.process(i == 0 ? 1. : 0.) << ",";
+        // std::cout << lowshelf.process(i == 0 ? 1. : 0.) << ",";
+        // std::cout << highshelf.process(i == 0 ? 1. : 0.) << ",";
+        std::cout << tilt.process(i == 0 ? 1. : 0.) << ",";
+
+    std::cout << std::endl;
 
     return 0;
 }

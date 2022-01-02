@@ -2,12 +2,11 @@
 #define MD_AUDIO_ALLPASS_INTERPOLATED_HPP
 
 #include "DelayInterpolated.hpp"
-#include "Gainable.hpp"
 
 namespace md_audio {
 
     template <class Allocator, class Reader>
-    class AllpassInterpolated : public Gainable, public DelayInterpolated<Allocator, Reader> {
+    class AllpassInterpolated : public DelayInterpolated<Allocator, Reader> {
 
         using DelayInterpolated<Allocator, Reader>::m_delay_samples;
         using DelayInterpolated<Allocator, Reader>::m_frac;
@@ -33,6 +32,10 @@ namespace md_audio {
             set_gain(gain);
         }
 
+        void set_gain(double gain) noexcept {
+            m_gain = clip(gain, 0., 1.);
+        }
+
         double process(double in) noexcept override {
             auto sd = m_reader.read(m_writer.m_write_index - m_delay_samples, m_frac);
             auto s = in + m_gain * sd;
@@ -41,6 +44,9 @@ namespace md_audio {
 
             return sd - m_gain * s;
         }
+
+    private:
+        double m_gain;
     };
 
 }
