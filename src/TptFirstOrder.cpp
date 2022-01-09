@@ -1,10 +1,10 @@
 #include <cmath>
-#include "TptFilter.hpp"
+#include "TptFirstOrder.hpp"
 #include "constants.hpp"
 #include "utility.hpp"
 
-using md_audio::TptFilter;
+using md_audio::TptFirstOrder;
 
-double TptFilter::g(double frequency) noexcept {
+double TptFirstOrder::g(double frequency) noexcept {
     return std::tan(utility::clip(frequency, 0., m_half_sample_rate) * PI * m_sample_duration);
 }

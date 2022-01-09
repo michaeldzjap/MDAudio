@@ -1,12 +1,12 @@
 #ifndef MD_AUTIO_TILT_FIRST_ORDER_HPP
 #define MD_AUTIO_TILT_FIRST_ORDER_HPP
 
-#include "TptFilter.hpp"
+#include "TptFirstOrder.hpp"
 #include "TptShelving.hpp"
 
 namespace md_audio {
 
-    class TiltFirstOrder : public TptFilter, public TptShelving {
+    class TiltFirstOrder : public TptFirstOrder, public TptShelving {
     public:
         explicit TiltFirstOrder();
 

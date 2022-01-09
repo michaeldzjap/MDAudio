@@ -1,12 +1,12 @@
 #ifndef MD_AUDIO_HIGHSHELF_FIRST_ORDER_HPP
 #define MD_AUDIO_HIGHSHELF_FIRST_ORDER_HPP
 
-#include "TptFilter.hpp"
+#include "TptFirstOrder.hpp"
 #include "TptShelving.hpp"
 
 namespace md_audio {
 
-    class HighshelfFirstOrder : public TptFilter, public TptShelving {
+    class HighshelfFirstOrder : public TptFirstOrder, public TptShelving {
     public:
         explicit HighshelfFirstOrder();
 
