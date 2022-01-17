@@ -11,6 +11,7 @@ set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
     Oscillator.cpp
     SineOscillator.cpp
     TiltFirstOrder.cpp
+    TiltSecondOrder.cpp
     TptFirstOrder.cpp
     TptSecondOrder.cpp
     TptShelving.cpp

@@ -1,5 +1,5 @@
-#ifndef MD_AUTIO_TILT_FIRST_ORDER_HPP
-#define MD_AUTIO_TILT_FIRST_ORDER_HPP
+#ifndef MD_AUDIO_TILT_FIRST_ORDER_HPP
+#define MD_AUDIO_TILT_FIRST_ORDER_HPP
 
 #include "TptFirstOrder.hpp"
 #include "TptShelving.hpp"
@@ -28,4 +28,4 @@ namespace md_audio {
 
 }
 
-#endif /* MD_AUTIO_TILT_FIRST_ORDER_HPP */
+#endif /* MD_AUDIO_TILT_FIRST_ORDER_HPP */
