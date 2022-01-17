@@ -1,4 +1,5 @@
 set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
+    Bandpass.cpp
     HannOscillator.cpp
     HighpassFirstOrder.cpp
     HighpassSecondOrder.cpp
