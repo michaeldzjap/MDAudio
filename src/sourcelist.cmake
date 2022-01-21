@@ -1,4 +1,6 @@
 set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
+    AllpassFirstOrder.cpp
+    AllpassSecondOrder.cpp
     Bandpass.cpp
     Bandshelf.cpp
     Bandstop.cpp
