@@ -14,7 +14,9 @@ set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
     LowshelfFirstOrder.cpp
     LowshelfSecondOrder.cpp
     Oscillator.cpp
+    Phasor.cpp
     SineOscillator.cpp
+    Svf.cpp
     TiltFirstOrder.cpp
     TiltSecondOrder.cpp
     TptSecondOrder.cpp
