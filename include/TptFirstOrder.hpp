@@ -8,8 +8,6 @@ namespace md_audio {
     class TptFirstOrder : public Unit {
     protected:
         double m_s = 0.;
-
-        static double g(double frequency) noexcept;
     };
 
 }

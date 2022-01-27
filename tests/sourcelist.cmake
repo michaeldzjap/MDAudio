@@ -6,7 +6,10 @@ set(TESTS_SOURCES ${TESTS_SOURCES}
     DelayCubicTest.cpp
     DelayLinearTest.cpp
     DelayStaticTest.cpp
+    HighpassFirstOrderTest.cpp
     HannOscillatorTest.cpp
+    LowpassFirstOrderTest.cpp
+    LowshelfFirstOrderTest.cpp
     ReaderCubicTest.cpp
     ReaderLinearTest.cpp
     ReaderTest.cpp

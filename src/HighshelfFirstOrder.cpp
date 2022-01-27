@@ -17,15 +17,6 @@ HighshelfFirstOrder::HighshelfFirstOrder(double frequency, double gain) {
     set_gain(gain);
 }
 
-void HighshelfFirstOrder::set_frequency(double frequency) noexcept {
-    auto _g = g(frequency);
-    m_h = _g / (1. + _g);
-}
-
-void HighshelfFirstOrder::set_gain(double gain) noexcept {
-    m_m2 = m2(gain);
-}
-
 double HighshelfFirstOrder::process(double in) noexcept {
     auto v = (in - m_s) * m_h;
     auto y = v + m_s;

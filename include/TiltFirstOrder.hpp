@@ -1,12 +1,11 @@
 #ifndef MD_AUDIO_TILT_FIRST_ORDER_HPP
 #define MD_AUDIO_TILT_FIRST_ORDER_HPP
 
-#include "TptFirstOrder.hpp"
-#include "TptShelving.hpp"
+#include "TptShelvingFirstOrder.hpp"
 
 namespace md_audio {
 
-    class TiltFirstOrder : public TptFirstOrder, public TptShelving {
+    class TiltFirstOrder : public TptShelvingFirstOrder {
     public:
         explicit TiltFirstOrder();
 
@@ -14,14 +13,12 @@ namespace md_audio {
 
         explicit TiltFirstOrder(double frequency, double gain);
 
-        void set_frequency(double frequency) noexcept;
-
         void set_gain(double gain) noexcept;
 
         double process(double in) noexcept;
 
     private:
-        double m_g;
+        double m_h;
         double m_m;
         double m_mi;
     };

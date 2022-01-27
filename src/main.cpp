@@ -4,6 +4,7 @@
 #include "HighpassFirstOrder.hpp"
 #include "HighshelfFirstOrder.hpp"
 #include "LowpassFirstOrder.hpp"
+#include "LowpassSecondOrder.hpp"
 #include "LowshelfFirstOrder.hpp"
 #include "SineOscillator.hpp"
 #include "TiltFirstOrder.hpp"
@@ -21,6 +22,7 @@ using md_audio::HannOscillator;
 using md_audio::HighpassFirstOrder;
 using md_audio::HighshelfFirstOrder;
 using md_audio::LowpassFirstOrder;
+using md_audio::LowpassSecondOrder;
 using md_audio::LowshelfFirstOrder;
 using md_audio::SineOscillator;
 using md_audio::TiltFirstOrder;
@@ -48,13 +50,16 @@ int main() {
     HighpassFirstOrder::set_sample_rate(SAMPLE_RATE);
     HighshelfFirstOrder::set_sample_rate(SAMPLE_RATE);
     LowpassFirstOrder::set_sample_rate(SAMPLE_RATE);
+    LowpassSecondOrder::set_sample_rate(SAMPLE_RATE);
     LowshelfFirstOrder::set_sample_rate(SAMPLE_RATE);
     TiltFirstOrder::set_sample_rate(SAMPLE_RATE);
-    HighpassFirstOrder highpass(10.);
+    // HighpassFirstOrder highpass(0.);
     HighshelfFirstOrder highshelf(10.);
-    LowpassFirstOrder lowpass(10.);
-    LowshelfFirstOrder lowshelf(10.);
+    // LowpassFirstOrder lowpass(22050.);
+    // LowpassSecondOrder lowpass(22050.);
+    LowshelfFirstOrder lowshelf(22050., -24.);
     TiltFirstOrder tilt(10.);
+    WhiteNoise generator;
 
     // HannOscillator::set_sample_rate(SAMPLE_RATE);
     // HannOscillator osc(2. * SAMPLE_RATE / TABLE_SIZE);
@@ -112,15 +117,15 @@ int main() {
         // std::cout << i << "\t" << i / static_cast<double>(TABLE_SIZE) << std::endl;
         // std::cout << i / static_cast<double>(TABLE_SIZE) << ", ";
 
-    WhiteNoise unit;
+    // WhiteNoise unit;
 
     for (auto i = 0; i < 4410; i++)
         // std::cout << i << "\t" << lowpass.process(i == 0 ? 1. : 0.) << std::endl;
         // std::cout << lowpass.process(i == 0 ? 1. : 0.) << ",";
         // std::cout << highpass.process(i == 0 ? 1. : 0.) << ",";
-        // std::cout << lowshelf.process(i == 0 ? 1. : 0.) << ",";
+        std::cout << lowshelf.process(i == 0 ? 1. : 0. /* generator.process() */) << ",";
         // std::cout << highshelf.process(i == 0 ? 1. : 0.) << ",";
-        std::cout << tilt.process(i == 0 ? 1. : 0.) << ",";
+        // std::cout << tilt.process(i == 0 ? 1. : 0.) << ",";
 
     std::cout << std::endl;
 

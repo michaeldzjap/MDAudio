@@ -1,12 +1,11 @@
 #ifndef MD_AUDIO_LOWSHELF_FIRST_ORDER_HPP
 #define MD_AUDIO_LOWSHELF_FIRST_ORDER_HPP
 
-#include "TptFirstOrder.hpp"
-#include "TptShelving.hpp"
+#include "TptShelvingFirstOrder.hpp"
 
 namespace md_audio {
 
-    class LowshelfFirstOrder : public TptFirstOrder, public TptShelving {
+    class LowshelfFirstOrder : public TptShelvingFirstOrder {
     public:
         explicit LowshelfFirstOrder();
 
@@ -14,15 +13,7 @@ namespace md_audio {
 
         explicit LowshelfFirstOrder(double frequency, double gain);
 
-        void set_frequency(double frequency) noexcept;
-
-        void set_gain(double gain) noexcept;
-
         double process(double in) noexcept;
-
-    private:
-        double m_h;
-        double m_m2i;
     };
 
 }

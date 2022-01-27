@@ -1,4 +1,5 @@
 #include "LowpassFirstOrder.hpp"
+#include "tpt.hpp"
 
 using md_audio::LowpassFirstOrder;
 
@@ -11,8 +12,8 @@ LowpassFirstOrder::LowpassFirstOrder(double frequency) {
 }
 
 void LowpassFirstOrder::set_frequency(double frequency) noexcept {
-    auto _g = g(frequency);
-    m_h = _g / (1. + _g);
+    auto g = tpt::g(frequency, m_half_sample_rate, m_sample_duration);
+    m_h = g / (1. + g);
 }
 
 double LowpassFirstOrder::process(double in) noexcept {

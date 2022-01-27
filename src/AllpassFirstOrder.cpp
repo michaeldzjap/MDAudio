@@ -1,4 +1,5 @@
 #include "AllpassFirstOrder.hpp"
+#include "tpt.hpp"
 
 using md_audio::AllpassFirstOrder;
 
@@ -11,8 +12,8 @@ AllpassFirstOrder::AllpassFirstOrder(double frequency) {
 }
 
 void AllpassFirstOrder::set_frequency(double frequency) noexcept {
-    auto _g = g(frequency);
-    m_h = 2. * _g / (1. + _g);
+    auto g = tpt::g(frequency, m_half_sample_rate, m_sample_duration);
+    m_h = 2. * g / (1. + g);
 }
 
 double AllpassFirstOrder::process(double in) noexcept {

@@ -17,20 +17,11 @@ LowshelfFirstOrder::LowshelfFirstOrder(double frequency, double gain) {
     set_gain(gain);
 }
 
-void LowshelfFirstOrder::set_frequency(double frequency) noexcept {
-    auto _g = g(frequency);
-    m_h = _g / (1. + _g);
-}
-
-void LowshelfFirstOrder::set_gain(double gain) noexcept {
-    m_m2i = 1. / m2(-gain);
-}
-
 double LowshelfFirstOrder::process(double in) noexcept {
     auto v = (in - m_s) * m_h;
     auto y = v + m_s;
 
     m_s = y + v;
 
-    return m_m2i * y + in - y;
+    return m_m2 * y + in - y;
 }

@@ -1,4 +1,5 @@
 #include "LowshelfSecondOrder.hpp"
+#include "tpt.hpp"
 
 using md_audio::LowshelfSecondOrder;
 
@@ -26,14 +27,9 @@ LowshelfSecondOrder::LowshelfSecondOrder(double frequency, double r, double gain
     set_gain(gain);
 }
 
-void LowshelfSecondOrder::set_gain(double gain) noexcept {
-    m_m2i = 1. / m2(-gain);
-    m_m4i = m_m2i * m_m2i;
-}
-
 double LowshelfSecondOrder::process(double in) noexcept {
     auto g1 = m_r2 + m_g;
-    auto hp = (in - g1 * m_s - m_s2) * d(m_r2, m_g);
+    auto hp = (in - g1 * m_s - m_s2) * tpt::d(m_r2, m_g);
 
     // First integrator
     auto v1 = m_g * hp;
@@ -45,5 +41,5 @@ double LowshelfSecondOrder::process(double in) noexcept {
     auto lp = v2 + m_s2;
     m_s2 = lp + v2;
 
-    return m_m4i * lp + m_m2i * m_r2 * bp + hp;
+    return m_m4 * lp + m_m2 * m_r2 * bp + hp;
 }

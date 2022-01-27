@@ -1,4 +1,5 @@
 #include "Bandstop.hpp"
+#include "tpt.hpp"
 
 using md_audio::Bandstop;
 
@@ -18,7 +19,7 @@ Bandstop::Bandstop(double frequency, double r) {
 }
 
 double Bandstop::process(double in) noexcept {
-    auto bp = (m_g * (m_r2 * in - m_s2) + m_s) * d(m_r2, m_g);
+    auto bp = (m_g * (m_r2 * in - m_s2) + m_s) * tpt::d(m_r2, m_g);
 
     // First integrator
     auto bp2 = bp + bp;

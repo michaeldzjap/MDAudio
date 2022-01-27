@@ -15,10 +15,6 @@ namespace md_audio {
         double m_s2 = 0.;
         double m_g;
         double m_r2;
-
-        static double r2(double r) noexcept;
-
-        static double d(double r2, double g) noexcept;
     };
 
 }

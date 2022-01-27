@@ -2,11 +2,10 @@
 #define MD_AUDIO_TILT_SECOND_ORDER_HPP
 
 #include "TptSecondOrder.hpp"
-#include "TptShelving.hpp"
 
 namespace md_audio {
 
-    class TiltSecondOrder : public TptSecondOrder, public TptShelving {
+    class TiltSecondOrder : public TptSecondOrder {
     public:
         explicit TiltSecondOrder();
 

@@ -1,4 +1,5 @@
 #include "LowpassSecondOrder.hpp"
+#include "tpt.hpp"
 
 using md_audio::LowpassSecondOrder;
 
@@ -18,7 +19,7 @@ LowpassSecondOrder::LowpassSecondOrder(double frequency, double r) {
 }
 
 double LowpassSecondOrder::process(double in) noexcept {
-    auto bp = (m_g * (in - m_s2) + m_s) * d(m_r2, m_g);
+    auto bp = (m_g * (in - m_s2) + m_s) * tpt::d(m_r2, m_g);
 
     // First integrator
     auto v1 = bp - m_s;

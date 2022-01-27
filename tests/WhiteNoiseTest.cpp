@@ -4,7 +4,7 @@
 using md_audio::WhiteNoise;
 
 TEST_CASE("white noise generates random numbers between negative and positive one", "[WhiteNoise]") {
-    constexpr auto SAMPLE_RATE = 44100;
+    constexpr auto SAMPLE_RATE = 4410;
 
     WhiteNoise generator;
 

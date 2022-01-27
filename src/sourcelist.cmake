@@ -17,9 +17,9 @@ set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
     SineOscillator.cpp
     TiltFirstOrder.cpp
     TiltSecondOrder.cpp
-    TptFirstOrder.cpp
     TptSecondOrder.cpp
-    TptShelving.cpp
+    TptShelvingFirstOrder.cpp
+    TptShelvingSecondOrder.cpp
     Unit.cpp
     WhiteNoise.cpp
 )

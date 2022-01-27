@@ -1,4 +1,5 @@
 #include "HighpassSecondOrder.hpp"
+#include "tpt.hpp"
 
 using md_audio::HighpassSecondOrder;
 
@@ -19,7 +20,7 @@ HighpassSecondOrder::HighpassSecondOrder(double frequency, double r) {
 
 double HighpassSecondOrder::process(double in) noexcept {
     auto g1 = m_r2 + m_g;
-    auto hp = (in - g1 * m_s - m_s2) * d(m_r2, m_g);
+    auto hp = (in - g1 * m_s - m_s2) * tpt::d(m_r2, m_g);
 
     // First integrator
     auto v1 = m_g * hp;

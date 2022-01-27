@@ -1,4 +1,5 @@
 #include "TiltSecondOrder.hpp"
+#include "tpt.hpp"
 
 using md_audio::TiltSecondOrder;
 
@@ -27,13 +28,13 @@ TiltSecondOrder::TiltSecondOrder(double frequency, double r, double gain) {
 }
 
 void TiltSecondOrder::set_gain(double gain) noexcept {
-    m_m2 = m2(gain);
+    m_m2 = tpt::m2(gain);
     m_m2i = 1. / m_m2;
 }
 
 double TiltSecondOrder::process(double in) noexcept {
     auto g1 = m_r2 + m_g;
-    auto hp = (in - g1 * m_s - m_s2) * d(m_r2, m_g);
+    auto hp = (in - g1 * m_s - m_s2) * tpt::d(m_r2, m_g);
 
     // First integrator
     auto v1 = m_g * hp;

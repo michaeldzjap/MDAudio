@@ -2,11 +2,10 @@
 #define MD_AUDIO_BANDSHELF_HPP
 
 #include "TptSecondOrder.hpp"
-#include "TptShelving.hpp"
 
 namespace md_audio {
 
-    class Bandshelf : public TptSecondOrder, public TptShelving {
+    class Bandshelf : public TptSecondOrder {
     public:
         explicit Bandshelf();
 
@@ -21,7 +20,7 @@ namespace md_audio {
         double process(double in) noexcept;
 
     private:
-        double m_m2i;
+        double m_m2;
     };
 
 }

@@ -1,5 +1,6 @@
 #include <cmath>
 #include "TiltFirstOrder.hpp"
+#include "tpt.hpp"
 
 using md_audio::TiltFirstOrder;
 
@@ -18,17 +19,13 @@ TiltFirstOrder::TiltFirstOrder(double frequency, double gain) {
     set_gain(gain);
 }
 
-void TiltFirstOrder::set_frequency(double frequency) noexcept {
-    m_g = g(frequency);
-}
-
 void TiltFirstOrder::set_gain(double gain) noexcept {
-    m_m = std::sqrt(m2(gain));
+    m_m = std::sqrt(tpt::m2(gain));
     m_mi = 1. / m_m;
 }
 
 double TiltFirstOrder::process(double in) noexcept {
-    auto v = (in - m_s) * m_g / (1. + m_g);
+    auto v = (in - m_s) * m_h;
     auto y = v + m_s;
 
     m_s = y + v;
