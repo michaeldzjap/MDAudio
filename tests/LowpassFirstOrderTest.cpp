@@ -28,7 +28,7 @@ TEST_CASE("first order lowpass can filter a signal", "[LowpassFirstOrder]") {
         for (std::size_t i = 0; i < SAMPLE_RATE / 10; i++)
             REQUIRE(lowpass.process(0.) == 0.);
     }
-    SECTION("a cutoff frequencsy sweep produces a stable signal") {
+    SECTION("a cutoff frequency sweep produces a stable signal") {
         auto cutoff = 0.;
         auto increment = (SAMPLE_RATE / 2) / SAMPLE_RATE;
 
