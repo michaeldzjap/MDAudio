@@ -18,7 +18,6 @@ namespace md_audio {
         double process(double in) noexcept;
 
     private:
-        double m_h;
         double m_m;
         double m_mi;
     };

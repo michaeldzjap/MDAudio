@@ -6,8 +6,12 @@
 namespace md_audio {
 
     class TptFirstOrder : public Unit {
+    public:
+        void set_frequency(double frequency) noexcept;
+
     protected:
         double m_s = 0.;
+        double m_h;
     };
 
 }

@@ -17,6 +17,7 @@ set(TESTS_SOURCES ${TESTS_SOURCES}
     SineOscillatorTest.cpp
     StaticPoolTest.cpp
     StaticAllocatorTest.cpp
+    TiltFirstOrderTest.cpp
     UnitTest.cpp
     WhiteNoiseTest.cpp
     WriterTest.cpp

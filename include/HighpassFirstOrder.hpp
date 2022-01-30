@@ -11,13 +11,7 @@ namespace md_audio {
 
         explicit HighpassFirstOrder(double frequency);
 
-        void set_frequency(double frequency) noexcept;
-
         double process(double in) noexcept;
-
-    private:
-        double m_h;
-        double m_g2;
     };
 
 }

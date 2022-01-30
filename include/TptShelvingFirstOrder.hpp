@@ -7,12 +7,9 @@ namespace md_audio {
 
     class TptShelvingFirstOrder : public TptFirstOrder {
     public:
-        void set_frequency(double frequency) noexcept;
-
         void set_gain(double gain) noexcept;
 
     protected:
-        double m_h;
         double m_m2;
     };
 

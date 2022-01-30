@@ -54,11 +54,11 @@ int main() {
     LowshelfFirstOrder::set_sample_rate(SAMPLE_RATE);
     TiltFirstOrder::set_sample_rate(SAMPLE_RATE);
     // HighpassFirstOrder highpass(0.);
-    HighshelfFirstOrder highshelf(0., -6.);
+    // HighshelfFirstOrder highshelf(0., -6.);
     // LowpassFirstOrder lowpass(22050.);
     // LowpassSecondOrder lowpass(22050.);
-    LowshelfFirstOrder lowshelf(0., -6.);
-    TiltFirstOrder tilt(10.);
+    // LowshelfFirstOrder lowshelf(0., -6.);
+    TiltFirstOrder tilt(22050., -6.);
     WhiteNoise generator;
 
     // HannOscillator::set_sample_rate(SAMPLE_RATE);
@@ -124,8 +124,8 @@ int main() {
         // std::cout << lowpass.process(i == 0 ? 1. : 0.) << ",";
         // std::cout << highpass.process(i == 0 ? 1. : 0.) << ",";
         // std::cout << lowshelf.process(i == 0 ? 1. : 0. /* generator.process() */) << ",";
-        std::cout << highshelf.process(i == 0 ? 1. : 0.) << ",";
-        // std::cout << tilt.process(i == 0 ? 1. : 0.) << ",";
+        // std::cout << highshelf.process(i == 0 ? 1. : 0.) << ",";
+        std::cout << tilt.process(i == 0 ? 1. : 0. /* generator.process() */) << ",";
 
     std::cout << std::endl;
 
