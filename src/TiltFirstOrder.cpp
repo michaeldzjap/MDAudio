@@ -4,18 +4,19 @@
 
 using md_audio::TiltFirstOrder;
 
-TiltFirstOrder::TiltFirstOrder() {
-    set_frequency(440.);
+TiltFirstOrder::TiltFirstOrder() : LowpassFirstOrder() {
     set_gain(0.);
 }
 
-TiltFirstOrder::TiltFirstOrder(double frequency) {
-    set_frequency(frequency);
+TiltFirstOrder::TiltFirstOrder(double frequency) :
+    LowpassFirstOrder(frequency)
+{
     set_gain(0.);
 }
 
-TiltFirstOrder::TiltFirstOrder(double frequency, double gain) {
-    set_frequency(frequency);
+TiltFirstOrder::TiltFirstOrder(double frequency, double gain) :
+    LowpassFirstOrder(frequency)
+{
     set_gain(gain);
 }
 
@@ -25,10 +26,7 @@ void TiltFirstOrder::set_gain(double gain) noexcept {
 }
 
 double TiltFirstOrder::process(double in) noexcept {
-    auto v = (in - m_s) * m_h;
-    auto y = v + m_s;
-
-    m_s = y + v;
+    auto y = LowpassFirstOrder::process(in);
 
     return m_mi * y + m_m * (in - y);
 }

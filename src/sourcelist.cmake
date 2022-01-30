@@ -15,13 +15,12 @@ set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
     LowshelfSecondOrder.cpp
     Oscillator.cpp
     Phasor.cpp
+    ShelvingFirstOrder.cpp
     SineOscillator.cpp
     Svf.cpp
     TiltFirstOrder.cpp
     TiltSecondOrder.cpp
-    TptFirstOrder.cpp
     TptSecondOrder.cpp
-    TptShelvingFirstOrder.cpp
     TptShelvingSecondOrder.cpp
     Unit.cpp
     WhiteNoise.cpp

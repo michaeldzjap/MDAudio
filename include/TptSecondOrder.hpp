@@ -1,11 +1,11 @@
 #ifndef MD_AUDIO_TPT_SECOND_ORDER_HPP
 #define MD_AUDIO_TPT_SECOND_ORDER_HPP
 
-#include "TptFirstOrder.hpp"
+#include "LowpassFirstOrder.hpp"
 
 namespace md_audio {
 
-    class TptSecondOrder : public TptFirstOrder {
+    class TptSecondOrder : public LowpassFirstOrder {
     public:
         void set_frequency(double frequency) noexcept;
 

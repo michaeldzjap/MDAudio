@@ -2,26 +2,24 @@
 
 using md_audio::LowshelfFirstOrder;
 
-LowshelfFirstOrder::LowshelfFirstOrder() {
-    set_frequency(440.);
+LowshelfFirstOrder::LowshelfFirstOrder() : LowpassFirstOrder() {
     set_gain(0.);
 }
 
-LowshelfFirstOrder::LowshelfFirstOrder(double frequency) {
-    set_frequency(frequency);
+LowshelfFirstOrder::LowshelfFirstOrder(double frequency) :
+    LowpassFirstOrder(frequency)
+{
     set_gain(0.);
 }
 
-LowshelfFirstOrder::LowshelfFirstOrder(double frequency, double gain) {
-    set_frequency(frequency);
+LowshelfFirstOrder::LowshelfFirstOrder(double frequency, double gain) :
+    LowpassFirstOrder(frequency)
+{
     set_gain(gain);
 }
 
 double LowshelfFirstOrder::process(double in) noexcept {
-    auto v = (in - m_s) * m_h;
-    auto y = v + m_s;
-
-    m_s = y + v;
+    auto y = LowpassFirstOrder::process(in);
 
     return m_m2 * y + in - y;
 }
