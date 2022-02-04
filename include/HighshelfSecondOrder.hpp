@@ -1,11 +1,12 @@
 #ifndef MD_AUDIO_HIGHSHELF_SECOND_ORDER_HPP
 #define MD_AUDIO_HIGHSHELF_SECOND_ORDER_HPP
 
-#include "TptShelvingSecondOrder.hpp"
+#include "ShelvingSecondOrder.hpp"
+#include "Svf.hpp"
 
 namespace md_audio {
 
-    class HighshelfSecondOrder : public TptShelvingSecondOrder {
+    class HighshelfSecondOrder : public Svf, public ShelvingSecondOrder {
     public:
         explicit HighshelfSecondOrder();
 

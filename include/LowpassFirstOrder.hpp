@@ -1,11 +1,12 @@
 #ifndef MD_AUDIO_LOWPASS_FIRST_ORDER_HPP
 #define MD_AUDIO_LOWPASS_FIRST_ORDER_HPP
 
+#include "TptFirstOrder.hpp"
 #include "Unit.hpp"
 
 namespace md_audio {
 
-    class LowpassFirstOrder : public Unit {
+    class LowpassFirstOrder : public Unit, public TptFirstOrder {
     public:
         explicit LowpassFirstOrder();
 
@@ -16,7 +17,6 @@ namespace md_audio {
         double process(double in) noexcept;
 
     protected:
-        double m_s = 0.;
         double m_h;
     };
 

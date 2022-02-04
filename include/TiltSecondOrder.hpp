@@ -1,11 +1,12 @@
 #ifndef MD_AUDIO_TILT_SECOND_ORDER_HPP
 #define MD_AUDIO_TILT_SECOND_ORDER_HPP
 
-#include "TptSecondOrder.hpp"
+#include "ShelvingSecondOrder.hpp"
+#include "Svf.hpp"
 
 namespace md_audio {
 
-    class TiltSecondOrder : public TptSecondOrder {
+    class TiltSecondOrder : public Svf, public ShelvingSecondOrder {
     public:
         explicit TiltSecondOrder();
 
@@ -18,10 +19,6 @@ namespace md_audio {
         void set_gain(double gain) noexcept;
 
         double process(double in) noexcept;
-
-    private:
-        double m_m2;
-        double m_m2i;
     };
 
 }

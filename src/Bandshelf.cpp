@@ -28,19 +28,11 @@ Bandshelf::Bandshelf(double frequency, double r, double gain) {
 }
 
 void Bandshelf::set_gain(double gain) noexcept {
-    m_m2 = tpt::m2(gain);
+    m_m2i = tpt::m2(gain);
 }
 
 double Bandshelf::process(double in) noexcept {
-    auto bp = (m_g * (m_r2 * in - m_s2) + m_s) * tpt::d(m_r2, m_g);
+    auto bp = Svf::process(m_r2 * in, Output::BP);
 
-    // First integrator
-    auto bp2 = bp + bp;
-    m_s = bp2 - m_s;
-
-    // Second integrator
-    auto v22 = m_g * bp2;
-    m_s2 = m_s2 + v22;
-
-    return in + (m_m2 - 1) * bp;
+    return in + (m_m2i - 1) * bp;
 }

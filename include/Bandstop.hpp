@@ -1,11 +1,11 @@
 #ifndef MD_AUDIO_BANDSTOP_HPP
 #define MD_AUDIO_BANDSTOP_HPP
 
-#include "TptSecondOrder.hpp"
+#include "Svf.hpp"
 
 namespace md_audio {
 
-    class Bandstop : public TptSecondOrder {
+    class Bandstop : public Svf {
     public:
         explicit Bandstop();
 

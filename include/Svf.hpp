@@ -3,10 +3,13 @@
 
 #include <array>
 #include "TptSecondOrder.hpp"
+#include "Unit.hpp"
 
 namespace md_audio {
 
-    class Svf : public TptSecondOrder {
+    enum Output { LP, HP, BP };
+
+    class Svf : public Unit, public TptSecondOrder {
     public:
         explicit Svf();
 
@@ -14,7 +17,17 @@ namespace md_audio {
 
         explicit Svf(double frequency, double r);
 
+        void set_frequency(double frequency) noexcept;
+
+        void set_r(double r) noexcept;
+
+        double process(double in, Output output) noexcept;
+
         std::array<double, 3> process(double in) noexcept;
+
+    protected:
+        double m_g;
+        double m_r2;
     };
 
 }

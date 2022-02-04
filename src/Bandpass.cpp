@@ -1,5 +1,4 @@
 #include "Bandpass.hpp"
-#include "tpt.hpp"
 
 using md_audio::Bandpass;
 
@@ -19,15 +18,5 @@ Bandpass::Bandpass(double frequency, double r) {
 }
 
 double Bandpass::process(double in) noexcept {
-    const double bp = (m_g * (m_r2 * in - m_s2) + m_s) * tpt::d(m_r2, m_g);
-
-    // First integrator
-    auto bp2 = bp + bp;
-    m_s = bp2 - m_s;
-
-    // Second integrator
-    auto v22 = m_g * bp2;
-    m_s2 = m_s2 + v22;
-
-    return bp;
+    return Svf::process(m_r2 * in, Output::BP);
 }

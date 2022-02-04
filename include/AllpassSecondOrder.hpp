@@ -1,11 +1,11 @@
 #ifndef MD_AUDIO_ALLPASS_SECOND_ORDER_HPP
 #define MD_AUDIO_ALLPASS_SECOND_ORDER_HPP
 
-#include "TptSecondOrder.hpp"
+#include "Svf.hpp"
 
 namespace md_audio {
 
-    class AllpassSecondOrder : public TptSecondOrder {
+    class AllpassSecondOrder : public Svf {
     public:
         explicit AllpassSecondOrder();
 

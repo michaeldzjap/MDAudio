@@ -18,6 +18,27 @@ Svf::Svf(double frequency, double r) {
     set_r(r);
 }
 
+void Svf::set_frequency(double frequency) noexcept {
+    m_g = tpt::g(frequency, m_half_sample_rate, m_sample_duration);
+}
+
+void Svf::set_r(double r) noexcept {
+    m_r2 = tpt::r2(r);
+}
+
+double Svf::process(double in, Output output) noexcept {
+    std::array<double, 3> out = process(in);
+
+    switch(output) {
+        case LP:
+            return out[0];
+        case HP:
+            return out[1];
+        case BP:
+            return out[3];
+    }
+}
+
 std::array<double, 3> Svf::process(double in) noexcept {
     auto g1 = m_r2 + m_g;
     auto hp = (in - g1 * m_s - m_s2) * tpt::d(m_r2, m_g);
@@ -32,7 +53,5 @@ std::array<double, 3> Svf::process(double in) noexcept {
     auto lp = v2 + m_s2;
     m_s2 = lp + v2;
 
-    std::array<double, 3> out{ lp, hp, bp };
-
-    return out;
+    return std::array<double, 3> { lp, hp, bp };
 }

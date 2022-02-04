@@ -1,11 +1,11 @@
 #ifndef MD_AUDIO_BANDPASS_HPP
 #define MD_AUDIO_BANDPASS_HPP
 
-#include "TptSecondOrder.hpp"
+#include "Svf.hpp"
 
 namespace md_audio {
 
-    class Bandpass : public TptSecondOrder {
+    class Bandpass : public Svf {
     public:
         explicit Bandpass();
 
