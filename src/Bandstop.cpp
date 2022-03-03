@@ -1,5 +1,4 @@
 #include "Bandstop.hpp"
-#include "tpt.hpp"
 
 using md_audio::Bandstop;
 

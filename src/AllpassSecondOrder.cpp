@@ -1,5 +1,4 @@
 #include "AllpassSecondOrder.hpp"
-#include "tpt.hpp"
 
 using md_audio::AllpassSecondOrder;
 

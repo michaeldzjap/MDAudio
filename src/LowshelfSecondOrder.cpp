@@ -30,5 +30,5 @@ LowshelfSecondOrder::LowshelfSecondOrder(double frequency, double r, double gain
 double LowshelfSecondOrder::process(double in) noexcept {
     std::array<double, 3> out = Svf::process(in);
 
-    return out[0] / m_m4 + (m_r2 / m_m2) * out[2] + out[1];
+    return out[0] * m_m4 + m_r2 * m_m2 * out[2] + out[1];
 }

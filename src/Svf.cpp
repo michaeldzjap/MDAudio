@@ -36,6 +36,8 @@ double Svf::process(double in, Output output) noexcept {
             return out[1];
         case BP:
             return out[3];
+        default:
+            return out[0];
     }
 }
 
