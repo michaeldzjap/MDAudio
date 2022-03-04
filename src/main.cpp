@@ -4,9 +4,11 @@
 #include "HighpassFirstOrder.hpp"
 #include "HighpassSecondOrder.hpp"
 #include "HighshelfFirstOrder.hpp"
+#include "HighshelfSecondOrder.hpp"
 #include "LowpassFirstOrder.hpp"
 #include "LowpassSecondOrder.hpp"
 #include "LowshelfFirstOrder.hpp"
+#include "LowshelfSecondOrder.hpp"
 #include "SineOscillator.hpp"
 #include "TiltFirstOrder.hpp"
 #include "WhiteNoise.hpp"
@@ -23,9 +25,11 @@ using md_audio::HannOscillator;
 using md_audio::HighpassFirstOrder;
 using md_audio::HighpassSecondOrder;
 using md_audio::HighshelfFirstOrder;
+using md_audio::HighshelfSecondOrder;
 using md_audio::LowpassFirstOrder;
 using md_audio::LowpassSecondOrder;
 using md_audio::LowshelfFirstOrder;
+using md_audio::LowshelfSecondOrder;
 using md_audio::SineOscillator;
 using md_audio::TiltFirstOrder;
 using md_audio::WhiteNoise;
@@ -52,16 +56,20 @@ int main() {
     HighpassFirstOrder::set_sample_rate(SAMPLE_RATE);
     HighpassSecondOrder::set_sample_rate(SAMPLE_RATE);
     HighshelfFirstOrder::set_sample_rate(SAMPLE_RATE);
+    HighshelfSecondOrder::set_sample_rate(SAMPLE_RATE);
     LowpassFirstOrder::set_sample_rate(SAMPLE_RATE);
     LowpassSecondOrder::set_sample_rate(SAMPLE_RATE);
     LowshelfFirstOrder::set_sample_rate(SAMPLE_RATE);
+    LowshelfSecondOrder::set_sample_rate(SAMPLE_RATE);
     TiltFirstOrder::set_sample_rate(SAMPLE_RATE);
     // HighpassFirstOrder highpass(0.);
     HighpassSecondOrder highpass(11025., .1);
     // HighshelfFirstOrder highshelf(0., -6.);
+    HighshelfSecondOrder highshelf(11025., .1, -6.);
     // LowpassFirstOrder lowpass(22050.);
     // LowpassSecondOrder lowpass(11025., .1);
     // LowshelfFirstOrder lowshelf(0., -6.);
+    // LowshelfSecondOrder lowshelf(11025., .1, 6.);
     // TiltFirstOrder tilt(22050., -6.);
     WhiteNoise generator;
 
@@ -126,9 +134,9 @@ int main() {
     for (auto i = 0; i < 4410; i++)
         // std::cout << i << "\t" << lowpass.process(i == 0 ? 1. : 0.) << std::endl;
         // std::cout << lowpass.process(i == 0 ? 1. : 0.) << ",";
-        std::cout << highpass.process(i == 0 ? 1. : 0.) << ",";
+        // std::cout << highpass.process(i == 0 ? 1. : 0.) << ",";
         // std::cout << lowshelf.process(i == 0 ? 1. : 0. /* generator.process() */) << ",";
-        // std::cout << highshelf.process(i == 0 ? 1. : 0.) << ",";
+        std::cout << highshelf.process(i == 0 ? 1. : 0.) << ",";
         // std::cout << tilt.process(i == 0 ? 1. : 0. /* generator.process() */) << ",";
 
     std::cout << std::endl;

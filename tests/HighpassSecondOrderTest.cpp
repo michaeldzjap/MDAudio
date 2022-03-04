@@ -26,7 +26,7 @@ TEST_CASE("second order highpass can filter a signal", "[HighpassSecondOrder]") 
         for (std::size_t i = 0; i < SAMPLE_RATE / 10; i++)
             REQUIRE(highpass.process(0.) == 0.);
     }
-    SECTION("the integral of the impulse response is approximately equal to unity") {
+    SECTION("the integral of the impulse response is approximately equal to zero") {
         HighpassSecondOrder highpass(SAMPLE_RATE / 4, .1);
 
         auto sum = highpass.process(1.);

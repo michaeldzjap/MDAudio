@@ -1,22 +1,20 @@
 #include <catch2/catch_approx.hpp>
 #include <catch2/catch_test_macros.hpp>
-#include "TiltFirstOrder.hpp"
-#include "WhiteNoise.hpp"
+#include "TiltSecondOrder.hpp"
 
 using Catch::Approx;
-using md_audio::TiltFirstOrder;
-using md_audio::WhiteNoise;
+using md_audio::TiltSecondOrder;
 
-TEST_CASE("first order tilt can filter a signal", "[TiltFirstOrder]") {
+TEST_CASE("second order tilt can filter a signal", "[TiltSecondOrder]") {
     constexpr auto SAMPLE_RATE = 4410;
 
-    TiltFirstOrder::set_sample_rate(SAMPLE_RATE);
+    TiltSecondOrder::set_sample_rate(SAMPLE_RATE);
 
     SECTION("zero dB gain passes through the original signal at any cutoff frequency") {
         auto cutoff = 0.;
         auto increment = (SAMPLE_RATE / 2) / SAMPLE_RATE;
 
-        TiltFirstOrder tilt(cutoff);
+        TiltSecondOrder tilt(cutoff, .1);
 
         REQUIRE(tilt.process(1.) == 1.);
 

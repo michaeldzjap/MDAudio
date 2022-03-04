@@ -9,10 +9,12 @@ set(TESTS_SOURCES ${TESTS_SOURCES}
     HighpassFirstOrderTest.cpp
     HighpassSecondOrderTest.cpp
     HighshelfFirstOrderTest.cpp
+    HighshelfSecondOrderTest.cpp
     HannOscillatorTest.cpp
     LowpassFirstOrderTest.cpp
     LowpassSecondOrderTest.cpp
     LowshelfFirstOrderTest.cpp
+    LowshelfSecondOrderTest.cpp
     ReaderCubicTest.cpp
     ReaderLinearTest.cpp
     ReaderTest.cpp
@@ -20,6 +22,7 @@ set(TESTS_SOURCES ${TESTS_SOURCES}
     StaticPoolTest.cpp
     StaticAllocatorTest.cpp
     TiltFirstOrderTest.cpp
+    TiltSecondOrderTest.cpp
     UnitTest.cpp
     WhiteNoiseTest.cpp
     WriterTest.cpp
