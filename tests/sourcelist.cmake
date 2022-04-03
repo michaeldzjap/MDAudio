@@ -21,6 +21,9 @@ set(TESTS_SOURCES ${TESTS_SOURCES}
     SineOscillatorTest.cpp
     StaticPoolTest.cpp
     StaticAllocatorTest.cpp
+    TapDelayCubicTest.cpp
+    TapDelayLinearTest.cpp
+    TapDelayStaticTest.cpp
     TiltFirstOrderTest.cpp
     TiltSecondOrderTest.cpp
     UnitTest.cpp

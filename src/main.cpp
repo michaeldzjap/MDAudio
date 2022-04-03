@@ -1,5 +1,6 @@
 #include "AllpassCubic.hpp"
 #include "DelayCubic.hpp"
+#include "DelayStatic.hpp"
 #include "HannOscillator.hpp"
 #include "HighpassFirstOrder.hpp"
 #include "HighpassSecondOrder.hpp"
@@ -10,6 +11,9 @@
 #include "LowshelfFirstOrder.hpp"
 #include "LowshelfSecondOrder.hpp"
 #include "SineOscillator.hpp"
+#include "TapDelayCubic.hpp"
+#include "TapDelayLinear.hpp"
+#include "TapDelayStatic.hpp"
 #include "TiltFirstOrder.hpp"
 #include "WhiteNoise.hpp"
 #include "memory/StaticAllocator.hpp"
@@ -21,6 +25,7 @@
 
 using md_audio::AllpassCubic;
 using md_audio::DelayCubic;
+using md_audio::DelayStatic;
 using md_audio::HannOscillator;
 using md_audio::HighpassFirstOrder;
 using md_audio::HighpassSecondOrder;
@@ -31,6 +36,9 @@ using md_audio::LowpassSecondOrder;
 using md_audio::LowshelfFirstOrder;
 using md_audio::LowshelfSecondOrder;
 using md_audio::SineOscillator;
+using md_audio::TapDelayCubic;
+using md_audio::TapDelayLinear;
+using md_audio::TapDelayStatic;
 using md_audio::TiltFirstOrder;
 using md_audio::WhiteNoise;
 using md_audio::hann_period;
@@ -52,7 +60,16 @@ int main() {
     std::cout << std::setprecision(20);
 
     constexpr auto SAMPLE_RATE = 44100.;
+    constexpr auto TAPS = 3;
+    constexpr auto MAX_DELAY_TIME = 1.;
+    constexpr auto POOL_SIZE = next_power_of_two(
+        static_cast<std::uint32_t>(SAMPLE_RATE * MAX_DELAY_TIME * sizeof(double))
+    );
 
+    Pool<POOL_SIZE> pool;
+    Allocator<Pool<POOL_SIZE>> allocator(&pool);
+
+    DelayStatic<Allocator<Pool<POOL_SIZE>>>::set_sample_rate(SAMPLE_RATE);
     HighpassFirstOrder::set_sample_rate(SAMPLE_RATE);
     HighpassSecondOrder::set_sample_rate(SAMPLE_RATE);
     HighshelfFirstOrder::set_sample_rate(SAMPLE_RATE);
@@ -61,6 +78,9 @@ int main() {
     LowpassSecondOrder::set_sample_rate(SAMPLE_RATE);
     LowshelfFirstOrder::set_sample_rate(SAMPLE_RATE);
     LowshelfSecondOrder::set_sample_rate(SAMPLE_RATE);
+    TapDelayStatic<Allocator<Pool<POOL_SIZE>>, TAPS>::set_sample_rate(SAMPLE_RATE);
+    TapDelayLinear<Allocator<Pool<POOL_SIZE>>, TAPS>::set_sample_rate(SAMPLE_RATE);
+    TapDelayCubic<Allocator<Pool<POOL_SIZE>>, TAPS>::set_sample_rate(SAMPLE_RATE);
     TiltFirstOrder::set_sample_rate(SAMPLE_RATE);
     // HighpassFirstOrder highpass(0.);
     HighpassSecondOrder highpass(11025., .1);
@@ -70,6 +90,12 @@ int main() {
     // LowpassSecondOrder lowpass(11025., .1);
     // LowshelfFirstOrder lowshelf(0., -6.);
     // LowshelfSecondOrder lowshelf(11025., .1, 6.);
+    std::array<double, TAPS> delay_times = { .001, .005, .01 };
+    // TapDelayStatic<Allocator<Pool<POOL_SIZE>>, TAPS> delay(allocator, MAX_DELAY_TIME, delay_times);
+    // TapDelayLinear<Allocator<Pool<POOL_SIZE>>, TAPS> delay(allocator, MAX_DELAY_TIME, delay_times);
+    TapDelayCubic<Allocator<Pool<POOL_SIZE>>, TAPS> delay(allocator, MAX_DELAY_TIME, delay_times);
+    // DelayStatic<Allocator<Pool<POOL_SIZE>>> delay(allocator, MAX_DELAY_TIME, .005);
+    delay.initialise();
     // TiltFirstOrder tilt(22050., -6.);
     WhiteNoise generator;
 
@@ -129,17 +155,20 @@ int main() {
         // std::cout << i << "\t" << i / static_cast<double>(TABLE_SIZE) << std::endl;
         // std::cout << i / static_cast<double>(TABLE_SIZE) << ", ";
 
-    // WhiteNoise unit;
-
-    for (auto i = 0; i < 4410; i++)
+    for (auto i = 0; i < 4410; i++) {
         // std::cout << i << "\t" << lowpass.process(i == 0 ? 1. : 0.) << std::endl;
         // std::cout << lowpass.process(i == 0 ? 1. : 0.) << ",";
         // std::cout << highpass.process(i == 0 ? 1. : 0.) << ",";
         // std::cout << lowshelf.process(i == 0 ? 1. : 0. /* generator.process() */) << ",";
-        std::cout << highshelf.process(i == 0 ? 1. : 0.) << ",";
+        // std::cout << highshelf.process(i == 0 ? 1. : 0.) << ",";
+        auto out = delay.process(generator.process());
+        // std::cout << i << '\t' << out << std::endl;
+        std::cout << i << '\t' << out[0] << '\t' << out[1] << '\t' << out[2] << std::endl;
+        // std::cout << generator.process() << std::endl;
         // std::cout << tilt.process(i == 0 ? 1. : 0. /* generator.process() */) << ",";
+    }
 
-    std::cout << std::endl;
+    // std::cout << std::endl;
 
     return 0;
 }

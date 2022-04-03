@@ -6,18 +6,15 @@
 
 namespace md_audio {
 
-    template <typename T>
-    using Base = DelayUninterpolated<T, Reader<T>>;
-
     template <class Allocator>
-    class DelayStatic : public Base<Allocator> {
+    class DelayStatic : public DelayUninterpolated<Allocator, Reader<Allocator>> {
     public:
         explicit DelayStatic(Allocator& allocator, double max_delay_time) :
-            Base<Allocator>(allocator, max_delay_time)
+            DelayUninterpolated<Allocator, Reader<Allocator>>(allocator, max_delay_time)
         {}
 
         explicit DelayStatic(Allocator& allocator, double max_delay_time, double delay_time) :
-            Base<Allocator>(allocator, max_delay_time, delay_time)
+            DelayUninterpolated<Allocator, Reader<Allocator>>(allocator, max_delay_time, delay_time)
         {}
     };
 

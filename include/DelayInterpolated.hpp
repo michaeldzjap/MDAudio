@@ -44,7 +44,7 @@ namespace md_audio {
             m_frac = delay_samples - m_delay_samples;
         }
 
-        virtual double process(double in) noexcept {
+        double process(double in) noexcept {
             auto z = m_reader.read(m_writer.m_write_index - m_delay_samples, m_frac);
 
             m_writer.write(in);

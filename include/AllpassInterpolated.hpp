@@ -36,7 +36,7 @@ namespace md_audio {
             m_gain = clip(gain, 0., 1.);
         }
 
-        double process(double in) noexcept override {
+        double process(double in) noexcept {
             auto sd = m_reader.read(m_writer.m_write_index - m_delay_samples, m_frac);
             auto s = in + m_gain * sd;
 

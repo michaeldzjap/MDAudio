@@ -1,6 +1,7 @@
 #ifndef MD_AUDIO_WRITER_HPP
 #define MD_AUDIO_WRITER_HPP
 
+#include <cstddef>
 #include "Buffer.hpp"
 
 namespace md_audio {
@@ -29,6 +30,8 @@ namespace md_audio {
         template <class, class> friend class AllpassUninterpolated;
         template <class, class> friend class DelayInterpolated;
         template <class, class> friend class DelayUninterpolated;
+        template <class, class, std::size_t> friend class TapDelayUninterpolated;
+        template <class, class, std::size_t> friend class TapDelayInterpolated;
     };
 
 }

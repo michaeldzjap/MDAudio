@@ -6,22 +6,19 @@
 
 namespace md_audio {
 
-    template <typename T>
-    using Base = AllpassInterpolated<T, ReaderLinear<T>>;
-
     template <class Allocator>
-    class AllpassLinear : public Base<Allocator> {
+    class AllpassLinear : public AllpassInterpolated<Allocator, ReaderLinear<Allocator>> {
     public:
         explicit AllpassLinear(Allocator& allocator, double max_delay_time) :
-            Base<Allocator>(allocator, max_delay_time)
+            AllpassInterpolated<Allocator, ReaderLinear<Allocator>>(allocator, max_delay_time)
         {}
 
         explicit AllpassLinear(Allocator& allocator, double max_delay_time, double delay_time) :
-            Base<Allocator>(allocator, max_delay_time, delay_time)
+            AllpassInterpolated<Allocator, ReaderLinear<Allocator>>(allocator, max_delay_time, delay_time)
         {}
 
         explicit AllpassLinear(Allocator& allocator, double max_delay_time, double delay_time, double gain) :
-            Base<Allocator>(allocator, max_delay_time, delay_time, gain)
+            AllpassInterpolated<Allocator, ReaderLinear<Allocator>>(allocator, max_delay_time, delay_time, gain)
         {}
     };
 
