@@ -80,9 +80,9 @@ namespace md_audio {
              for (std::size_t i = 0; i < OVERLAP; ++i) {
                 auto phase = m_phasor[i].process();
 
-                 m_osc[i].set_phase(phase * TWO_PI);
+                m_osc[i].set_phase(phase * TWO_PI);
 
-                 auto window = m_osc[i].process();
+                auto window = m_osc[i].process();
 
                 m_taps[i].set_delay_time(phase * m_size);
 
