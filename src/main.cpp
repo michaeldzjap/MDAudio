@@ -10,6 +10,7 @@
 #include "LowpassSecondOrder.hpp"
 #include "LowshelfFirstOrder.hpp"
 #include "LowshelfSecondOrder.hpp"
+#include "PitchShifter.hpp"
 #include "SineOscillator.hpp"
 #include "TapDelayCubic.hpp"
 #include "TapDelayLinear.hpp"
@@ -35,6 +36,7 @@ using md_audio::LowpassFirstOrder;
 using md_audio::LowpassSecondOrder;
 using md_audio::LowshelfFirstOrder;
 using md_audio::LowshelfSecondOrder;
+using md_audio::PitchShifter;
 using md_audio::SineOscillator;
 using md_audio::TapDelayCubic;
 using md_audio::TapDelayLinear;
@@ -90,12 +92,12 @@ int main() {
     // LowpassSecondOrder lowpass(11025., .1);
     // LowshelfFirstOrder lowshelf(0., -6.);
     // LowshelfSecondOrder lowshelf(11025., .1, 6.);
-    std::array<double, TAPS> delay_times = { .001, .005, .01 };
+    // std::array<double, TAPS> delay_times = { .001, .005, .01 };
     // TapDelayStatic<Allocator<Pool<POOL_SIZE>>, TAPS> delay(allocator, MAX_DELAY_TIME, delay_times);
-    TapDelayLinear<Allocator<Pool<POOL_SIZE>>, TAPS> delay(allocator, MAX_DELAY_TIME, delay_times);
+    // TapDelayLinear<Allocator<Pool<POOL_SIZE>>, TAPS> delay(allocator, MAX_DELAY_TIME, delay_times);
     // TapDelayCubic<Allocator<Pool<POOL_SIZE>>, TAPS> delay(allocator, MAX_DELAY_TIME, delay_times);
     // DelayStatic<Allocator<Pool<POOL_SIZE>>> delay(allocator, MAX_DELAY_TIME, .005);
-    delay.initialise();
+    // delay.initialise();
     // TiltFirstOrder tilt(22050., -6.);
     WhiteNoise generator;
 
@@ -104,6 +106,10 @@ int main() {
 
     // SineOscillator::set_sample_rate(SAMPLE_RATE);
     // SineOscillator osc(2. * SAMPLE_RATE / TABLE_SIZE);
+
+    PitchShifter<Allocator<Pool<POOL_SIZE>>>::set_sample_rate(SAMPLE_RATE);
+    PitchShifter<Allocator<Pool<POOL_SIZE>>> shifter(allocator, MAX_DELAY_TIME, .02);
+    shifter.initialise();
 
     // for (std::size_t i = 0; i < TABLE_SIZE / 2 + 1; ++i)
     //     // std::cout << i << "\t" << osc.process() << std::endl;
@@ -161,9 +167,10 @@ int main() {
         // std::cout << highpass.process(i == 0 ? 1. : 0.) << ",";
         // std::cout << lowshelf.process(i == 0 ? 1. : 0. /* generator.process() */) << ",";
         // std::cout << highshelf.process(i == 0 ? 1. : 0.) << ",";
-        auto out = delay.process(generator.process());
-        // std::cout << i << '\t' << out << std::endl;
-        std::cout << i << '\t' << out[0] << '\t' << out[1] << '\t' << out[2] << std::endl;
+        // auto out = delay.process(generator.process());
+        auto out = shifter.process(generator.process());
+        std::cout << i << '\t' << out << std::endl;
+        // std::cout << i << '\t' << out[0] << '\t' << out[1] << '\t' << out[2] << std::endl;
         // std::cout << generator.process() << std::endl;
         // std::cout << tilt.process(i == 0 ? 1. : 0. /* generator.process() */) << ",";
     }

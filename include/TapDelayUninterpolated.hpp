@@ -18,11 +18,10 @@ namespace md_audio {
     class TapDelayUninterpolated : public Unit {
     public:
         explicit TapDelayUninterpolated(Allocator& allocator, double max_delay_time) :
-            m_max_delay_samples(m_sample_rate * max_delay_time),
-            m_buffer(allocator, next_power_of_two(m_max_delay_samples)),
+            m_buffer(allocator, next_power_of_two<std::uint32_t>(m_sample_rate * max_delay_time)),
             m_writer(m_buffer),
             m_reader(m_buffer),
-            m_taps(make_array<TAPS>(TapUninterpolated(m_writer, m_reader, m_max_delay_samples)))
+            m_taps(make_array<TAPS>(TapUninterpolated(m_writer, m_reader, m_sample_rate * max_delay_time)))
         {
             std::array<double, TAPS> delay_times { 0. };
 
@@ -32,11 +31,10 @@ namespace md_audio {
         explicit TapDelayUninterpolated(
             Allocator& allocator, double max_delay_time, std::array<double, TAPS>& delay_times
         ) :
-            m_max_delay_samples(m_sample_rate * max_delay_time),
-            m_buffer(allocator, next_power_of_two(m_max_delay_samples)),
+            m_buffer(allocator, next_power_of_two<std::uint32_t>(m_sample_rate * max_delay_time)),
             m_writer(m_buffer),
             m_reader(m_buffer),
-            m_taps(make_array<TAPS>(TapUninterpolated(m_writer, m_reader, m_max_delay_samples)))
+            m_taps(make_array<TAPS>(TapUninterpolated(m_writer, m_reader, m_sample_rate * max_delay_time)))
         {
             set_delay_time(delay_times);
         }
@@ -62,8 +60,6 @@ namespace md_audio {
         }
 
     private:
-        std::uint32_t m_max_delay_samples;
-        std::array<std::uint32_t, TAPS> m_delay_samples;
         Buffer<Allocator> m_buffer;
         Writer<Allocator> m_writer;
         Reader m_reader;

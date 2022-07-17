@@ -7,9 +7,11 @@ namespace md_audio {
 
     class SineOscillator : public Oscillator {
     public:
-        SineOscillator(double frequency);
+        explicit SineOscillator();
 
-        SineOscillator(double frequency, double phase);
+        explicit SineOscillator(double frequency);
+
+        explicit SineOscillator(double frequency, double phase);
 
         double process() noexcept;
     };

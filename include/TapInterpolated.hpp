@@ -14,11 +14,11 @@ namespace md_audio {
     class TapInterpolated : public Unit {
     public:
         explicit TapInterpolated(Writer<Allocator>& writer, Reader& reader, std::uint32_t max_delay_samples) :
+            m_writer(writer),
+            m_reader(reader),
             m_max_delay_samples(max_delay_samples),
             m_delay_samples(1),
-            m_frac(0.),
-            m_writer(writer),
-            m_reader(reader)
+            m_frac(0.)
         {}
 
         void set_delay_time(double delay_time) noexcept {
@@ -35,11 +35,11 @@ namespace md_audio {
         }
 
     private:
+        Writer<Allocator>& m_writer;
+        Reader m_reader;
         std::uint32_t m_max_delay_samples;
         std::uint32_t m_delay_samples;
         double m_frac;
-        Writer<Allocator>& m_writer;
-        Reader m_reader;
     };
 
 }

@@ -4,6 +4,8 @@
 using md_audio::HannOscillator;
 using md_audio::Oscillator;
 
+HannOscillator::HannOscillator() : Oscillator(1.) {}
+
 HannOscillator::HannOscillator(double frequency) : Oscillator(frequency) {}
 
 HannOscillator::HannOscillator(double frequency, double phase) : Oscillator(frequency, phase) {}

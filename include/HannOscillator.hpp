@@ -7,9 +7,11 @@ namespace md_audio {
 
     class HannOscillator : public Oscillator {
     public:
-        HannOscillator(double frequency);
+        explicit HannOscillator();
 
-        HannOscillator(double frequency, double phase);
+        explicit HannOscillator(double frequency);
+
+        explicit HannOscillator(double frequency, double phase);
 
         double process() noexcept;
     };
