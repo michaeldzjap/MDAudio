@@ -5,6 +5,7 @@
 #include <cmath>
 #include <cstdint>
 #include <type_traits>
+#include <utility>
 #include "tables.hpp"
 
 namespace md_audio::utility {
@@ -210,6 +211,16 @@ namespace md_audio::utility {
             sum += item;
 
         return sum;
+    }
+
+    template <typename T, std::size_t ...Is>
+    inline constexpr std::array<T, sizeof...(Is)> make_array(const T& def, std::index_sequence<Is...>) noexcept {
+        return {{(static_cast<void>(Is), def)...}};
+    }
+
+    template <std::size_t N, typename T>
+    inline constexpr std::array<T, N> make_array(const T& def) noexcept {
+        return make_array(def, std::make_index_sequence<N>());
     }
 
 }

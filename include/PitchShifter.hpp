@@ -7,6 +7,7 @@
 #include "Phasor.hpp"
 #include "TapDelayLinear.hpp"
 #include "Unit.hpp"
+#include "constants.hpp"
 
 namespace md_audio {
 
@@ -28,6 +29,20 @@ namespace md_audio {
             }
 
             return result;
+        }
+
+        void set_transposition(double transposition) noexcept {
+            //
+        }
+
+        double process(double in) noexcept {
+            auto z = 0.;
+
+             for (std::size_t i = 0; i < OVERLAP; ++i) {
+                auto phase = m_phasor[i].process();
+
+                 m_osc[i].set_phase(phase * TWO_PI);
+             }
         }
 
     private:

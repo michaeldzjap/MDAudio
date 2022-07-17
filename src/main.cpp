@@ -92,8 +92,8 @@ int main() {
     // LowshelfSecondOrder lowshelf(11025., .1, 6.);
     std::array<double, TAPS> delay_times = { .001, .005, .01 };
     // TapDelayStatic<Allocator<Pool<POOL_SIZE>>, TAPS> delay(allocator, MAX_DELAY_TIME, delay_times);
-    // TapDelayLinear<Allocator<Pool<POOL_SIZE>>, TAPS> delay(allocator, MAX_DELAY_TIME, delay_times);
-    TapDelayCubic<Allocator<Pool<POOL_SIZE>>, TAPS> delay(allocator, MAX_DELAY_TIME, delay_times);
+    TapDelayLinear<Allocator<Pool<POOL_SIZE>>, TAPS> delay(allocator, MAX_DELAY_TIME, delay_times);
+    // TapDelayCubic<Allocator<Pool<POOL_SIZE>>, TAPS> delay(allocator, MAX_DELAY_TIME, delay_times);
     // DelayStatic<Allocator<Pool<POOL_SIZE>>> delay(allocator, MAX_DELAY_TIME, .005);
     delay.initialise();
     // TiltFirstOrder tilt(22050., -6.);

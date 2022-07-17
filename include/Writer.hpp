@@ -30,6 +30,8 @@ namespace md_audio {
         template <class, class> friend class AllpassUninterpolated;
         template <class, class> friend class DelayInterpolated;
         template <class, class> friend class DelayUninterpolated;
+        template <class, class> friend class TapInterpolated;
+        template <class, class> friend class TapUninterpolated;
         template <class, class, std::size_t> friend class TapDelayUninterpolated;
         template <class, class, std::size_t> friend class TapDelayInterpolated;
     };
