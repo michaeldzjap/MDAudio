@@ -1,10 +1,9 @@
-#ifndef MD_AUDIO_TAP_DELAY_UNINTERPOLATED_HPP
-#define MD_AUDIO_TAP_DELAY_UNINTERPOLATED_HPP
+#ifndef MD_AUDIO_TAP_DELAY_HPP
+#define MD_AUDIO_TAP_DELAY_HPP
 
 #include <array>
 #include <cstddef>
 #include "Buffer.hpp"
-#include "TapUninterpolated.hpp"
 #include "Unit.hpp"
 #include "Writer.hpp"
 #include "utility.hpp"
@@ -14,27 +13,27 @@ using md_audio::utility::next_power_of_two;
 
 namespace md_audio {
 
-    template <class Allocator, class Reader, std::size_t TAPS = 2>
-    class TapDelayUninterpolated : public Unit {
+    template <class Allocator, class Reader, class Tap, std::size_t TAPS = 2>
+    class TapDelay : public Unit {
     public:
-        explicit TapDelayUninterpolated(Allocator& allocator, double max_delay_time) :
+        explicit TapDelay(Allocator& allocator, double max_delay_time) :
             m_buffer(allocator, next_power_of_two<std::uint32_t>(m_sample_rate * max_delay_time)),
             m_writer(m_buffer),
             m_reader(m_buffer),
-            m_taps(make_array<TAPS>(TapUninterpolated(m_writer, m_reader, m_sample_rate * max_delay_time)))
+            m_taps(make_array<TAPS>(Tap(m_writer, m_reader, m_sample_rate * max_delay_time)))
         {
             std::array<double, TAPS> delay_times { 0. };
 
             set_delay_time(delay_times);
         }
 
-        explicit TapDelayUninterpolated(
+        explicit TapDelay(
             Allocator& allocator, double max_delay_time, std::array<double, TAPS>& delay_times
         ) :
             m_buffer(allocator, next_power_of_two<std::uint32_t>(m_sample_rate * max_delay_time)),
             m_writer(m_buffer),
             m_reader(m_buffer),
-            m_taps(make_array<TAPS>(TapUninterpolated(m_writer, m_reader, m_sample_rate * max_delay_time)))
+            m_taps(make_array<TAPS>(Tap(m_writer, m_reader, m_sample_rate * max_delay_time)))
         {
             set_delay_time(delay_times);
         }
@@ -63,9 +62,9 @@ namespace md_audio {
         Buffer<Allocator> m_buffer;
         Writer<Allocator> m_writer;
         Reader m_reader;
-        std::array<TapUninterpolated<Allocator, Reader>, TAPS> m_taps;
+        std::array<Tap, TAPS> m_taps;
     };
 
 }
 
-#endif /* MD_AUDIO_TAP_DELAY_UNINTERPOLATED_HPP */
+#endif /* MD_AUDIO_TAP_DELAY_HPP */

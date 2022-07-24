@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.13)
 project (MDAudio VERSION 0.0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -10,9 +10,6 @@ include_directories("${CMAKE_SOURCE_DIR}/include/memory")
 
 add_subdirectory(src)
 
-include(CTest)
-
 if (BUILD_TESTING)
-    add_subdirectory(vendor/catch2)
     add_subdirectory(tests)
 endif()
