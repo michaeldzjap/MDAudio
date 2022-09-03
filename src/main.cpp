@@ -1,4 +1,5 @@
 #include "AllpassCubic.hpp"
+#include "Bandpass.hpp"
 #include "DelayCubic.hpp"
 #include "DelayStatic.hpp"
 #include "HannOscillator.hpp"
@@ -16,6 +17,7 @@
 #include "TapDelayLinear.hpp"
 #include "TapDelayStatic.hpp"
 #include "TiltFirstOrder.hpp"
+#include "TiltSecondOrder.hpp"
 #include "WhiteNoise.hpp"
 #include "memory/StaticAllocator.hpp"
 #include "memory/StaticPool.hpp"
@@ -25,6 +27,7 @@
 #include <iostream>
 
 using md_audio::AllpassCubic;
+using md_audio::Bandpass;
 using md_audio::DelayCubic;
 using md_audio::DelayStatic;
 using md_audio::HannOscillator;
@@ -42,6 +45,7 @@ using md_audio::TapDelayCubic;
 using md_audio::TapDelayLinear;
 using md_audio::TapDelayStatic;
 using md_audio::TiltFirstOrder;
+using md_audio::TiltSecondOrder;
 using md_audio::WhiteNoise;
 using md_audio::hann_period;
 using md_audio::memory::StaticAllocator;
@@ -84,10 +88,12 @@ int main() {
     TapDelayLinear<Allocator<Pool<POOL_SIZE>>, TAPS>::set_sample_rate(SAMPLE_RATE);
     TapDelayCubic<Allocator<Pool<POOL_SIZE>>, TAPS>::set_sample_rate(SAMPLE_RATE);
     TiltFirstOrder::set_sample_rate(SAMPLE_RATE);
+    TiltSecondOrder::set_sample_rate(SAMPLE_RATE);
+    Bandpass::set_sample_rate(SAMPLE_RATE);
     // HighpassFirstOrder highpass(0.);
-    HighpassSecondOrder highpass(11025., .1);
+    // HighpassSecondOrder highpass(11025., .1);
     // HighshelfFirstOrder highshelf(0., -6.);
-    HighshelfSecondOrder highshelf(11025., .1, -6.);
+    // HighshelfSecondOrder highshelf(11025., .1, -6.);
     // LowpassFirstOrder lowpass(22050.);
     // LowpassSecondOrder lowpass(11025., .1);
     // LowshelfFirstOrder lowshelf(0., -6.);
@@ -99,6 +105,7 @@ int main() {
     // DelayStatic<Allocator<Pool<POOL_SIZE>>> delay(allocator, MAX_DELAY_TIME, .005);
     // delay.initialise();
     // TiltFirstOrder tilt(22050., -6.);
+    Bandpass bandpass(11025., 10.);
     WhiteNoise generator;
 
     // HannOscillator::set_sample_rate(SAMPLE_RATE);
@@ -107,9 +114,9 @@ int main() {
     // SineOscillator::set_sample_rate(SAMPLE_RATE);
     // SineOscillator osc(2. * SAMPLE_RATE / TABLE_SIZE);
 
-    PitchShifter<Allocator<Pool<POOL_SIZE>>>::set_sample_rate(SAMPLE_RATE);
-    PitchShifter<Allocator<Pool<POOL_SIZE>>> shifter(allocator, MAX_DELAY_TIME, .02);
-    shifter.initialise();
+    // PitchShifter<Allocator<Pool<POOL_SIZE>>>::set_sample_rate(SAMPLE_RATE);
+    // PitchShifter<Allocator<Pool<POOL_SIZE>>> shifter(allocator, MAX_DELAY_TIME, .01);
+    // shifter.initialise();
 
     // for (std::size_t i = 0; i < TABLE_SIZE / 2 + 1; ++i)
     //     // std::cout << i << "\t" << osc.process() << std::endl;
@@ -168,7 +175,8 @@ int main() {
         // std::cout << lowshelf.process(i == 0 ? 1. : 0. /* generator.process() */) << ",";
         // std::cout << highshelf.process(i == 0 ? 1. : 0.) << ",";
         // auto out = delay.process(generator.process());
-        auto out = shifter.process(generator.process());
+        // auto out = shifter.process(generator.process());
+        auto out = bandpass.process(generator.process());
         std::cout << i << '\t' << out << std::endl;
         // std::cout << i << '\t' << out[0] << '\t' << out[1] << '\t' << out[2] << std::endl;
         // std::cout << generator.process() << std::endl;
