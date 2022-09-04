@@ -1,8 +1,6 @@
-#ifndef MD_AUDIO_PITCH_SHIFTER_HPP
-#define MD_AUDIO_PITCH_SHIFTER_HPP
+#ifndef MD_AUDIO_REVERSE_DELAY_HPP
+#define MD_AUDIO_REVERSE_DELAY_HPP
 
-#include <array>
-#include <cstddef>
 #include "Buffer.hpp"
 #include "HannOscillator.hpp"
 #include "Phasor.hpp"
@@ -15,38 +13,22 @@
 
 using md_audio::utility::clip;
 using md_audio::utility::make_array;
-using md_audio::utility::midi_ratio;
 using md_audio::utility::next_power_of_two;
 
 namespace md_audio {
 
     template <class Allocator, std::size_t OVERLAP = 2, class Reader = ReaderLinear<Allocator>>
-    class PitchShifter : public Unit {
+    class ReverseDelay : public Unit {
     public:
-        explicit PitchShifter(Allocator& allocator, double max_size, double size) :
+        explicit ReverseDelay(Allocator& allocator, double max_size, double size) :
             m_buffer(allocator, next_power_of_two<std::uint32_t>(m_sample_rate * max_size)),
             m_writer(m_buffer),
             m_reader(m_buffer),
             m_taps(make_array<OVERLAP>(TapInterpolated(m_writer, m_reader, m_sample_rate * max_size))),
             m_max_size(max_size),
-            m_norm(2. / OVERLAP),
-            m_size(clip(size, .01, m_max_size)),
-            m_transposition(0.)
+            m_norm(2. / OVERLAP)
         {
-            set_frequency();
-        }
-
-        explicit PitchShifter(Allocator& allocator, double max_size, double size, double transposition) :
-            m_buffer(allocator, next_power_of_two<std::uint32_t>(m_sample_rate * max_size)),
-            m_writer(m_buffer),
-            m_reader(m_buffer),
-            m_taps(make_array<OVERLAP>(TapInterpolated(m_writer, m_reader, m_sample_rate * max_size))),
-            m_max_size(max_size),
-            m_norm(2. / OVERLAP),
-            m_size(clip(size, .01, m_max_size)),
-            m_transposition(clip(transposition, -24., 24.))
-        {
-            set_frequency();
+            set_size(size);
         }
 
         bool initialise() noexcept {
@@ -55,7 +37,7 @@ namespace md_audio {
             if (!result) return result;
 
             for (std::size_t i = 0; i < OVERLAP; ++i) {
-                m_phasor[i].set_phase(1. - static_cast<double>(i) / OVERLAP);
+                m_phasor[i].set_phase(static_cast<double>(i) / OVERLAP);
                 m_osc[i].set_frequency(0.);
             }
 
@@ -66,12 +48,6 @@ namespace md_audio {
             m_size = clip(size, .01, m_max_size);
 
             set_frequency();
-        }
-
-        void set_transposition(double transposition) noexcept {
-             m_transposition = clip(transposition, -24., 24.);
-
-             set_frequency();
         }
 
         double process(double in) noexcept {
@@ -104,10 +80,9 @@ namespace md_audio {
         const double m_max_size;
         const double m_norm;
         double m_size;
-        double m_transposition;
 
         void set_frequency() noexcept {
-            auto frequency = -(midi_ratio(m_transposition) - 1.) / m_size;
+            auto frequency = 2. / m_size;
 
             for (std::size_t i = 0; i < OVERLAP; ++i)
                 m_phasor[i].set_frequency(frequency);
@@ -116,4 +91,4 @@ namespace md_audio {
 
 }
 
-#endif /* MD_AUDIO_PITCH_SHIFTER_HPP */
+#endif /* MD_AUDIO_REVERSE_DELAY_HPP */

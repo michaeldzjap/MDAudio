@@ -12,6 +12,7 @@
 #include "LowshelfFirstOrder.hpp"
 #include "LowshelfSecondOrder.hpp"
 #include "PitchShifter.hpp"
+#include "ReverseDelay.hpp"
 #include "SineOscillator.hpp"
 #include "TapDelayCubic.hpp"
 #include "TapDelayLinear.hpp"
@@ -40,6 +41,7 @@ using md_audio::LowpassSecondOrder;
 using md_audio::LowshelfFirstOrder;
 using md_audio::LowshelfSecondOrder;
 using md_audio::PitchShifter;
+using md_audio::ReverseDelay;
 using md_audio::SineOscillator;
 using md_audio::TapDelayCubic;
 using md_audio::TapDelayLinear;
@@ -67,7 +69,7 @@ int main() {
 
     constexpr auto SAMPLE_RATE = 44100.;
     constexpr auto TAPS = 3;
-    constexpr auto MAX_DELAY_TIME = 1.;
+    constexpr auto MAX_DELAY_TIME = 5.;
     constexpr auto POOL_SIZE = next_power_of_two(
         static_cast<std::uint32_t>(SAMPLE_RATE * MAX_DELAY_TIME * sizeof(double))
     );
@@ -105,7 +107,7 @@ int main() {
     // DelayStatic<Allocator<Pool<POOL_SIZE>>> delay(allocator, MAX_DELAY_TIME, .005);
     // delay.initialise();
     // TiltFirstOrder tilt(22050., -6.);
-    Bandpass bandpass(11025., 10.);
+    // Bandpass bandpass(11025., 10.);
     WhiteNoise generator;
 
     // HannOscillator::set_sample_rate(SAMPLE_RATE);
@@ -117,6 +119,10 @@ int main() {
     // PitchShifter<Allocator<Pool<POOL_SIZE>>>::set_sample_rate(SAMPLE_RATE);
     // PitchShifter<Allocator<Pool<POOL_SIZE>>> shifter(allocator, MAX_DELAY_TIME, .01);
     // shifter.initialise();
+
+    ReverseDelay<Allocator<Pool<POOL_SIZE>>>::set_sample_rate(SAMPLE_RATE);
+    ReverseDelay<Allocator<Pool<POOL_SIZE>>> delay(allocator, MAX_DELAY_TIME, .01);
+    delay.initialise();
 
     // for (std::size_t i = 0; i < TABLE_SIZE / 2 + 1; ++i)
     //     // std::cout << i << "\t" << osc.process() << std::endl;
@@ -176,7 +182,8 @@ int main() {
         // std::cout << highshelf.process(i == 0 ? 1. : 0.) << ",";
         // auto out = delay.process(generator.process());
         // auto out = shifter.process(generator.process());
-        auto out = bandpass.process(generator.process());
+        // auto out = bandpass.process(generator.process());
+        auto out = delay.process(generator.process());
         std::cout << i << '\t' << out << std::endl;
         // std::cout << i << '\t' << out[0] << '\t' << out[1] << '\t' << out[2] << std::endl;
         // std::cout << generator.process() << std::endl;
