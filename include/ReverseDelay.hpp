@@ -1,6 +1,8 @@
 #ifndef MD_AUDIO_REVERSE_DELAY_HPP
 #define MD_AUDIO_REVERSE_DELAY_HPP
 
+#include <array>
+#include <cstddef>
 #include "Buffer.hpp"
 #include "HannOscillator.hpp"
 #include "Phasor.hpp"
