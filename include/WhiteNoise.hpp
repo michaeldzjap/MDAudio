@@ -1,20 +1,22 @@
 #ifndef MD_AUDIO_WHITE_NOISE_HPP
 #define MD_AUDIO_WHITE_NOISE_HPP
 
-#include "Taus88.hpp"
-#include "interfaces/Generatable.hpp"
-#include "types.hpp"
+#include <random>
 
 namespace md_audio {
 
-    class WhiteNoise : public Generatable<MdFloat> {
+    class WhiteNoise {
     public:
-        WhiteNoise() = default;
+        explicit WhiteNoise();
 
-        MdFloat perform() noexcept override final;
+        double process() noexcept;
 
     private:
-        Taus88 m_generator;
+        std::random_device rd;
+        std::default_random_engine urbg;
+        std::uniform_real_distribution<double> dist;
+
+        void initialise() noexcept;
     };
 
 }

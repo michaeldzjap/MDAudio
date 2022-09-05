@@ -1,13 +1,12 @@
 #ifndef MD_AUDIO_STATIC_ALLOCATOR_HPP
 #define MD_AUDIO_STATIC_ALLOCATOR_HPP
 
-#include "interfaces/Allocatable.hpp"
 #include <type_traits>
 
 namespace md_audio::memory {
 
     template <typename T, typename Pool>
-    class StaticAllocator : public Allocatable<T*> {
+    class StaticAllocator {
     public:
         template <typename U, typename P>
         friend class StaticAllocator;
@@ -24,21 +23,25 @@ namespace md_audio::memory {
         template <typename U, typename P>
         StaticAllocator(StaticAllocator<U, P> const& that) : m_pool(that.m_pool) {}
 
-        [[nodiscard]] pointer allocate(std::size_t n) override final {
+        [[nodiscard]] pointer allocate(std::size_t n) noexcept {
             return static_cast<pointer>(m_pool->allocate(n * sizeof(T)));
         }
 
-        void deallocate(pointer ptr, std::size_t n [[maybe_unused]]) override final {
+        void deallocate(pointer ptr) noexcept {
             m_pool->deallocate(ptr);
         }
 
+        void deallocate(pointer ptr, std::size_t n [[maybe_unused]]) noexcept {
+            deallocate(ptr);
+        }
+
         template <typename U, typename P>
-        bool operator==(StaticAllocator<U, P> const& that) const {
+        bool operator==(StaticAllocator<U, P> const& that) const noexcept {
             return m_pool == that.m_pool;
         }
 
         template <typename U, typename P>
-        bool operator!=(StaticAllocator<U, P> const& that) const {
+        bool operator!=(StaticAllocator<U, P> const& that) const noexcept {
             return m_pool != that.m_pool;
         }
 

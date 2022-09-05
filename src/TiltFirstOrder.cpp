@@ -1,22 +1,32 @@
+#include <cmath>
 #include "TiltFirstOrder.hpp"
+#include "tpt.hpp"
 
 using md_audio::TiltFirstOrder;
-using md_audio::MdFloat;
 
-TiltFirstOrder::TiltFirstOrder() {
-    set_frequency(static_cast<MdFloat>(440));
+TiltFirstOrder::TiltFirstOrder() : LowpassFirstOrder() {
+    set_gain(0.);
 }
 
-TiltFirstOrder::TiltFirstOrder(MdFloat frequency) {
-    set_frequency(frequency);
+TiltFirstOrder::TiltFirstOrder(double frequency) :
+    LowpassFirstOrder(frequency)
+{
+    set_gain(0.);
 }
 
-MdFloat TiltFirstOrder::perform(MdFloat in) noexcept {
-    auto x = static_cast<double>(in);
-    auto v = (x - m_s) * m_g / (1. + m_g);
-    auto y = v + m_s;
+TiltFirstOrder::TiltFirstOrder(double frequency, double gain) :
+    LowpassFirstOrder(frequency)
+{
+    set_gain(gain);
+}
 
-    m_s = y + v;
+void TiltFirstOrder::set_gain(double gain) noexcept {
+    m_m = std::sqrt(tpt::m2(gain));
+    m_mi = 1. / m_m;
+}
 
-    return static_cast<MdFloat>(m_mi * y + m_m * (x - y));
+double TiltFirstOrder::process(double in) noexcept {
+    auto y = LowpassFirstOrder::process(in);
+
+    return m_mi * y + m_m * (in - y);
 }

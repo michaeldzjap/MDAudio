@@ -1,21 +1,15 @@
 #ifndef MD_AUDIO_LATCH_HPP
 #define MD_AUDIO_LATCH_HPP
 
-#include "interfaces/DuoProcessable.hpp"
-#include "types.hpp"
-#include "utility.hpp"
-
 namespace md_audio {
 
-    class Latch : public DuoProcessable<MdFloat, MdFloat> {
+    class Latch {
     public:
-        Latch() = default;
-
-        MdFloat perform(MdFloat, MdFloat) noexcept override final;
+        double process(double in1, double in2) noexcept;
 
     private:
-        MdFloat m_level = static_cast<MdFloat>(0);
-        MdFloat m_previous = static_cast<MdFloat>(0);
+        double m_level = 0.;
+        double m_previous = 0.;
     };
 
 }

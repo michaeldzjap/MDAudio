@@ -1,53 +1,31 @@
 #ifndef MD_AUDIO_PHASOR_HPP
 #define MD_AUDIO_PHASOR_HPP
 
-#include "SampleRate.hpp"
-#include "interfaces/Generatable.hpp"
-#include "interfaces/Processable.hpp"
-#include "types.hpp"
-#include "utility.hpp"
+#include "Unit.hpp"
 
 namespace md_audio {
 
-    class Phasor :
-        public SampleRate,
-        public Generatable<MdFloat>,
-        public Processable<MdFloat, MdFloat>
-    {
+    class Phasor : public Unit {
     public:
         explicit Phasor();
 
-        explicit Phasor(MdFloat);
+        explicit Phasor(double frequency);
 
-        explicit Phasor(MdFloat, MdFloat);
+        explicit Phasor(double frequency, double phase);
 
-        inline void set_frequency(MdFloat) noexcept;
+        void set_frequency(double frequency) noexcept;
 
-        inline void set_phase(MdFloat) noexcept;
+        void set_phase(double phase) noexcept;
 
-        MdFloat perform(void) noexcept override final;
+        double process() noexcept;
 
-        MdFloat perform(MdFloat) noexcept override final;
+        double process(double in) noexcept;
 
     private:
         double m_rate;
         double m_level = 0.;
-        MdFloat m_previous = static_cast<MdFloat>(0);
+        double m_previous = 0.;
     };
-
-    void Phasor::set_frequency(MdFloat frequency) noexcept {
-        m_rate = static_cast<double>(
-            utility::clip(
-                frequency,
-                static_cast<MdFloat>(-m_half_sample_rate),
-                static_cast<MdFloat>(m_half_sample_rate)
-            )
-        ) * m_sample_duration;
-    }
-
-    void Phasor::set_phase(MdFloat phase) noexcept {
-        m_level = utility::clip(phase, static_cast<MdFloat>(0), static_cast<MdFloat>(1));
-    }
 
 }
 

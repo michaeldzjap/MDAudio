@@ -1,44 +1,20 @@
 #ifndef MD_AUDIO_ALLPASS_SECOND_ORDER_HPP
 #define MD_AUDIO_ALLPASS_SECOND_ORDER_HPP
 
-#include "TptFilter.hpp"
-#include "TptSecondOrder.hpp"
-#include "interfaces/Processable.hpp"
+#include "Svf.hpp"
 
 namespace md_audio {
 
-    class AllpassSecondOrder :
-        public TptFilter,
-        public TptSecondOrder,
-        public Processable<MdFloat, MdFloat>
-    {
+    class AllpassSecondOrder : public Svf {
     public:
         explicit AllpassSecondOrder();
 
-        explicit AllpassSecondOrder(MdFloat);
+        explicit AllpassSecondOrder(double frequency);
 
-        explicit AllpassSecondOrder(MdFloat, MdFloat);
+        explicit AllpassSecondOrder(double frequency, double r);
 
-        inline void set_frequency(MdFloat) noexcept;
-
-        inline void set_r(MdFloat) noexcept;
-
-        MdFloat perform(MdFloat) noexcept override final;
-
-    private:
-        double m_s1 = 0.;
-        double m_s2 = 0.;
-        double m_g;
-        double m_r2;
+        double process(double in) noexcept;
     };
-
-    void AllpassSecondOrder::set_frequency(MdFloat frequency) noexcept {
-        m_g = g(static_cast<double>(frequency));
-    }
-
-    void AllpassSecondOrder::set_r(MdFloat r) noexcept {
-        m_r2 = r2(static_cast<double>(r));
-    }
 
 }
 

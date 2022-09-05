@@ -1,43 +1,49 @@
 #include "Phasor.hpp"
+#include "utility.hpp"
 
-using md_audio::MdFloat;
 using md_audio::Phasor;
 
 Phasor::Phasor() {
-    set_frequency(static_cast<MdFloat>(440));
+    set_frequency(440.);
 }
 
-Phasor::Phasor(MdFloat frequency) {
+Phasor::Phasor(double frequency) {
     set_frequency(frequency);
 }
 
-Phasor::Phasor(MdFloat frequency, MdFloat phase) {
+Phasor::Phasor(double frequency, double phase) {
     set_frequency(frequency);
-    m_level = utility::clip(phase, static_cast<MdFloat>(0), static_cast<MdFloat>(1));
+
+    m_level = utility::clip(phase, 0., 1.);
 }
 
-MdFloat Phasor::perform(void) noexcept {
+void Phasor::set_frequency(double frequency) noexcept {
+    m_rate = utility::clip(
+        frequency, -m_half_sample_rate, m_half_sample_rate
+    ) * m_sample_duration;
+}
+
+void Phasor::set_phase(double phase) noexcept {
+    m_level = utility::clip(phase, 0., 1.);
+}
+
+double Phasor::process() noexcept {
     auto z = m_level;
 
     m_level += m_rate;
     m_level = utility::wrap(m_level, 0., 1.);
 
-    return static_cast<MdFloat>(z);
+    return z;
 }
 
-MdFloat Phasor::perform(MdFloat in) noexcept {
-    if (m_previous <= static_cast<MdFloat>(0) && in > static_cast<MdFloat>(0)) {
-        auto frac = static_cast<MdFloat>(1) - m_previous / (in - m_previous);
+double Phasor::process(double in) noexcept {
+    if (m_previous <= 0. && in > 0.) {
+        auto frac = 1. - m_previous / (in - m_previous);
 
         m_level = frac * m_rate;
     }
 
-    auto z = m_level;
-
-    m_level += m_rate;
-    m_level = utility::wrap(m_level, 0., 1.);
-
     m_previous = in;
 
-    return static_cast<MdFloat>(z);
+    return process();
 }

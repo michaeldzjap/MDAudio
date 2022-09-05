@@ -3,17 +3,11 @@
 
 namespace md_audio {
 
-    constexpr auto sample_rate = static_cast<double>(44100);
-    constexpr auto sample_duration = 1. / sample_rate;
-    constexpr auto half_sample_rate = sample_rate * .5;
-
-    constexpr auto two_pi = 6.2831853071795862;
-    constexpr auto pi = 3.1415926535897931;
-    constexpr auto three_quarter_pi = 2.3561944901923448;
-    constexpr auto half_pi = 1.5707963267948966;
-    constexpr auto quarter_pi = .7853981633974483;
-
-    constexpr auto pi_over_sample_rate = pi * sample_duration;
+    constexpr auto TWO_PI = 6.28318530717958647692;
+    constexpr auto PI = 3.14159265358979323846;
+    constexpr auto THREE_QUARTER_PI = 2.356194490192344928845;
+    constexpr auto HALF_PI = 1.57079632679489661923;
+    constexpr auto QUARTER_PI = .785398163397448309616;
 
 }
 

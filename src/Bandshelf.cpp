@@ -1,43 +1,38 @@
 #include "Bandshelf.hpp"
+#include "tpt.hpp"
 
 using md_audio::Bandshelf;
-using md_audio::MdFloat;
 
 Bandshelf::Bandshelf() {
-    set_frequency(static_cast<MdFloat>(440));
-    set_r(static_cast<MdFloat>(1));
-    set_gain(static_cast<MdFloat>(0));
+    set_frequency(440.);
+    set_r(1.);
+    set_gain(0.);
 }
 
-Bandshelf::Bandshelf(MdFloat frequency) {
+Bandshelf::Bandshelf(double frequency) {
     set_frequency(frequency);
-    set_r(static_cast<MdFloat>(1));
-    set_gain(static_cast<MdFloat>(0));
+    set_r(1.);
+    set_gain(0.);
 }
 
-Bandshelf::Bandshelf(MdFloat frequency, MdFloat r) {
+Bandshelf::Bandshelf(double frequency, double r) {
     set_frequency(frequency);
     set_r(r);
-    set_gain(static_cast<MdFloat>(0));
+    set_gain(0.);
 }
 
-Bandshelf::Bandshelf(MdFloat frequency, MdFloat r, MdFloat gain) {
+Bandshelf::Bandshelf(double frequency, double r, double gain) {
     set_frequency(frequency);
     set_r(r);
     set_gain(gain);
 }
 
-MdFloat Bandshelf::perform(MdFloat in) noexcept {
-    auto x = static_cast<double>(in);
-    auto bp = (m_g * (m_r2 * x - m_s2) + m_s1) * d(m_r2, m_g);
+void Bandshelf::set_gain(double gain) noexcept {
+    m_m2i = tpt::m2(gain);
+}
 
-    // First integrator
-    auto bp2 = bp + bp;
-    m_s1 = bp2 - m_s1;
+double Bandshelf::process(double in) noexcept {
+    auto bp = Svf::process(m_r2 * in, Output::BP);
 
-    // Second integrator
-    auto v22 = m_g * bp2;
-    m_s2 = m_s2 + v22;
-
-    return static_cast<MdFloat>(x + (m_m2i - 1) * bp);
+    return in + (m_m2i - 1) * bp;
 }

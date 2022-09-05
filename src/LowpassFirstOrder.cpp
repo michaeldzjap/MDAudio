@@ -1,21 +1,26 @@
 #include "LowpassFirstOrder.hpp"
+#include "tpt.hpp"
 
 using md_audio::LowpassFirstOrder;
-using md_audio::MdFloat;
 
 LowpassFirstOrder::LowpassFirstOrder() {
-    set_frequency(static_cast<MdFloat>(440));
+    set_frequency(440.);
 }
 
-LowpassFirstOrder::LowpassFirstOrder(MdFloat frequency) {
+LowpassFirstOrder::LowpassFirstOrder(double frequency) {
     set_frequency(frequency);
 }
 
-MdFloat LowpassFirstOrder::perform(MdFloat in) noexcept {
-    auto v = (static_cast<double>(in) - m_s) * m_h;
+void LowpassFirstOrder::set_frequency(double frequency) noexcept {
+    auto g = tpt::g(frequency, m_half_sample_rate, m_sample_duration);
+    m_h = g / (1. + g);
+}
+
+double LowpassFirstOrder::process(double in) noexcept {
+    auto v = (in - m_s) * m_h;
     auto y = v + m_s;
 
     m_s = y + v;
 
-    return static_cast<MdFloat>(y);
+    return y;
 }

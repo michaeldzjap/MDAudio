@@ -1,20 +1,15 @@
 #include "AllpassFirstOrder.hpp"
 
 using md_audio::AllpassFirstOrder;
-using md_audio::MdFloat;
 
-AllpassFirstOrder::AllpassFirstOrder() {
-    set_frequency(static_cast<MdFloat>(440));
-}
+AllpassFirstOrder::AllpassFirstOrder() : LowpassFirstOrder() {}
 
-AllpassFirstOrder::AllpassFirstOrder(MdFloat frequency) {
-    set_frequency(frequency);
-}
+AllpassFirstOrder::AllpassFirstOrder(double frequency) :
+    LowpassFirstOrder(frequency)
+{}
 
-MdFloat AllpassFirstOrder::perform(MdFloat in) noexcept {
-    auto xs = static_cast<double>(in) - m_s;
+double AllpassFirstOrder::process(double in) noexcept {
+    auto y = LowpassFirstOrder::process(in);
 
-    m_s = m_s + xs * (2. * m_g / (1. + m_g));
-
-    return static_cast<MdFloat>(m_s - xs);
+    return y - (in - y);
 }

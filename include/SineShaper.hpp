@@ -1,31 +1,22 @@
 #ifndef MD_AUDIO_SINE_SHAPER_HPP
 #define MD_AUDIO_SINE_SHAPER_HPP
 
-#include "interfaces/Processable.hpp"
+#include "Unit.hpp"
 #include "tables.hpp"
-#include "types.hpp"
-#include "utility.hpp"
 
 namespace md_audio {
 
-    class SineShaper : public Processable<MdFloat, MdFloat> {
+    class SineShaper : public Unit {
     public:
-        SineShaper() = default;
+        explicit SineShaper(double limit);
 
-        explicit SineShaper(MdFloat);
+        void set_limit(double limit) noexcept;
 
-        inline void set_limit(MdFloat limit) noexcept {
-            if (limit != 0.) {
-                m_limit = limit;
-                m_phase_rate = 1. / static_cast<double>(m_limit) * radians_to_increment;
-            }
-        }
-
-        MdFloat perform(MdFloat) noexcept override final;
+        double process(double in) noexcept;
 
     private:
-        MdFloat m_limit = static_cast<MdFloat>(1);
-        double m_phase_rate = radians_to_increment;
+        double m_limit = 1.;
+        double m_phase_rate = RADIANS_TO_INCREMENT;
     };
 
 }

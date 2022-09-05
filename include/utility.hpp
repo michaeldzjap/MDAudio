@@ -1,16 +1,20 @@
 #ifndef MD_AUDIO_UTILITY_HPP
 #define MD_AUDIO_UTILITY_HPP
 
-#include "tables.hpp"
 #include <array>
 #include <cmath>
 #include <cstdint>
 #include <type_traits>
+#include <utility>
+#include "tables.hpp"
 
 namespace md_audio::utility {
 
     template <typename T>
     using IsFloat = std::enable_if_t<std::is_floating_point<T>::value, T>;
+
+    template <typename T>
+    using IsInt = std::enable_if_t<std::is_integral<T>::value, T>;
 
     template <typename T>
     using IsFloatOrInt = std::enable_if_t<std::is_floating_point<T>::value || std::is_integral<T>::value, T>;
@@ -32,32 +36,6 @@ namespace md_audio::utility {
         if (value > max) return max;
 
         return value;
-    }
-
-    inline constexpr std::int32_t ceil(const float value) noexcept {
-        return static_cast<float>(static_cast<std::int32_t>(value)) == value
-            ? static_cast<std::int32_t>(value)
-            : static_cast<std::int32_t>(value) + (value > 0 ? 1 : 0);
-    }
-
-    inline constexpr std::int32_t ceil(const double value) noexcept {
-        return static_cast<double>(static_cast<std::int32_t>(value)) == value
-            ? static_cast<std::int32_t>(value)
-            : static_cast<std::int32_t>(value) + (value > 0 ? 1 : 0);
-    }
-
-    template <typename T>
-    inline constexpr IsFloat<T> ceil(const float value) noexcept {
-        return static_cast<float>(static_cast<std::int32_t>(value)) == value
-            ? static_cast<T>(value)
-            : static_cast<T>(value) + static_cast<T>(value > 0 ? 1 : 0);
-    }
-
-    template <typename T>
-    inline constexpr IsFloat<T> ceil(const double value) noexcept {
-        return static_cast<double>(static_cast<std::int32_t>(value)) == value
-            ? static_cast<T>(value)
-            : static_cast<T>(value) + static_cast<T>(value > 0 ? 1 : 0);
     }
 
     inline constexpr auto wrap(std::int32_t value, const std::int32_t lo, const std::int32_t hi) noexcept {
@@ -151,7 +129,7 @@ namespace md_audio::utility {
     }
 
     template <typename T>
-    inline constexpr IsFloat<T> linear_interp(const T x, const T a, const T b) noexcept {
+    inline constexpr IsFloat<T> interpolate_linear(const T x, const T a, const T b) noexcept {
         return a + x * (b - a);
     }
 
@@ -159,28 +137,29 @@ namespace md_audio::utility {
      * Cubic interpolation using 3rd order Hermite polynomial.
      */
     template <typename T>
-    inline constexpr IsFloat<T> cubic_interp(const T x, const T y0, const T y1, const T y2, const T y3) noexcept {
+    inline constexpr IsFloat<T> interpolate_cubic(const T x, const T y0, const T y1, const T y2, const T y3) noexcept {
         auto c0 = y1;
-        auto c1 = static_cast<T>(.5) * (y2 - y0);
-        auto c2 = y0 - static_cast<T>(2.5) * y1 + static_cast<T>(2.) * y2 - static_cast<T>(.5) * y3;
-        auto c3 = static_cast<T>(.5) * (y3 - y0) + static_cast<T>(1.5) * (y1 - y2);
+        auto c1 = .5 * (y2 - y0);
+        auto c2 = y0 - 2.5 * y1 + 2. * y2 - .5 * y3;
+        auto c3 = .5 * (y3 - y0) + 1.5 * (y1 - y2);
 
         return ((c3 * x + c2) * x + c1) * x + c0;
     }
 
-    inline constexpr int next_power_of_two(int n) noexcept {
-        n--;
+    template <typename T>
+    inline constexpr IsInt<T> next_power_of_two(T n) noexcept {
+        if (n < 2) return 2;
 
-        const std::size_t bitspace = sizeof(int) * 8 / 2;
+        std::size_t i = 1;
 
-        for (std::size_t i = 1; i != bitspace; i *= 2)
-            n = n | (n >> i);
+        for (n--; i < sizeof(n) * 8; i <<= 1)
+            n |= n >> i;
 
-        return n + 1;
+        return ++n;
     }
 
     template <typename T>
-    inline constexpr IsFloat<T> lookup(const std::array<T, table_size + 1> &table, double phase) noexcept {
+    inline constexpr IsFloat<T> lookup(const std::array<T, TABLE_SIZE + 1> &table, double phase) noexcept {
         auto index = static_cast<std::uint32_t>(phase);
         double frac = phase - static_cast<double>(index);
         auto y0 = table[index];
@@ -191,7 +170,7 @@ namespace md_audio::utility {
 
     template <typename T>
     inline constexpr double seconds_to_samples(const T delay_time, const T sample_rate) noexcept {
-        return utility::ceil(delay_time * sample_rate);
+        return static_cast<T>(ceil(delay_time * sample_rate));
     }
 
     template <typename T, std::size_t N>
@@ -232,6 +211,16 @@ namespace md_audio::utility {
             sum += item;
 
         return sum;
+    }
+
+    template <typename T, std::size_t ...Is>
+    inline constexpr std::array<T, sizeof...(Is)> make_array(const T& def, std::index_sequence<Is...>) noexcept {
+        return {{(static_cast<void>(Is), def)...}};
+    }
+
+    template <std::size_t N, typename T>
+    inline constexpr std::array<T, N> make_array(const T& def) noexcept {
+        return make_array(def, std::make_index_sequence<N>());
     }
 
 }

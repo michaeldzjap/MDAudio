@@ -2,21 +2,18 @@
 #define MD_AUDIO_HANN_OSCILLATOR_HPP
 
 #include "Oscillator.hpp"
-#include "constants.hpp"
-#include "interfaces/Generatable.hpp"
-#include "types.hpp"
 
 namespace md_audio {
 
-    class HannOscillator : public Oscillator, public Generatable<MdFloat> {
+    class HannOscillator : public Oscillator {
     public:
         explicit HannOscillator();
 
-        explicit HannOscillator(MdFloat);
+        explicit HannOscillator(double frequency);
 
-        explicit HannOscillator(MdFloat, MdFloat);
+        explicit HannOscillator(double frequency, double phase);
 
-        MdFloat perform(void) noexcept override final;
+        double process() noexcept;
     };
 
 }

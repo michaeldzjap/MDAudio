@@ -1,46 +1,28 @@
-#ifndef MD_AUTIO_TILT_FIRST_ORDER_HPP
-#define MD_AUTIO_TILT_FIRST_ORDER_HPP
+#ifndef MD_AUDIO_TILT_FIRST_ORDER_HPP
+#define MD_AUDIO_TILT_FIRST_ORDER_HPP
 
-#include "TptFilter.hpp"
-#include "TptShelving.hpp"
-#include "interfaces/Processable.hpp"
+#include "LowpassFirstOrder.hpp"
+#include "ShelvingFirstOrder.hpp"
 
 namespace md_audio {
 
-    class TiltFirstOrder :
-        public TptFilter,
-        public TptShelving,
-        public Processable<MdFloat, MdFloat>
-    {
+    class TiltFirstOrder : public LowpassFirstOrder, public ShelvingFirstOrder {
     public:
         explicit TiltFirstOrder();
 
-        explicit TiltFirstOrder(MdFloat);
+        explicit TiltFirstOrder(double frequency);
 
-        explicit TiltFirstOrder(MdFloat, MdFloat);
+        explicit TiltFirstOrder(double frequency, double gain);
 
-        inline void set_frequency(MdFloat) noexcept;
+        void set_gain(double gain) noexcept;
 
-        inline void set_gain(MdFloat) noexcept;
-
-        MdFloat perform(MdFloat) noexcept override final;
+        double process(double in) noexcept;
 
     private:
-        double m_s = 0.;
-        double m_g;
         double m_m;
         double m_mi;
     };
 
-    void TiltFirstOrder::set_frequency(MdFloat frequency) noexcept {
-        m_g = g(static_cast<double>(frequency));
-    }
-
-    void TiltFirstOrder::set_gain(MdFloat gain) noexcept {
-        m_m = std::sqrt(m2(gain));
-        m_mi = 1. / m_m;
-    }
-
 }
 
-#endif /* MD_AUTIO_TILT_FIRST_ORDER_HPP */
+#endif /* MD_AUDIO_TILT_FIRST_ORDER_HPP */

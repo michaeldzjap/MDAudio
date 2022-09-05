@@ -2,21 +2,18 @@
 #define MD_AUDIO_SINE_OSCILLATOR_HPP
 
 #include "Oscillator.hpp"
-#include "constants.hpp"
-#include "interfaces/Generatable.hpp"
-#include "types.hpp"
 
 namespace md_audio {
 
-    class SineOscillator : public Oscillator, public Generatable<MdFloat> {
+    class SineOscillator : public Oscillator {
     public:
         explicit SineOscillator();
 
-        explicit SineOscillator(MdFloat);
+        explicit SineOscillator(double frequency);
 
-        explicit SineOscillator(MdFloat, MdFloat);
+        explicit SineOscillator(double frequency, double phase);
 
-        MdFloat perform(void) noexcept override final;
+        double process() noexcept;
     };
 
 }

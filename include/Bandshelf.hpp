@@ -1,55 +1,27 @@
 #ifndef MD_AUDIO_BANDSHELF_HPP
 #define MD_AUDIO_BANDSHELF_HPP
 
-#include "TptFilter.hpp"
-#include "TptSecondOrder.hpp"
-#include "TptShelving.hpp"
-#include "interfaces/Processable.hpp"
+#include "Svf.hpp"
 
 namespace md_audio {
 
-    class Bandshelf :
-        public TptFilter,
-        public TptSecondOrder,
-        public TptShelving,
-        public Processable<MdFloat, MdFloat>
-    {
+    class Bandshelf : public Svf {
     public:
         explicit Bandshelf();
 
-        explicit Bandshelf(MdFloat);
+        explicit Bandshelf(double frequency);
 
-        explicit Bandshelf(MdFloat, MdFloat);
+        explicit Bandshelf(double frequency, double r);
 
-        explicit Bandshelf(MdFloat, MdFloat, MdFloat);
+        explicit Bandshelf(double frequency, double r, double gain);
 
-        inline void set_frequency(MdFloat) noexcept;
+        void set_gain(double gain) noexcept;
 
-        inline void set_r(MdFloat) noexcept;
-
-        inline void set_gain(MdFloat) noexcept;
-
-        MdFloat perform(MdFloat) noexcept override final;
+        double process(double in) noexcept;
 
     private:
-        double m_s1 = 0.;
-        double m_s2 = 0.;
-        double m_g;
-        double m_r2;
         double m_m2i;
     };
-
-    void Bandshelf::set_frequency(MdFloat frequency) noexcept {
-        m_g = g(static_cast<double>(frequency));
-    }
-
-    void Bandshelf::set_r(MdFloat r) noexcept {
-        m_r2 = r2(static_cast<double>(r));
-    }
-
-    void Bandshelf::set_gain(MdFloat gain) noexcept {
-        m_m2i = 1. / m2(static_cast<double>(-gain));
-    }
 
 }
 

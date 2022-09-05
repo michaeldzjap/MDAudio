@@ -1,55 +1,100 @@
 #ifndef MD_AUDIO_VARIABLE_DELAY
 #define MD_AUDIO_VARIABLE_DELAY
 
+#include <array>
+#include <cstddef>
+#include "Buffer.hpp"
 #include "HannOscillator.hpp"
 #include "Latch.hpp"
 #include "Phasor.hpp"
-#include "TapDelayStatic.hpp"
-#include "interfaces/Processable.hpp"
+#include "ReaderLinear.hpp"
+#include "TapInterpolated.hpp"
+#include "Unit.hpp"
+#include "Writer.hpp"
+#include "constants.hpp"
+#include "utility.hpp"
+
+using md_audio::utility::clip;
+using md_audio::utility::make_array;
+using md_audio::utility::next_power_of_two;
 
 namespace md_audio {
 
-    class VariableDelay : public Processable<MdFloat, MdFloat> {
+    template <class Allocator, std::size_t OVERLAP = 2, class Reader = ReaderLinear<Allocator>>
+    class VariableDelay : public Unit {
     public:
-        explicit VariableDelay(memory::Poolable&, MdFloat, std::size_t);
+        explicit VariableDelay(Allocator& allocator, double max_delay_time, double delay_time, double size) :
+            m_buffer(allocator, next_power_of_two<std::uint32_t>(m_sample_rate * max_delay_time)),
+            m_writer(m_buffer),
+            m_reader(m_buffer),
+            m_taps(make_array<OVERLAP>(TapInterpolated(m_writer, m_reader, m_sample_rate * max_delay_time))),
+            m_max_delay_time(max_delay_time),
+            m_norm(2. / OVERLAP)
+        {
+            set_delay_time(delay_time);
+            set_size(size);
+        }
 
-        explicit VariableDelay(memory::Poolable&, MdFloat, MdFloat, std::size_t);
+        bool initialise() noexcept {
+            auto result = m_buffer.initialise();
 
-        explicit VariableDelay(memory::Poolable&, MdFloat, MdFloat, MdFloat, std::size_t);
+            if (!result) return result;
 
-        inline void set_delay(MdFloat) noexcept;
+            for (std::size_t i = 0; i < OVERLAP; ++i) {
+                m_phasor[i].set_phase(static_cast<double>(i) / OVERLAP);
+                m_osc[i].set_frequency(0.);
+            }
 
-        void set_size(MdFloat) noexcept;
+            return result;
+        }
 
-        MdFloat perform(MdFloat) noexcept override final;
+        void set_delay_time(double delay_time) noexcept {
+            m_delay_time = utility::clip(delay_time, .01, m_max_delay_time);
+        }
 
-        static void set_sample_rate(double) noexcept;
+        void set_size(double size) noexcept {
+            size = utility::clip(size, 1. / m_half_sample_rate, m_max_delay_time);
 
-        ~VariableDelay();
+            auto frequency = 1. / size;
+
+            for (std::size_t i = 0; i < OVERLAP; ++i)
+                m_phasor[i].set_frequency(frequency);
+        }
+
+        double process(double in) noexcept {
+            auto z = 0.;
+
+            for (std::size_t i = 0; i < OVERLAP; ++i) {
+                auto phase = m_phasor[i].process();
+
+                m_osc[i].set_phase(phase * TWO_PI);
+
+                auto window = m_osc[i].process();
+
+                m_taps[i].set_delay_time(
+                    m_latch[i].process(m_delay_time, phase)
+                );
+
+                z += m_taps[i].read() * window;
+            }
+
+            m_writer.write(in);
+
+            return z * m_norm;
+        }
 
     private:
-        const MdFloat m_max_delay;
-        MdFloat m_delay_time;
-        const std::size_t m_overlap;
-        const MdFloat m_norm;
-        memory::Poolable& m_pool;
-        TapDelayStatic m_delay;
-        Phasor* m_phasor = nullptr;
-        HannOscillator* m_osc = nullptr;
-        Latch* m_latch = nullptr;
-
-        void initialise(MdFloat, MdFloat);
-
-        inline static constexpr MdFloat compute_frequency(MdFloat) noexcept;
+        std::array<Phasor, OVERLAP> m_phasor;
+        std::array<HannOscillator, OVERLAP> m_osc;
+        std::array<Latch, OVERLAP> m_latch;
+        Buffer<Allocator> m_buffer;
+        Writer<Allocator> m_writer;
+        Reader m_reader;
+        std::array<TapInterpolated<Allocator, Reader>, OVERLAP> m_taps;
+        const double m_max_delay_time;
+        const double m_norm;
+        double m_delay_time;
     };
-
-    void VariableDelay::set_delay(MdFloat delay) noexcept {
-        m_delay_time = utility::clip(delay, static_cast<MdFloat>(.01), m_max_delay);
-    }
-
-    constexpr MdFloat VariableDelay::compute_frequency(MdFloat size) noexcept {
-        return static_cast<MdFloat>(1) / size;
-    }
 
 }
 

@@ -1,17 +1,14 @@
 #include "SineOscillator.hpp"
-#include "Oscillator.hpp"
 #include "tables.hpp"
 
 using md_audio::SineOscillator;
-using md_audio::MdFloat;
-using md_audio::Oscillator;
 
-SineOscillator::SineOscillator() : Oscillator(static_cast<MdFloat>(440)) {}
+SineOscillator::SineOscillator() : Oscillator(440.) {}
 
-SineOscillator::SineOscillator(MdFloat frequency) : Oscillator(frequency) {}
+SineOscillator::SineOscillator(double frequency) : Oscillator(frequency) {}
 
-SineOscillator::SineOscillator(MdFloat frequency, MdFloat phase) : Oscillator(frequency, phase) {}
+SineOscillator::SineOscillator(double frequency, double phase) : Oscillator(frequency, phase) {}
 
-MdFloat SineOscillator::perform() noexcept {
-    return Oscillator::perform(sine_table);
+double SineOscillator::process() noexcept {
+    return Oscillator::process(sine_table);
 }

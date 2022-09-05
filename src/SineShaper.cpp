@@ -1,17 +1,25 @@
 #include "SineShaper.hpp"
+#include "utility.hpp"
 
-using md_audio::MdFloat;
 using md_audio::SineShaper;
+using md_audio::utility::lookup;
 
-SineShaper::SineShaper(MdFloat limit) {
+SineShaper::SineShaper(double limit) {
     set_limit(limit);
 }
 
-MdFloat SineShaper::perform(MdFloat in) noexcept {
+void SineShaper::set_limit(double limit) noexcept {
+    if (limit != 0.) {
+        m_limit = limit;
+        m_phase_rate = 1. / m_limit * RADIANS_TO_INCREMENT;
+    }
+}
+
+double SineShaper::process(double in) noexcept {
     auto offset = in * m_phase_rate;
 
-    while (offset < 0.) offset += static_cast<double>(table_size);
-    while (offset >= table_size) offset -= static_cast<double>(table_size);
+    while (offset < 0.) offset += TABLE_SIZE;
+    while (offset >= TABLE_SIZE) offset -= TABLE_SIZE;
 
     return m_limit * utility::lookup(sine_table, offset);
 }
