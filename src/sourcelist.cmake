@@ -9,6 +9,7 @@ set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
     HighpassSecondOrder.cpp
     HighshelfFirstOrder.cpp
     HighshelfSecondOrder.cpp
+    Latch.cpp
     LowpassFirstOrder.cpp
     LowpassSecondOrder.cpp
     LowshelfFirstOrder.cpp

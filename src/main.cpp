@@ -19,6 +19,7 @@
 #include "TapDelayStatic.hpp"
 #include "TiltFirstOrder.hpp"
 #include "TiltSecondOrder.hpp"
+#include "VariableDelay.hpp"
 #include "WhiteNoise.hpp"
 #include "memory/StaticAllocator.hpp"
 #include "memory/StaticPool.hpp"
@@ -48,6 +49,7 @@ using md_audio::TapDelayLinear;
 using md_audio::TapDelayStatic;
 using md_audio::TiltFirstOrder;
 using md_audio::TiltSecondOrder;
+using md_audio::VariableDelay;
 using md_audio::WhiteNoise;
 using md_audio::hann_period;
 using md_audio::memory::StaticAllocator;
@@ -120,8 +122,12 @@ int main() {
     // PitchShifter<Allocator<Pool<POOL_SIZE>>> shifter(allocator, MAX_DELAY_TIME, .01);
     // shifter.initialise();
 
-    ReverseDelay<Allocator<Pool<POOL_SIZE>>>::set_sample_rate(SAMPLE_RATE);
-    ReverseDelay<Allocator<Pool<POOL_SIZE>>> delay(allocator, MAX_DELAY_TIME, .01);
+    // ReverseDelay<Allocator<Pool<POOL_SIZE>>>::set_sample_rate(SAMPLE_RATE);
+    // ReverseDelay<Allocator<Pool<POOL_SIZE>>> delay(allocator, MAX_DELAY_TIME, .01);
+    // delay.initialise();
+
+    VariableDelay<Allocator<Pool<POOL_SIZE>>>::set_sample_rate(SAMPLE_RATE);
+    VariableDelay<Allocator<Pool<POOL_SIZE>>> delay(allocator, MAX_DELAY_TIME, .01, .02);
     delay.initialise();
 
     // for (std::size_t i = 0; i < TABLE_SIZE / 2 + 1; ++i)
