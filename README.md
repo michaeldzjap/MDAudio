@@ -25,7 +25,6 @@ A(nother) C++ audio signal processing library
 
 - Delay Based Effects
     - ReverseDelay
-    - ReversibleDelay
     - PitchShifter
     - VariableDelay
 
@@ -43,3 +42,6 @@ A(nother) C++ audio signal processing library
     - Bandstop
     - AllpassFirstOrder
     - AllpassSecondOrder
+    - TiltFirstOrder
+    - TiltSecondOrder
+    - Svf
