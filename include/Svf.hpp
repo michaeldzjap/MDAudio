@@ -1,44 +1,34 @@
 #ifndef MD_AUDIO_SVF_HPP
 #define MD_AUDIO_SVF_HPP
 
-#include "TptFilter.hpp"
+#include <array>
 #include "TptSecondOrder.hpp"
-#include "interfaces/Processable.hpp"
+#include "Unit.hpp"
 
 namespace md_audio {
 
-    class Svf :
-        public TptFilter,
-        public TptSecondOrder,
-        public Processable<std::array<MdFloat, 3>, MdFloat>
-    {
+    enum Output { LP, HP, BP };
+
+    class Svf : public Unit, public TptSecondOrder {
     public:
         explicit Svf();
 
-        explicit Svf(MdFloat);
+        explicit Svf(double frequency);
 
-        explicit Svf(MdFloat, MdFloat);
+        explicit Svf(double frequency, double r);
 
-        inline void set_frequency(MdFloat) noexcept;
+        void set_frequency(double frequency) noexcept;
 
-        inline void set_r(MdFloat) noexcept;
+        void set_r(double r) noexcept;
 
-        std::array<MdFloat, 3> perform(MdFloat) noexcept override final;
+        double process(double in, Output output) noexcept;
 
-    private:
-        double m_s1 = 0.;
-        double m_s2 = 0.;
+        std::array<double, 3> process(double in) noexcept;
+
+    protected:
         double m_g;
         double m_r2;
     };
-
-    void Svf::set_frequency(MdFloat frequency) noexcept {
-        m_g = g(static_cast<double>(frequency));
-    }
-
-    void Svf::set_r(MdFloat r) noexcept {
-        m_r2 = r2(static_cast<double>(r));
-    }
 
 }
 

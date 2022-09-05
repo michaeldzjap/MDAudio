@@ -1,45 +1,40 @@
+#include <array>
 #include "TiltSecondOrder.hpp"
+#include "tpt.hpp"
 
-using md_audio::MdFloat;
 using md_audio::TiltSecondOrder;
 
 TiltSecondOrder::TiltSecondOrder() {
-    set_frequency(static_cast<MdFloat>(440));
-    set_r(static_cast<MdFloat>(1));
-    set_gain(static_cast<MdFloat>(0));
+    set_frequency(440.);
+    set_r(1.);
+    set_gain(0.);
 }
 
-TiltSecondOrder::TiltSecondOrder(MdFloat frequency) {
+TiltSecondOrder::TiltSecondOrder(double frequency) {
     set_frequency(frequency);
-    set_r(static_cast<MdFloat>(1));
-    set_gain(static_cast<MdFloat>(0));
+    set_r(1.);
+    set_gain(0.);
 }
 
-TiltSecondOrder::TiltSecondOrder(MdFloat frequency, MdFloat r) {
+TiltSecondOrder::TiltSecondOrder(double frequency, double r) {
     set_frequency(frequency);
     set_r(r);
-    set_gain(static_cast<MdFloat>(0));
+    set_gain(0.);
 }
 
-TiltSecondOrder::TiltSecondOrder(MdFloat frequency, MdFloat r, MdFloat gain) {
+TiltSecondOrder::TiltSecondOrder(double frequency, double r, double gain) {
     set_frequency(frequency);
     set_r(r);
     set_gain(gain);
 }
 
-MdFloat TiltSecondOrder::perform(MdFloat in) noexcept {
-    auto g1 = m_r2 + m_g;
-    auto hp = (static_cast<double>(in) - g1 * m_s1 - m_s2) * d(m_r2, m_g);
+void TiltSecondOrder::set_gain(double gain) noexcept {
+    m_m2 = tpt::m2(gain);
+    m_m4 = 1. / m_m2;
+}
 
-    // First integrator
-    auto v1 = m_g * hp;
-    auto bp = v1 + m_s1;
-    m_s1 = bp + v1;
+double TiltSecondOrder::process(double in) noexcept {
+    std::array<double, 3> out = Svf::process(in);
 
-    // Second integrator
-    auto v2 = m_g * bp;
-    auto lp = v2 + m_s2;
-    m_s2 = lp + v2;
-
-    return static_cast<MdFloat>(m_m2i * lp + m_r2 * bp + m_m2 * hp);
+    return m_m4 * out[0] + m_r2 * out[2] + m_m2 * out[1];
 }

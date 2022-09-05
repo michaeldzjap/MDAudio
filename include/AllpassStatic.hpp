@@ -1,47 +1,27 @@
 #ifndef MD_AUDIO_ALLPASS_STATIC_HPP
 #define MD_AUDIO_ALLPASS_STATIC_HPP
 
-#include "Buffer.hpp"
+#include "Allpass.hpp"
 #include "Reader.hpp"
-#include "SampleRate.hpp"
-#include "Writer.hpp"
-#include "interfaces/Processable.hpp"
-#include "utility.hpp"
+#include "TapUninterpolated.hpp"
 
 namespace md_audio {
 
-    class AllpassStatic : public SampleRate, public Processable<MdFloat, MdFloat> {
+    template <class Allocator>
+    class AllpassStatic : public Allpass<Allocator, Reader<Allocator>, TapUninterpolated<Allocator, Reader<Allocator>>> {
     public:
-        explicit AllpassStatic(memory::Poolable&, MdFloat);
+        explicit AllpassStatic(Allocator& allocator, double max_delay_time) :
+            Allpass<Allocator, Reader<Allocator>, TapUninterpolated<Allocator, Reader<Allocator>>>(allocator, max_delay_time)
+        {}
 
-        explicit AllpassStatic(memory::Poolable&, MdFloat, MdFloat);
+        explicit AllpassStatic(Allocator& allocator, double max_delay_time, double delay_time) :
+            Allpass<Allocator, Reader<Allocator>, TapUninterpolated<Allocator, Reader<Allocator>>>(allocator, max_delay_time, delay_time)
+        {}
 
-        explicit AllpassStatic(memory::Poolable&, MdFloat, MdFloat, MdFloat);
-
-        inline void set_delay(MdFloat) noexcept;
-
-        inline void set_gain(MdFloat) noexcept;
-
-        MdFloat perform(MdFloat) noexcept override final;
-
-    private:
-        const MdFloat m_max_delay;
-        std::uint32_t m_delay;
-        MdFloat m_gain = static_cast<MdFloat>(0);
-        Buffer m_buffer;
-        Reader m_reader;
-        Writer m_writer;
+        explicit AllpassStatic(Allocator& allocator, double max_delay_time, double delay_time, double gain) :
+            Allpass<Allocator, Reader<Allocator>, TapUninterpolated<Allocator, Reader<Allocator>>>(allocator, max_delay_time, delay_time, gain)
+        {}
     };
-
-    void AllpassStatic::set_delay(MdFloat delay) noexcept {
-        delay = utility::clip<MdFloat>(m_sample_rate * delay, 1, m_max_delay);
-
-        m_delay = static_cast<std::uint32_t>(delay);
-    }
-
-    void AllpassStatic::set_gain(MdFloat gain) noexcept {
-        m_gain = utility::clip<MdFloat>(gain, 0, 1);
-    }
 
 }
 

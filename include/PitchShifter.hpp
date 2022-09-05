@@ -1,69 +1,118 @@
 #ifndef MD_AUDIO_PITCH_SHIFTER_HPP
 #define MD_AUDIO_PITCH_SHIFTER_HPP
 
+#include <array>
+#include <cstddef>
+#include "Buffer.hpp"
 #include "HannOscillator.hpp"
 #include "Phasor.hpp"
-#include "TapDelayLinear.hpp"
-#include "interfaces/Processable.hpp"
-#include "types.hpp"
+#include "ReaderLinear.hpp"
+#include "TapInterpolated.hpp"
+#include "Unit.hpp"
+#include "Writer.hpp"
+#include "constants.hpp"
+#include "utility.hpp"
+
+using md_audio::utility::clip;
+using md_audio::utility::make_array;
+using md_audio::utility::midi_ratio;
+using md_audio::utility::next_power_of_two;
 
 namespace md_audio {
 
-    class PitchShifter : public Processable<MdFloat, MdFloat> {
+    template <class Allocator, std::size_t OVERLAP = 2, class Reader = ReaderLinear<Allocator>>
+    class PitchShifter : public Unit {
     public:
-        explicit PitchShifter(memory::Poolable&, MdFloat, MdFloat, std::size_t);
+        explicit PitchShifter(Allocator& allocator, double max_size, double size) :
+            m_buffer(allocator, next_power_of_two<std::uint32_t>(m_sample_rate * max_size)),
+            m_writer(m_buffer),
+            m_reader(m_buffer),
+            m_taps(make_array<OVERLAP>(TapInterpolated(m_writer, m_reader, m_sample_rate * max_size))),
+            m_max_size(max_size),
+            m_norm(2. / OVERLAP),
+            m_size(clip(size, .01, m_max_size)),
+            m_transposition(0.)
+        {
+            set_frequency();
+        }
 
-        explicit PitchShifter(memory::Poolable&, MdFloat, MdFloat, MdFloat, std::size_t);
+        explicit PitchShifter(Allocator& allocator, double max_size, double size, double transposition) :
+            m_buffer(allocator, next_power_of_two<std::uint32_t>(m_sample_rate * max_size)),
+            m_writer(m_buffer),
+            m_reader(m_buffer),
+            m_taps(make_array<OVERLAP>(TapInterpolated(m_writer, m_reader, m_sample_rate * max_size))),
+            m_max_size(max_size),
+            m_norm(2. / OVERLAP),
+            m_size(clip(size, .01, m_max_size)),
+            m_transposition(clip(transposition, -24., 24.))
+        {
+            set_frequency();
+        }
 
-        inline void set_transposition(MdFloat) noexcept;
+        bool initialise() noexcept {
+            auto result = m_buffer.initialise();
 
-        void set_size(MdFloat) noexcept;
+            if (!result) return result;
 
-        MdFloat perform(MdFloat) noexcept override final;
+            for (std::size_t i = 0; i < OVERLAP; ++i) {
+                m_phasor[i].set_phase(1. - static_cast<double>(i) / OVERLAP);
+                m_osc[i].set_frequency(0.);
+            }
 
-        static void set_sample_rate(double) noexcept;
+            return result;
+        }
 
-        ~PitchShifter();
+        void set_size(double size) noexcept {
+            m_size = clip(size, .01, m_max_size);
+
+            set_frequency();
+        }
+
+        void set_transposition(double transposition) noexcept {
+             m_transposition = clip(transposition, -24., 24.);
+
+             set_frequency();
+        }
+
+        double process(double in) noexcept {
+            auto z = 0.;
+
+            for (std::size_t i = 0; i < OVERLAP; ++i) {
+                auto phase = m_phasor[i].process();
+
+                m_osc[i].set_phase(phase * TWO_PI);
+
+                auto window = m_osc[i].process();
+
+                m_taps[i].set_delay_time(phase * m_size);
+
+                z += m_taps[i].read() * window;
+            }
+
+            m_writer.write(in);
+
+            return z * m_norm;
+        }
 
     private:
-        const MdFloat m_max_size;
-        MdFloat m_transposition = static_cast<MdFloat>(0);
-        MdFloat m_size;
-        const std::size_t m_overlap;
-        const MdFloat m_norm;
-        memory::Poolable& m_pool;
-        TapDelayLinear m_delay;
-        Phasor* m_phasor = nullptr;
-        HannOscillator* m_osc = nullptr;
+        std::array<Phasor, OVERLAP> m_phasor;
+        std::array<HannOscillator, OVERLAP> m_osc;
+        Buffer<Allocator> m_buffer;
+        Writer<Allocator> m_writer;
+        Reader m_reader;
+        std::array<TapInterpolated<Allocator, Reader>, OVERLAP> m_taps;
+        const double m_max_size;
+        const double m_norm;
+        double m_size;
+        double m_transposition;
 
-        void initialise(MdFloat, MdFloat);
+        void set_frequency() noexcept {
+            auto frequency = -(midi_ratio(m_transposition) - 1.) / m_size;
 
-        void set_frequency() noexcept;
-
-        inline MdFloat check_transposition(MdFloat) noexcept;
-
-        inline MdFloat check_size(MdFloat) noexcept;
-
-        inline static constexpr MdFloat compute_frequency(MdFloat, MdFloat) noexcept;
+            for (std::size_t i = 0; i < OVERLAP; ++i)
+                m_phasor[i].set_frequency(frequency);
+        }
     };
-
-    void PitchShifter::set_transposition(MdFloat transposition) noexcept {
-        m_transposition = check_transposition(transposition);
-
-        set_frequency();
-    }
-
-    MdFloat PitchShifter::check_transposition(MdFloat transposition) noexcept {
-        return utility::clip<MdFloat>(transposition, -24, 24);
-    }
-
-    MdFloat PitchShifter::check_size(MdFloat size) noexcept {
-        return utility::clip<MdFloat>(size, .01, m_max_size);
-    }
-
-    constexpr MdFloat PitchShifter::compute_frequency(MdFloat transposition, MdFloat size) noexcept {
-        return -(utility::midi_ratio(transposition) - static_cast<MdFloat>(1)) / size;
-    }
 
 }
 

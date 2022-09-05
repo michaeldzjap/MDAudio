@@ -1,57 +1,23 @@
 #ifndef MD_AUDIO_HIGHSHELF_SECOND_ORDER_HPP
 #define MD_AUDIO_HIGHSHELF_SECOND_ORDER_HPP
 
-#include "TptFilter.hpp"
-#include "TptSecondOrder.hpp"
-#include "TptShelving.hpp"
-#include "interfaces/Processable.hpp"
+#include "ShelvingSecondOrder.hpp"
+#include "Svf.hpp"
 
 namespace md_audio {
 
-    class HighShelfSecondOrder :
-        public TptFilter,
-        public TptSecondOrder,
-        public TptShelving,
-        public Processable<MdFloat, MdFloat>
-    {
+    class HighshelfSecondOrder : public Svf, public ShelvingSecondOrder {
     public:
-        explicit HighShelfSecondOrder();
+        explicit HighshelfSecondOrder();
 
-        explicit HighShelfSecondOrder(MdFloat);
+        explicit HighshelfSecondOrder(double frequency);
 
-        explicit HighShelfSecondOrder(MdFloat, MdFloat);
+        explicit HighshelfSecondOrder(double frequency, double r);
 
-        explicit HighShelfSecondOrder(MdFloat, MdFloat, MdFloat);
+        explicit HighshelfSecondOrder(double frequency, double r, double gain);
 
-        inline void set_frequency(MdFloat) noexcept;
-
-        inline void set_r(MdFloat) noexcept;
-
-        inline void set_gain(MdFloat) noexcept;
-
-        MdFloat perform(MdFloat) noexcept override final;
-
-    private:
-        double m_s1 = 0.;
-        double m_s2 = 0.;
-        double m_g;
-        double m_r2;
-        double m_m2;
-        double m_m4;
+        double process(double in) noexcept;
     };
-
-    void HighShelfSecondOrder::set_frequency(MdFloat frequency) noexcept {
-        m_g = g(static_cast<double>(frequency));
-    }
-
-    void HighShelfSecondOrder::set_r(MdFloat r) noexcept {
-        m_r2 = r2(static_cast<double>(r));
-    }
-
-    void HighShelfSecondOrder::set_gain(MdFloat gain) noexcept {
-        m_m2 = m2(static_cast<double>(gain));
-        m_m4 = m_m2 * m_m2;
-    }
 
 }
 

@@ -1,29 +1,18 @@
 #ifndef MD_AUDIO_ALLPASS_FIRST_ORDER_HPP
 #define MD_AUDIO_ALLPASS_FIRST_ORDER_HPP
 
-#include "TptFilter.hpp"
-#include "interfaces/Processable.hpp"
+#include "LowpassFirstOrder.hpp"
 
 namespace md_audio {
 
-    class AllpassFirstOrder : public TptFilter, public Processable<MdFloat, MdFloat> {
+    class AllpassFirstOrder : public LowpassFirstOrder {
     public:
         explicit AllpassFirstOrder();
 
-        explicit AllpassFirstOrder(MdFloat);
+        explicit AllpassFirstOrder(double frequency);
 
-        inline void set_frequency(MdFloat) noexcept;
-
-        MdFloat perform(MdFloat) noexcept override final;
-
-    private:
-        double m_s = 0.;
-        double m_g;
+        double process(double in) noexcept;
     };
-
-    void AllpassFirstOrder::set_frequency(MdFloat frequency) noexcept {
-        m_g = g(static_cast<double>(frequency));
-    }
 
 }
 
