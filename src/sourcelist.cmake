@@ -19,6 +19,7 @@ set(MD_AUDIO_SOURCES ${MD_AUDIO_SOURCES}
     ShelvingFirstOrder.cpp
     ShelvingSecondOrder.cpp
     SineOscillator.cpp
+    SineShaper.cpp
     Svf.cpp
     TiltFirstOrder.cpp
     TiltSecondOrder.cpp
