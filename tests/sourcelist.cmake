@@ -11,6 +11,7 @@ set(TESTS_SOURCES ${TESTS_SOURCES}
     HighshelfFirstOrderTest.cpp
     HighshelfSecondOrderTest.cpp
     HannOscillatorTest.cpp
+    LatchTest.cpp
     LowpassFirstOrderTest.cpp
     LowpassSecondOrderTest.cpp
     LowshelfFirstOrderTest.cpp
