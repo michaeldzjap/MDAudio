@@ -1,5 +1,5 @@
-#ifndef MD_AUDIO_DELAY_HPP
-#define MD_AUDIO_DELAY_HPP
+#ifndef MD_AUDIO_BUFFER_DELAY_HPP
+#define MD_AUDIO_BUFFER_DELAY_HPP
 
 #include <cstddef>
 #include "Buffer.hpp"
@@ -12,10 +12,10 @@ using md_audio::utility::next_power_of_two;
 namespace md_audio {
 
     template <class Allocator, class Reader, class Tap>
-    class Delay : public Unit {
+    class BufferDelay : public Unit {
     public:
-        explicit Delay(Allocator& allocator, double max_delay_time) :
-            m_buffer(allocator, next_power_of_two<std::uint32_t>(m_sample_rate * max_delay_time)),
+        explicit BufferDelay(Buffer<Allocator>& buffer, double max_delay_time) :
+            m_buffer(buffer),
             m_writer(m_buffer),
             m_reader(m_buffer),
             m_tap(m_writer, m_reader, m_sample_rate * max_delay_time)
@@ -23,17 +23,13 @@ namespace md_audio {
             set_delay_time(0.);
         }
 
-        explicit Delay(Allocator& allocator, double max_delay_time, double delay_time) :
-            m_buffer(allocator, next_power_of_two<std::uint32_t>(m_sample_rate * max_delay_time)),
+        explicit BufferDelay(Buffer<Allocator>& buffer, double max_delay_time, double delay_time) :
+            m_buffer(buffer),
             m_writer(m_buffer),
             m_reader(m_buffer),
             m_tap(m_writer, m_reader, m_sample_rate * max_delay_time)
         {
             set_delay_time(delay_time);
-        }
-
-        bool initialise() noexcept {
-            return m_buffer.initialise();
         }
 
         void set_delay_time(double delay_time) noexcept {
@@ -49,7 +45,7 @@ namespace md_audio {
         }
 
     private:
-        Buffer<Allocator> m_buffer;
+        Buffer<Allocator>& m_buffer;
         Writer<Allocator> m_writer;
         Reader m_reader;
         Tap m_tap;
@@ -57,4 +53,4 @@ namespace md_audio {
 
 }
 
-#endif /* MD_AUDIO_DELAY_HPP */
+#endif /* MD_AUDIO_BUFFER_DELAY_HPP */

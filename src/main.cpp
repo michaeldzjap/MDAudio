@@ -1,5 +1,6 @@
 #include "AllpassCubic.hpp"
 #include "Bandpass.hpp"
+#include "BufferDelayStatic.hpp"
 #include "DelayCubic.hpp"
 #include "DelayStatic.hpp"
 #include "HannOscillator.hpp"
@@ -12,6 +13,7 @@
 #include "LowshelfFirstOrder.hpp"
 #include "LowshelfSecondOrder.hpp"
 #include "PitchShifter.hpp"
+#include "Reverb.hpp"
 #include "ReverseDelay.hpp"
 #include "SineOscillator.hpp"
 #include "TapDelayCubic.hpp"
@@ -30,6 +32,7 @@
 
 using md_audio::AllpassCubic;
 using md_audio::Bandpass;
+using md_audio::BufferDelayStatic;
 using md_audio::DelayCubic;
 using md_audio::DelayStatic;
 using md_audio::HannOscillator;
@@ -42,6 +45,7 @@ using md_audio::LowpassSecondOrder;
 using md_audio::LowshelfFirstOrder;
 using md_audio::LowshelfSecondOrder;
 using md_audio::PitchShifter;
+using md_audio::Reverb;
 using md_audio::ReverseDelay;
 using md_audio::SineOscillator;
 using md_audio::TapDelayCubic;
@@ -79,6 +83,7 @@ int main() {
     Pool<POOL_SIZE> pool;
     Allocator<Pool<POOL_SIZE>> allocator(&pool);
 
+    BufferDelayStatic<Allocator<Pool<POOL_SIZE>>>::set_sample_rate(SAMPLE_RATE);
     DelayStatic<Allocator<Pool<POOL_SIZE>>>::set_sample_rate(SAMPLE_RATE);
     HighpassFirstOrder::set_sample_rate(SAMPLE_RATE);
     HighpassSecondOrder::set_sample_rate(SAMPLE_RATE);
@@ -94,6 +99,7 @@ int main() {
     TiltFirstOrder::set_sample_rate(SAMPLE_RATE);
     TiltSecondOrder::set_sample_rate(SAMPLE_RATE);
     Bandpass::set_sample_rate(SAMPLE_RATE);
+    Reverb<Allocator<Pool<POOL_SIZE>>>::set_sample_rate(SAMPLE_RATE);
     // HighpassFirstOrder highpass(0.);
     // HighpassSecondOrder highpass(11025., .1);
     // HighshelfFirstOrder highshelf(0., -6.);
@@ -126,9 +132,20 @@ int main() {
     // ReverseDelay<Allocator<Pool<POOL_SIZE>>> delay(allocator, MAX_DELAY_TIME, .01);
     // delay.initialise();
 
-    VariableDelay<Allocator<Pool<POOL_SIZE>>>::set_sample_rate(SAMPLE_RATE);
-    VariableDelay<Allocator<Pool<POOL_SIZE>>> delay(allocator, MAX_DELAY_TIME, .01, .02);
-    delay.initialise();
+    // VariableDelay<Allocator<Pool<POOL_SIZE>>>::set_sample_rate(SAMPLE_RATE);
+    // VariableDelay<Allocator<Pool<POOL_SIZE>>> delay(allocator, MAX_DELAY_TIME, .01, .02);
+    // delay.initialise();
+
+    // Buffer<Allocator<Pool<POOL_SIZE>>> buffer(allocator, next_power_of_two<std::uint32_t>(SAMPLE_RATE * MAX_DELAY_TIME));
+
+    // buffer.initialise();
+
+    // BufferDelayStatic<Allocator<Pool<POOL_SIZE>>> delay(buffer, MAX_DELAY_TIME, .01);
+
+    Reverb<Allocator<Pool<POOL_SIZE>>> reverb(allocator);
+
+    reverb.initialise();
+    reverb.set_pre_delay(.01);
 
     // for (std::size_t i = 0; i < TABLE_SIZE / 2 + 1; ++i)
     //     // std::cout << i << "\t" << osc.process() << std::endl;
@@ -189,8 +206,11 @@ int main() {
         // auto out = delay.process(generator.process());
         // auto out = shifter.process(generator.process());
         // auto out = bandpass.process(generator.process());
-        auto out = delay.process(generator.process());
-        std::cout << i << '\t' << out << std::endl;
+        // auto out = delay.process(generator.process());
+        std::array<double, 2> in = { generator.process(), generator.process() };
+        auto out = reverb.process(in);
+        // auto out = reverb.process({ generator.process(), generator.process() });
+        std::cout << i << "\t" << out[0] << ", " << out[1] << std::endl;
         // std::cout << i << '\t' << out[0] << '\t' << out[1] << '\t' << out[2] << std::endl;
         // std::cout << generator.process() << std::endl;
         // std::cout << tilt.process(i == 0 ? 1. : 0. /* generator.process() */) << ",";
